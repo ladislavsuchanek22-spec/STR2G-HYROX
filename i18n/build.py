@@ -8,6 +8,9 @@ import json, re, pathlib, sys
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 BASE = "https://str2g.com"
 LANGS = {"cs": "cs_CZ", "de": "de_DE", "pl": "pl_PL"}
+# Other STR2G websites: English URL in the source -> per-language path
+XLINKS = {u: {"cs": "/", "de": "/de/", "pl": "/pl/"} for u in (
+    "https://hyrox-prague.eu/en/", "https://hyroxtrainingclub.cz/en/", "https://formfactorygames.cz/en/")}
 ATTRS = ("alt", "aria-label", "content", "title")
 
 src = (ROOT / "index.html").read_text(encoding="utf-8")
@@ -54,6 +57,9 @@ for lang, locale in LANGS.items():
     out = out.replace(' aria-current="page">EN<', '>EN<', 1)
     out = out.replace(f'hreflang="{lang}" lang="{lang}">', f'hreflang="{lang}" lang="{lang}" aria-current="page">', 1)
     out = re.sub(r'(src|content)="img/', r'\1="../img/', out)
+    # links to the other STR2G websites -> same language
+    for en_url, path in XLINKS.items():
+        out = out.replace(f'href="{en_url}"', f'href="{en_url.rsplit("/en/", 1)[0]}{path[lang]}"')
     out = out.replace("'→ Our pick: '", json.dumps(t.get("__hint", "→ Our pick: "), ensure_ascii=False).replace('"', "'"))
     d = ROOT / lang
     d.mkdir(exist_ok=True)

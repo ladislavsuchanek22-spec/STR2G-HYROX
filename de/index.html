@@ -13,6 +13,7 @@
 <meta name="google-site-verification" content="Jh70QkTyD7Dq2cxr-DIrMJOG0HXUw_6pjIctD3XOH5E">
 <meta property="og:locale" content="de_DE">
 <link rel="canonical" href="https://str2g.com/de/">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "@id": "https://str2g.com/#org", "name": "STR2G HYROX", "alternateName": "STR2G · Stronger Together", "url": "https://str2g.com/", "logo": "https://str2g.com/favicon.svg", "description": "Online HYROX training programs by Ladislav Suchánek and Ria Suchánek Hrušovská.", "founder": [{"@id": "https://hyrox-prague.eu/#lada"}, {"@id": "https://hyrox-prague.eu/#ria"}], "sameAs": ["https://hyrox-prague.eu/", "https://www.instagram.com/hyroxprague/", "https://train.strivee.app/p/str2g-hyrox"]}, {"@type": "Person", "@id": "https://hyrox-prague.eu/#lada", "name": "Ladislav Suchánek", "jobTitle": "HYROX Performance Coach", "url": "https://hyrox-prague.eu/", "sameAs": ["https://www.ladislavsuchanek.cz/", "https://www.instagram.com/22segge_coach/"]}, {"@type": "Person", "@id": "https://hyrox-prague.eu/#ria", "name": "Ria Suchánek Hrušovská", "jobTitle": "HYROX Performance Coach", "url": "https://hyrox-prague.eu/", "sameAs": ["https://www.instagram.com/riahrusovskaofficial/"]}]}</script>
 <link rel="alternate" hreflang="en" href="https://str2g.com/">
 <link rel="alternate" hreflang="cs" href="https://str2g.com/cs/">
 <link rel="alternate" hreflang="de" href="https://str2g.com/de/">
@@ -236,6 +237,17 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:14px 32px;justify-content:space-bet
 footer a{text-decoration:none;color:var(--fg)}
 footer a:hover{color:var(--accent)}
 footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
+.net{flex-basis:100%;padding-bottom:24px;margin-bottom:6px;border-bottom:1px solid var(--line)}
+.net-h{margin:0 0 14px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.net ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px 24px}
+.net a{display:grid;gap:3px;color:var(--fg)}
+.net b{font-family:var(--display);font-style:italic;font-weight:800;font-size:22px;line-height:1.05;text-transform:uppercase}
+.net span{font-family:var(--body);font-size:14px;line-height:1.35;color:var(--muted)}
+.net i{font-style:normal;color:var(--muted)}
+.net a:hover b{color:var(--accent)}
+.coach .coach-links{margin-top:auto;display:flex;flex-wrap:wrap;gap:6px 20px}
+.coach .coach-links .ig{margin-top:0}
+.shead p a{color:var(--fg);text-decoration-color:var(--accent);text-underline-offset:3px}
 </style>
 </head>
 <body>
@@ -466,7 +478,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
           <p class="quote">„Training braucht Struktur, nicht nur zufällig harte Arbeit. Rennen gewinnt man mit Pacing und im Kopf.“</p>
           <p>Coach für Kraft, Kondition, Laufen und HYROX. Leitet mit Form Factory die STR2G HYROX Clubs in Prag, Brünn und Ostrava und coacht Athleten weltweit online. Racet selbst, 1:11:12 in Berlin.</p>
           <ul class="creds"><li>HYROX Performance Coach L1</li><li>CrossFit L1</li><li>OPEX CCP</li><li>Precision Nutrition L1</li><li>Running Coach</li><li>Sportmassage</li></ul>
-          <a class="ig" href="https://instagram.com/22segge_coach" target="_blank" rel="noopener">@22segge_coach →</a>
+          <div class="coach-links"><a class="ig" href="https://instagram.com/22segge_coach" target="_blank" rel="noopener">@22segge_coach →</a><a class="ig" href="https://hyrox-prague.eu/de/" target="_blank" rel="noopener">hyrox-prague.eu →</a></div>
         </div>
       </article>
       <article class="coach">
@@ -498,7 +510,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
     <div class="shead">
       <p class="eyebrow">Einblick in STR2G</p>
       <h2 class="display"><span class="num">05</span><span>Clubs. Rennen. <span class="gold">Menschen.</span></span></h2>
-      <p>Dasselbe Programming läuft in unseren HYROX-Clubs in Prag, Brünn und Ostrava. Online bekommst du denselben Plan, egal wo du trainierst.</p>
+      <p>Dasselbe Programming läuft in unseren HYROX-Clubs in Prag, Brünn und Ostrava. Online bekommst du denselben Plan, egal wo du trainierst. <a href="https://hyroxtrainingclub.cz/de/" target="_blank" rel="noopener">Kurse und Standorte →</a></p>
     </div>
     <div class="gallery">
       <figure class="g1"><img src="../img/ria-class-timer.jpg" alt="Ria leitet eine Einheit im HYROX Training Club" loading="lazy"></figure>
@@ -558,11 +570,11 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
 
 <footer>
   <div class="wrap">
+    <nav class="net" aria-label="STR2G-Websites"><p class="net-h">STR2G-Websites</p><ul><li><a href="https://hyrox-prague.eu/de/" target="_blank" rel="noopener"><b>HYROX Prague</b><span>HYROX-Training und Wettkampfvorbereitung</span><i>hyrox-prague.eu</i></a></li><li><a href="https://hyroxtrainingclub.cz/de/" target="_blank" rel="noopener"><b>HYROX Training Club</b><span>HYROX-Training in Prag, Brno und Ostrava</span><i>hyroxtrainingclub.cz</i></a></li><li><a href="https://formfactorygames.cz/de/" target="_blank" rel="noopener"><b>Factory Games</b><span>Wettkampf Factory Games · 5.12.2026</span><i>formfactorygames.cz</i></a></li><li><a href="https://www.ladislavsuchanek.cz/" target="_blank" rel="noopener"><b>Ladislav Suchánek</b><span>Personal Training, Ernährung &amp; Massage</span><i>ladislavsuchanek.cz</i></a></li></ul></nav>
     <div style="display:flex;align-items:center;gap:12px"><img src="/favicon.svg?v=2" alt="" width="26" height="26" style="border:1px solid var(--line);border-radius:6px"><span>© 2026 STR2G · Stronger Together · Die Programme laufen in der Strivee-App</span></div>
     <div class="links">
       <a href="https://instagram.com/22segge_coach" target="_blank" rel="noopener">@22segge_coach</a>
       <a href="https://instagram.com/riahrusovskaofficial" target="_blank" rel="noopener">@riahrusovskaofficial</a>
-      <a href="https://hyrox-prague.eu" target="_blank" rel="noopener">hyrox-prague.eu</a>
     </div>
   </div>
 </footer>
