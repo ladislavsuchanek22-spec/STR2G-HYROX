@@ -23,3 +23,11 @@ Source of prices and links: https://train.strivee.app/p/str2g-hyrox
 ## Publishing
 
 Turn on GitHub Pages in Settings → Pages → Deploy from branch → `main` / root. The site will be live at `https://<account>.github.io/str2g-hyrox/`.
+
+## Languages
+
+English is `index.html` (source). Czech, German and Polish live in `/cs/`, `/de/`, `/pl/` and are generated:
+
+1. Edit `index.html` (English).
+2. Add or update the matching lines in `i18n/cs.json`, `i18n/de.json`, `i18n/pl.json` (key = exact English text).
+3. Run `python3 i18n/build.py` and commit everything.

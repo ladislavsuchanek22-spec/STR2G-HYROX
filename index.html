@@ -9,6 +9,13 @@
 <meta property="og:description" content="Structured HYROX programs by Láďa & Ria Suchánek. Running, strength, stations, pacing. On your phone.">
 <meta property="og:image" content="img/lada-ria-finish-line.jpg">
 <meta name="theme-color" content="#050505">
+<meta property="og:locale" content="en_GB">
+<link rel="canonical" href="https://str2g-hyrox.netlify.app/">
+<link rel="alternate" hreflang="en" href="https://str2g-hyrox.netlify.app/">
+<link rel="alternate" hreflang="cs" href="https://str2g-hyrox.netlify.app/cs/">
+<link rel="alternate" hreflang="de" href="https://str2g-hyrox.netlify.app/de/">
+<link rel="alternate" hreflang="pl" href="https://str2g-hyrox.netlify.app/pl/">
+<link rel="alternate" hreflang="x-default" href="https://str2g-hyrox.netlify.app/">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
@@ -69,6 +76,11 @@ section + section{border-top:1px solid var(--line)}
 .navlinks a.txt{font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;color:var(--muted)}
 .navlinks a.txt:hover{color:var(--fg)}
 .nav .btn{font-size:15px;padding:9px 16px 8px}
+.lang{display:flex;border:1px solid var(--line)}
+.lang a{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-decoration:none;color:var(--muted);padding:7px 8px;line-height:1}
+.lang a:hover{color:var(--fg)}
+.lang a[aria-current="page"]{background:var(--fg);color:var(--bg)}
+@media (max-width:420px){.lang a{padding:7px 6px}.nav .btn{padding:8px 11px 7px;font-size:14px}}
 @media (max-width:900px){.navlinks a.txt{display:none}.logo small{display:none}}
 
 .hero{position:relative;min-height:min(92vh,860px);display:flex;align-items:flex-end;overflow:hidden;border-bottom:1px solid var(--line)}
@@ -233,6 +245,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
       <a class="txt" href="#coaching">1:1</a>
       <a class="txt" href="#coaches">Coaches</a>
       <a class="txt" href="#faq">FAQ</a>
+      <nav class="lang" aria-label="Language"><a href="/" hreflang="en" lang="en" aria-current="page">EN</a><a href="/cs/" hreflang="cs" lang="cs">CZ</a><a href="/de/" hreflang="de" lang="de">DE</a><a href="/pl/" hreflang="pl" lang="pl">PL</a></nav>
       <a class="btn btn-gold" href="#programs">Start now</a>
     </div>
   </div>
@@ -448,7 +461,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
           <div class="role">Head coach · STR2G founder</div>
           <h3>Láďa<br>Suchánek</h3>
           <p class="quote">"Training needs structure, not just random hard work. Races are won with pacing and your head."</p>
-          <p>Strength &amp; conditioning, running and HYROX coach. Runs STR2G HYROX clubs in Prague, Brno and Ostrava with Form Factory, and coaches athletes worldwide online. Races himself, 1:11:12 in Berlin.</p>
+          <p>Strength and conditioning, running and HYROX coach. Runs STR2G HYROX clubs in Prague, Brno and Ostrava with Form Factory, and coaches athletes worldwide online. Races himself, 1:11:12 in Berlin.</p>
           <ul class="creds"><li>HYROX Performance Coach L1</li><li>CrossFit L1</li><li>OPEX CCP</li><li>Precision Nutrition L1</li><li>Running Coach</li><li>Sports massage</li></ul>
           <a class="ig" href="https://instagram.com/22segge_coach" target="_blank" rel="noopener">@22segge_coach →</a>
         </div>
@@ -553,6 +566,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
 
 <script>
 (function(){
+  document.querySelectorAll('.lang a').forEach(function(a){a.addEventListener('click',function(){try{localStorage.setItem('str2g-lang',a.getAttribute('hreflang'))}catch(e){}})});
   var names={basic:'HYROX Basic',competitor:'HYROX Competitor',pro:'HYROX Pro Athlete',raceprep:'12-Week HYROX Race Prep',singles:'8-Week HYROX Singles',doubles:'8-Week HYROX Doubles',running:'Running for HYROX 2.0',taper:'2-Week HYROX Taper 2.0',coaching:'HYROX Individual Program 1:1'};
   var hint=document.getElementById('chooser-hint');
   document.querySelectorAll('.chooser button').forEach(function(b){
