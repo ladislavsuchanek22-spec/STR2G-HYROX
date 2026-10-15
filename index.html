@@ -1,0 +1,603 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="STR2G HYROX online training programs by Láďa and Ria Suchánek. Structured HYROX plans for every phase, delivered in the Strivee app.">
+<title>STR2G HYROX</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,800;1,800;1,900&family=Archivo:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap">
+<style>
+/* Layout: race-day poster. Black ground, gold used only for action + one word per headline. Sections stack like stations on the course. */
+:root{
+  --bg:#0D0D0B; --surface:#161613; --surface-2:#1E1D19; --line:#2C2B26;
+  --fg:#F2F0E8; --muted:#A29F94; --gold:#F2C21A; --on-gold:#0D0D0B;
+  --display:"Barlow Condensed","Arial Narrow",Impact,sans-serif;
+  --body:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --mono:"Space Mono",ui-monospace,Menlo,monospace;
+  --wrap:1180px;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.wrap{max-width:var(--wrap);margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+.display{font-family:var(--display);font-weight:900;font-style:italic;text-transform:uppercase;line-height:.88;letter-spacing:-.005em;text-wrap:balance;margin:0}
+.h2{font-size:clamp(44px,7vw,84px)}
+.eyebrow{font-family:var(--mono);font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin:0 0 18px}
+.lead{font-size:clamp(17px,1.7vw,20px);color:var(--muted);max-width:60ch;margin:22px 0 0}
+.gold{color:var(--gold)}
+section{padding-block:clamp(72px,10vw,128px)}
+section + section{border-top:1px solid var(--line)}
+
+.btn{display:inline-flex;align-items:center;gap:10px;font-family:var(--display);font-weight:800;font-style:italic;text-transform:uppercase;font-size:20px;letter-spacing:.02em;padding:14px 26px 13px;text-decoration:none;border:2px solid var(--gold);transition:background .15s,color .15s,border-color .15s;cursor:pointer}
+.btn-gold{background:var(--gold);color:var(--on-gold)}
+.btn-gold:hover{background:var(--fg);border-color:var(--fg)}
+.btn-ghost{background:transparent;color:var(--fg);border-color:var(--line)}
+.btn-ghost:hover{border-color:var(--fg)}
+.btn-dark{background:var(--on-gold);color:var(--gold);border-color:var(--on-gold)}
+.btn-dark:hover{background:transparent;color:var(--on-gold)}
+.btn:focus-visible,button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.arrow{font-style:normal}
+
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:12px}
+.logo{font-family:var(--display);font-weight:900;font-style:italic;font-size:30px;line-height:1;text-decoration:none;letter-spacing:.01em}
+.logo small{font-family:var(--mono);font-style:normal;font-weight:700;font-size:11px;letter-spacing:.16em;color:var(--muted);margin-left:8px;vertical-align:middle}
+.navlinks{display:flex;align-items:center;gap:22px}
+.navlinks a.txt{font-family:var(--mono);font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;color:var(--muted)}
+.navlinks a.txt:hover{color:var(--fg)}
+.nav .btn{font-size:16px;padding:9px 16px 8px}
+@media (max-width:860px){.navlinks a.txt{display:none}}
+@media (max-width:420px){.logo small{display:none}.nav .btn{padding:8px 12px 7px;font-size:15px}}
+
+.hero{padding-block:clamp(56px,9vw,112px) clamp(48px,7vw,80px)}
+.hero h1{font-size:clamp(64px,13vw,176px)}
+.hero .lead{color:var(--fg);opacity:.86}
+.cta-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:36px}
+.tagline{font-family:var(--mono);font-weight:700;letter-spacing:.24em;font-size:13px;margin-top:44px;color:var(--muted)}
+.tagline b{color:var(--gold);font-weight:700}
+
+.ticker{border-block:1px solid var(--line);background:var(--surface);overflow:hidden;white-space:nowrap}
+.ticker-track{display:inline-flex;padding-block:14px;animation:run 60s linear infinite}
+.ticker span{font-family:var(--display);font-weight:800;font-style:italic;text-transform:uppercase;font-size:22px;padding:0 18px;color:var(--muted)}
+.ticker span.st{color:var(--fg)}
+.ticker span.st em{font-style:normal;font-family:var(--mono);font-size:12px;color:var(--gold);margin-left:8px;letter-spacing:.06em}
+@keyframes run{to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.ticker-track{animation:none}}
+
+.facts{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:56px}
+.fact{background:var(--bg);padding:22px 20px}
+.fact .n{font-family:var(--display);font-weight:900;font-style:italic;font-size:44px;line-height:1;font-variant-numeric:tabular-nums}
+.fact .l{font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--muted);margin-top:8px;text-transform:uppercase}
+@media (max-width:760px){.facts{grid-template-columns:repeat(2,1fr)}}
+
+.pillars{display:grid;grid-template-columns:repeat(5,1fr);margin-top:52px;border-top:2px solid var(--fg)}
+.pillar{padding:20px 18px 0 0}
+.pillar h3{font-family:var(--display);font-weight:800;font-style:italic;text-transform:uppercase;font-size:28px;line-height:1;margin:0 0 10px}
+.pillar p{margin:0;color:var(--muted);font-size:15.5px}
+@media (max-width:980px){.pillars{grid-template-columns:repeat(2,1fr);gap:24px 20px}}
+@media (max-width:520px){.pillars{grid-template-columns:1fr}}
+
+.chooser{margin-top:44px;display:flex;flex-wrap:wrap;gap:10px}
+.chooser button{background:var(--surface);color:var(--fg);border:1px solid var(--line);font-family:var(--body);font-size:15px;font-weight:500;padding:11px 16px;cursor:pointer;text-align:left}
+.chooser button:hover{border-color:var(--muted)}
+.chooser button[aria-pressed="true"]{background:var(--gold);color:var(--on-gold);border-color:var(--gold)}
+.chooser-hint{font-family:var(--mono);font-size:12.5px;color:var(--muted);margin-top:14px;min-height:1.6em;letter-spacing:.03em}
+
+.group-label{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:64px 0 18px;border-bottom:1px solid var(--line);padding-bottom:12px}
+.group-label h3{font-family:var(--display);font-weight:800;font-style:italic;text-transform:uppercase;font-size:34px;margin:0;line-height:1}
+.group-label p{margin:0;font-family:var(--mono);font-size:12.5px;color:var(--muted);letter-spacing:.04em}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.grid.two{grid-template-columns:repeat(2,1fr)}
+@media (max-width:980px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:640px){.grid,.grid.two{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--line);padding:26px 24px 24px;display:flex;flex-direction:column;gap:16px;min-width:0;transition:border-color .2s,transform .2s,box-shadow .2s;scroll-margin-top:110px}
+.card.hit{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold),0 18px 50px -20px color-mix(in srgb,var(--gold) 45%,transparent);transform:translateY(-3px)}
+.card .kind{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.card h4{font-family:var(--display);font-weight:900;font-style:italic;text-transform:uppercase;font-size:40px;line-height:.9;margin:0;text-wrap:balance}
+.price{display:flex;align-items:baseline;gap:8px;font-variant-numeric:tabular-nums}
+.price b{font-family:var(--display);font-weight:900;font-style:italic;font-size:46px;line-height:1}
+.price span{font-family:var(--mono);font-size:13px;color:var(--muted)}
+.meta{display:grid;grid-template-columns:repeat(3,1fr);border-block:1px solid var(--line)}
+.meta div{padding:10px 0;font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;line-height:1.35}
+.meta div + div{padding-left:12px;border-left:1px solid var(--line)}
+.meta strong{display:block;font-family:var(--display);font-style:italic;font-weight:800;font-size:26px;color:var(--fg);letter-spacing:0;font-variant-numeric:tabular-nums}
+.card p{margin:0;font-size:15.5px;color:var(--muted)}
+.card .for{color:var(--fg);font-weight:500}
+.card .actions{margin-top:auto;display:flex;gap:10px;flex-wrap:wrap;padding-top:4px}
+.card .actions .btn{font-size:17px;padding:11px 18px 10px;flex:1 1 auto;justify-content:center}
+
+/* 1:1 feature */
+.one{margin-top:64px;background:var(--gold);color:var(--on-gold);display:grid;grid-template-columns:1.25fr 1fr;scroll-margin-top:110px;transition:box-shadow .2s}
+.one.hit{box-shadow:0 0 0 3px var(--fg)}
+.one > div{padding:clamp(28px,4vw,48px);min-width:0}
+.one .kind{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:700}
+.one h3{font-family:var(--display);font-weight:900;font-style:italic;text-transform:uppercase;font-size:clamp(48px,6.5vw,84px);line-height:.86;margin:14px 0 18px}
+.one p{margin:0;font-size:17px;max-width:52ch}
+.one ul{list-style:none;margin:0;padding:0;display:grid;gap:0}
+.one li{border-bottom:1px solid color-mix(in srgb,var(--on-gold) 22%,transparent);padding:11px 0;font-weight:500}
+.one li:first-child{border-top:1px solid color-mix(in srgb,var(--on-gold) 22%,transparent)}
+.one .side{background:color-mix(in srgb,var(--on-gold) 7%,transparent);display:flex;flex-direction:column;gap:20px}
+.one .price b{font-size:58px}
+.one .price span{color:var(--on-gold);opacity:.75}
+.one .meta-line{font-family:var(--mono);font-size:12.5px;letter-spacing:.04em}
+.one .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:auto}
+.one .btn{font-size:18px}
+.one .btn-line{background:transparent;color:var(--on-gold);border-color:var(--on-gold)}
+.one .btn-line:hover{background:var(--on-gold);color:var(--gold)}
+@media (max-width:860px){.one{grid-template-columns:1fr}}
+
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:52px}
+@media (max-width:820px){.steps{grid-template-columns:1fr}}
+.step{border-top:2px solid var(--gold);padding-top:18px}
+.step .num{font-family:var(--mono);font-size:12.5px;color:var(--gold);letter-spacing:.1em}
+.step h3{font-family:var(--display);font-weight:800;font-style:italic;text-transform:uppercase;font-size:30px;line-height:1;margin:8px 0 10px}
+.step p{margin:0;color:var(--muted);font-size:15.5px}
+.app-list{margin-top:40px;display:flex;flex-wrap:wrap;gap:8px}
+.app-list span{font-family:var(--mono);font-size:12.5px;border:1px solid var(--line);padding:7px 12px}
+
+.coaches{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:52px}
+@media (max-width:820px){.coaches{grid-template-columns:1fr}}
+.coach{background:var(--surface);border:1px solid var(--line);padding:30px 28px;display:flex;flex-direction:column;gap:16px;min-width:0}
+.coach .role{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
+.coach h3{font-family:var(--display);font-weight:900;font-style:italic;text-transform:uppercase;font-size:clamp(44px,5vw,60px);line-height:.88;margin:0}
+.coach p{margin:0;color:var(--muted)}
+.coach p.quote{color:var(--fg);font-size:18px;border-left:3px solid var(--gold);padding-left:14px}
+.creds{display:flex;flex-wrap:wrap;gap:6px;margin:0;padding:0;list-style:none}
+.creds li{font-family:var(--mono);font-size:11.5px;border:1px solid var(--line);padding:5px 9px}
+.coach .ig{font-family:var(--mono);font-size:13px;color:var(--gold);text-decoration:none;margin-top:auto}
+.coach .ig:hover{text-decoration:underline}
+.together{margin-top:18px;border:1px solid var(--line);padding:26px 28px;display:flex;flex-wrap:wrap;gap:12px 28px;align-items:center;justify-content:space-between}
+.together p{margin:0;color:var(--muted);max-width:70ch}
+.together .display{font-size:34px}
+
+.quotes{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:52px}
+@media (max-width:900px){.quotes{grid-template-columns:1fr}}
+.q{border:1px solid var(--line);padding:26px 24px;display:flex;flex-direction:column;gap:18px;min-width:0;margin:0}
+.q blockquote{margin:0;font-size:16.5px}
+.q .who{margin-top:auto;font-family:var(--mono);font-size:12.5px;color:var(--muted);letter-spacing:.04em}
+.q .who b{color:var(--fg);font-weight:700}
+.q .mark{font-family:var(--display);font-weight:900;font-style:italic;font-size:64px;line-height:.5;color:var(--gold);height:22px}
+
+.faq{margin-top:44px;border-top:1px solid var(--line);max-width:860px}
+details{border-bottom:1px solid var(--line)}
+summary{list-style:none;cursor:pointer;padding:22px 40px 22px 0;position:relative;font-family:var(--display);font-weight:800;font-style:italic;text-transform:uppercase;font-size:26px;line-height:1.05}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";position:absolute;right:4px;top:18px;font-style:normal;color:var(--gold);font-size:30px;transition:transform .2s}
+details[open] summary::after{transform:rotate(45deg)}
+details p{margin:0 0 22px;color:var(--muted);max-width:68ch}
+details a{color:var(--gold)}
+
+.final h2{font-size:clamp(56px,10vw,136px)}
+.final .lead{color:var(--fg);opacity:.86}
+
+footer{border-top:1px solid var(--line);padding-block:36px 44px;font-family:var(--mono);font-size:12.5px;color:var(--muted)}
+footer .wrap{display:flex;flex-wrap:wrap;gap:14px 32px;justify-content:space-between}
+footer a{text-decoration:none;color:var(--fg)}
+footer a:hover{color:var(--gold)}
+footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
+</style>
+</head>
+<body>
+
+<nav class="nav" aria-label="Main">
+  <div class="wrap">
+    <a class="logo" href="#top">STR<span class="gold">2</span>G<small>HYROX</small></a>
+    <div class="navlinks">
+      <a class="txt" href="#programs">Programs</a>
+      <a class="txt" href="#coaching">1:1 Coaching</a>
+      <a class="txt" href="#coaches">Coaches</a>
+      <a class="txt" href="#faq">FAQ</a>
+      <a class="btn btn-gold" href="#programs">Pick a program</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <p class="eyebrow">Online HYROX programs · Láďa &amp; Ria Suchánek</p>
+    <h1 class="display">HYROX is not a random <span class="gold">workout.</span></h1>
+    <p class="lead">Performance is built on running, strength, stations, transitions and your head. Our programs have structure, progression and a clear goal. Every day you know what you're doing and why. The plan lives on your phone. You show up and do the work.</p>
+    <div class="cta-row">
+      <a class="btn btn-gold" href="#programs">Show me the programs <span class="arrow">→</span></a>
+      <a class="btn btn-ghost" href="#pick">Not sure which one?</a>
+    </div>
+    <p class="tagline"><b>PLAN.</b> TRAIN. <b>PERFORM.</b></p>
+
+    <div class="facts">
+      <div class="fact"><div class="n">9</div><div class="l">programs, from first race to podium</div></div>
+      <div class="fact"><div class="n">1:11:12</div><div class="l">Láďa's finish, HYROX Berlin</div></div>
+      <div class="fact"><div class="n">3</div><div class="l">STR2G clubs · Prague, Brno, Ostrava</div></div>
+      <div class="fact"><div class="n">2</div><div class="l">coaches who race themselves</div></div>
+    </div>
+  </div>
+</header>
+
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track">
+    <span>1 km run</span><span class="st">SkiErg<em>1000 m</em></span><span>1 km run</span><span class="st">Sled Push<em>50 m</em></span><span>1 km run</span><span class="st">Sled Pull<em>50 m</em></span><span>1 km run</span><span class="st">Burpee Broad Jumps<em>80 m</em></span><span>1 km run</span><span class="st">Row<em>1000 m</em></span><span>1 km run</span><span class="st">Farmers Carry<em>200 m</em></span><span>1 km run</span><span class="st">Sandbag Lunges<em>100 m</em></span><span>1 km run</span><span class="st">Wall Balls<em>100 reps</em></span>
+    <span>1 km run</span><span class="st">SkiErg<em>1000 m</em></span><span>1 km run</span><span class="st">Sled Push<em>50 m</em></span><span>1 km run</span><span class="st">Sled Pull<em>50 m</em></span><span>1 km run</span><span class="st">Burpee Broad Jumps<em>80 m</em></span><span>1 km run</span><span class="st">Row<em>1000 m</em></span><span>1 km run</span><span class="st">Farmers Carry<em>200 m</em></span><span>1 km run</span><span class="st">Sandbag Lunges<em>100 m</em></span><span>1 km run</span><span class="st">Wall Balls<em>100 reps</em></span>
+  </div>
+</div>
+
+<section id="approach">
+  <div class="wrap">
+    <p class="eyebrow">How we train</p>
+    <h2 class="display h2">Eight kilometres. Eight stations. <span class="gold">No guesswork.</span></h2>
+    <p class="lead">Anyone can write a hard workout. A good plan gets you to the start line ready and over the finish line without leaking time. Every STR2G program is built on the same five things.</p>
+    <div class="pillars">
+      <div class="pillar"><h3>Running</h3><p>Half the race. Pace, economy and running that holds up after the sleds.</p></div>
+      <div class="pillar"><h3>Strength</h3><p>A stronger athlete moves the sled faster and leaves the station fresher.</p></div>
+      <div class="pillar"><h3>Stations</h3><p>Technique that saves seconds and energy at all eight stations.</p></div>
+      <div class="pillar"><h3>Fatigue</h3><p>Compromised running and work under fatigue. The stuff that decides race day.</p></div>
+      <div class="pillar"><h3>Head</h3><p>Tactics, pacing and holding your output when it starts to hurt.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="programs">
+  <div class="wrap">
+    <p class="eyebrow">Programs</p>
+    <h2 class="display h2" id="pick">Start where <span class="gold">you are.</span></h2>
+    <p class="lead">Monthly programs for year-round training, race builds for a date in the calendar, specialist blocks for one job, and 1:1 coaching if you want a plan written only for you. Tap what fits and we'll point you to the right one.</p>
+
+    <div class="chooser" role="group" aria-label="Find your program">
+      <button type="button" id="ch-start" data-target="basic">I'm new to HYROX</button>
+      <button type="button" id="ch-comp" data-target="competitor">I race and want a faster time</button>
+      <button type="button" id="ch-pro" data-target="pro">I want the top monthly tier</button>
+      <button type="button" id="ch-12" data-target="raceprep">My race is 12 weeks out</button>
+      <button type="button" id="ch-8" data-target="singles">My race is 8 weeks out</button>
+      <button type="button" id="ch-dbl" data-target="doubles">We're racing Doubles</button>
+      <button type="button" id="ch-run" data-target="running">Running holds me back</button>
+      <button type="button" id="ch-taper" data-target="taper">Race is in 2 weeks</button>
+      <button type="button" id="ch-one" data-target="coaching">I want a plan built for me</button>
+    </div>
+    <p class="chooser-hint" id="chooser-hint" aria-live="polite"></p>
+
+    <div class="group-label">
+      <h3>Monthly programs</h3>
+      <p>Subscription · managed in Strivee</p>
+    </div>
+    <div class="grid">
+      <article class="card" id="basic">
+        <div class="kind">Foundation</div>
+        <h4>HYROX Basic</h4>
+        <div class="price"><b>CZK 750</b><span>/ month</span></div>
+        <div class="meta">
+          <div><strong>5</strong>days / week</div>
+          <div><strong>60</strong>min / day</div>
+          <div><strong>1</strong>session / day</div>
+        </div>
+        <p class="for">For athletes who want to start training HYROX properly.</p>
+        <p>Running, strength and HYROX movements in one plan. Build your base, clean up your technique and lock in a routine you can actually keep. The bridge from general fitness to race prep.</p>
+        <div class="actions">
+          <a class="btn btn-gold" href="https://train.strivee.app/payment/gFN1JqRA8MF3l3uICbyS" target="_blank" rel="noopener">Start</a>
+          <a class="btn btn-ghost" href="https://train.strivee.app/program/gFN1JqRA8MF3l3uICbyS" target="_blank" rel="noopener">Details</a>
+        </div>
+      </article>
+
+      <article class="card" id="competitor">
+        <div class="kind">Performance</div>
+        <h4>HYROX Competitor</h4>
+        <div class="price"><b>CZK 960</b><span>/ month</span></div>
+        <div class="meta">
+          <div><strong>6</strong>days / week</div>
+          <div><strong>120</strong>min / day</div>
+          <div><strong>2</strong>sessions / day</div>
+        </div>
+        <p class="for">For experienced racers chasing a faster time.</p>
+        <p>More running, bigger work capacity, strength, race pace and sharp transitions between runs and stations. Built for athletes who train consistently and have a clear goal.</p>
+        <div class="actions">
+          <a class="btn btn-gold" href="https://train.strivee.app/payment/qbr9Mj9XTUdnrsc5F7kZ" target="_blank" rel="noopener">Start</a>
+          <a class="btn btn-ghost" href="https://train.strivee.app/program/qbr9Mj9XTUdnrsc5F7kZ" target="_blank" rel="noopener">Details</a>
+        </div>
+      </article>
+
+      <article class="card" id="pro">
+        <div class="kind">Top tier</div>
+        <h4>HYROX Pro Athlete</h4>
+        <div class="price"><b>CZK 1,350</b><span>/ month</span></div>
+        <div class="meta">
+          <div><strong>6</strong>days / week</div>
+          <div><strong>75</strong>min / day</div>
+          <div><strong>1</strong>session / day</div>
+        </div>
+        <p class="for">For athletes who take HYROX seriously and want the best we do.</p>
+        <p>Running and functional work in a clear structure, technique videos and guidance on pacing, recovery and rest. Scalable options, so performance keeps climbing without overtraining or injuries.</p>
+        <div class="actions">
+          <a class="btn btn-gold" href="https://train.strivee.app/payment/D6kVnKDHN2Y3sKO0sPGI" target="_blank" rel="noopener">Start</a>
+          <a class="btn btn-ghost" href="https://train.strivee.app/program/D6kVnKDHN2Y3sKO0sPGI" target="_blank" rel="noopener">Details</a>
+        </div>
+      </article>
+    </div>
+
+    <div class="group-label">
+      <h3>Race builds</h3>
+      <p>One payment · you have a race date</p>
+    </div>
+    <div class="grid">
+      <article class="card" id="raceprep">
+        <div class="kind">12 weeks to race day</div>
+        <h4>12-Week HYROX Race Prep</h4>
+        <div class="price"><b>CZK 1,900</b><span>one-time</span></div>
+        <div class="meta">
+          <div><strong>6</strong>days / week</div>
+          <div><strong>90</strong>min / day</div>
+          <div><strong>12</strong>weeks</div>
+        </div>
+        <p class="for">For athletes who want to perform on race day, not just finish.</p>
+        <p>The full build. Base first, then intensity and race-specific work, then final tuning. Running pace, station performance, transitions and holding your output under fatigue.</p>
+        <div class="actions">
+          <a class="btn btn-gold" href="https://train.strivee.app/payment/0dvaQ3aahjzyCoWmPgMz" target="_blank" rel="noopener">Buy</a>
+          <a class="btn btn-ghost" href="https://train.strivee.app/program/0dvaQ3aahjzyCoWmPgMz" target="_blank" rel="noopener">Details</a>
+        </div>
+      </article>
+
+      <article class="card" id="singles">
+        <div class="kind">8 weeks · Singles</div>
+        <h4>8-Week HYROX Singles</h4>
+        <div class="price"><b>CZK 1,500</b><span>one-time</span></div>
+        <div class="meta">
+          <div><strong>6</strong>days / week</div>
+          <div><strong>60</strong>min / day</div>
+          <div><strong>8</strong>weeks</div>
+        </div>
+        <p class="for">For athletes with a training base and a race on the calendar.</p>
+        <p>A complete eight-week build. Running, strength, HYROX sessions and compromised running. The closer the race, the more specific it gets.</p>
+        <div class="actions">
+          <a class="btn btn-gold" href="https://train.strivee.app/payment/tsC3Khz8zSQMLLIs9Fnp" target="_blank" rel="noopener">Buy</a>
+          <a class="btn btn-ghost" href="https://train.strivee.app/program/tsC3Khz8zSQMLLIs9Fnp" target="_blank" rel="noopener">Details</a>
+        </div>
+      </article>
+
+      <article class="card" id="doubles">
+        <div class="kind">8 weeks · Doubles</div>
+        <h4>8-Week HYROX Doubles</h4>
+        <div class="price"><b>CZK 1,700</b><span>one-time</span></div>
+        <div class="meta">
+          <div><strong>6</strong>days / week</div>
+          <div><strong>75</strong>min / day</div>
+          <div><strong>8</strong>weeks</div>
+        </div>
+        <p class="for">For pairs who want to race smart, not just together.</p>
+        <p>Individual fitness plus the team side: station strategy, splitting the work, shared running pace and race execution. Use each partner's strengths instead of guessing on the day.</p>
+        <div class="actions">
+          <a class="btn btn-gold" href="https://train.strivee.app/payment/QFgjJOqEU6Y1x58k0SBH" target="_blank" rel="noopener">Buy</a>
+          <a class="btn btn-ghost" href="https://train.strivee.app/program/QFgjJOqEU6Y1x58k0SBH" target="_blank" rel="noopener">Details</a>
+        </div>
+      </article>
+    </div>
+
+    <div class="group-label">
+      <h3>Specialist blocks</h3>
+      <p>One payment · one job done properly</p>
+    </div>
+    <div class="grid two">
+      <article class="card" id="running">
+        <div class="kind">Running for HYROX</div>
+        <h4>Running for HYROX 2.0</h4>
+        <div class="price"><b>CZK 1,000</b><span>one-time</span></div>
+        <div class="meta">
+          <div><strong>6</strong>days / week</div>
+          <div><strong>75</strong>min / day</div>
+          <div><strong>12</strong>weeks</div>
+        </div>
+        <p class="for">For anyone who loses time on the runs.</p>
+        <p>Running economy, pacing, aerobic capacity and quality running under fatigue. Easy runs, tempo, intervals and race-pace work. Run it on its own or next to your strength training.</p>
+        <div class="actions">
+          <a class="btn btn-gold" href="https://train.strivee.app/payment/l4LKqbJX8ezlAEDBm6Dg" target="_blank" rel="noopener">Buy</a>
+          <a class="btn btn-ghost" href="https://train.strivee.app/program/l4LKqbJX8ezlAEDBm6Dg" target="_blank" rel="noopener">Details</a>
+        </div>
+      </article>
+
+      <article class="card" id="taper">
+        <div class="kind">Final 2 weeks</div>
+        <h4>2-Week HYROX Taper 2.0</h4>
+        <div class="price"><b>CZK 550</b><span>one-time</span></div>
+        <div class="meta">
+          <div><strong>6</strong>days / week</div>
+          <div><strong>90</strong>min / day</div>
+          <div><strong>2</strong>weeks</div>
+        </div>
+        <p class="for">For anyone with a race around the corner. Open, Doubles or Pro.</p>
+        <p>The work is done. Now don't waste it. We pull back volume, keep you sharp at race pace and get you to the start line with fresh legs and a clear plan.</p>
+        <div class="actions">
+          <a class="btn btn-gold" href="https://train.strivee.app/payment/JBwt4zlJKA0vCQn9cfih" target="_blank" rel="noopener">Buy</a>
+          <a class="btn btn-ghost" href="https://train.strivee.app/program/JBwt4zlJKA0vCQn9cfih" target="_blank" rel="noopener">Details</a>
+        </div>
+      </article>
+    </div>
+
+    <div class="one" id="coaching">
+      <div>
+        <div class="kind">Premium · 1:1 coaching</div>
+        <h3>HYROX Individual Program 1:1</h3>
+        <p>A plan written only for you. Built around your fitness, your race goal, the time you actually have, where you train and what's holding you back. Then adjusted as you progress, based on your results and feedback.</p>
+      </div>
+      <div class="side">
+        <div class="price"><b>CZK 3,500</b><span>/ month</span></div>
+        <div class="meta-line">≈ 6 days / week · ≈ 90 min / day</div>
+        <ul>
+          <li>Personal training plan, not a template</li>
+          <li>Regular adjustments to your progress</li>
+          <li>Targeted work on your weaknesses</li>
+          <li>Pacing, transitions and race-day strategy</li>
+          <li>Direct 1:1 contact with your coach</li>
+        </ul>
+        <div class="actions">
+          <a class="btn btn-dark" href="https://train.strivee.app/payment/Ckjr2cZAiemzMVVr8F1D" target="_blank" rel="noopener">Start 1:1</a>
+          <a class="btn btn-line" href="https://train.strivee.app/program/Ckjr2cZAiemzMVVr8F1D" target="_blank" rel="noopener">Details</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <p class="eyebrow">How it works</p>
+    <h2 class="display h2">No PDFs. <span class="gold">Your plan on your phone.</span></h2>
+    <div class="steps">
+      <div class="step"><div class="num">01</div><h3>Pick a program</h3><p>Hit Start or Buy. Payment runs securely through Strivee.</p></div>
+      <div class="step"><div class="num">02</div><h3>Get the Strivee app</h3><p>iOS and Android. Log in and your program is waiting.</p></div>
+      <div class="step"><div class="num">03</div><h3>Train and log</h3><p>Every day you know what's on. Log your result and see yourself improve.</p></div>
+    </div>
+    <div class="app-list">
+      <span>Daily workouts on your phone</span>
+      <span>Leaderboard on every workout</span>
+      <span>Maxes, percentages, benchmarks</span>
+      <span>Community and comments</span>
+      <span>Log your own extra sessions</span>
+    </div>
+  </div>
+</section>
+
+<section id="coaches">
+  <div class="wrap">
+    <p class="eyebrow">Coaches</p>
+    <h2 class="display h2">We program what <span class="gold">we race ourselves.</span></h2>
+    <p class="lead">No anonymous team behind a screen. The two of us write the programs and test them on ourselves, in our clubs and with the athletes we coach every week.</p>
+
+    <div class="coaches">
+      <article class="coach">
+        <div class="role">STR2G founder · HYROX Performance Coach</div>
+        <h3>Láďa<br>Suchánek</h3>
+        <p class="quote">"Training needs structure, not just random hard work. Races are won with pacing, your head and what you can hold when it hurts."</p>
+        <p>Strength &amp; conditioning, running and HYROX coach. With STR2G and Form Factory he runs HYROX clubs in Prague, Brno and Ostrava, and coaches athletes worldwide online. He races too, with a 1:11:12 finish in Berlin.</p>
+        <ul class="creds">
+          <li>HYROX Performance Coach L1</li><li>CrossFit L1</li><li>OPEX CCP</li><li>Precision Nutrition L1</li><li>Running Coach</li><li>Sports massage</li>
+        </ul>
+        <a class="ig" href="https://instagram.com/22segge_coach" target="_blank" rel="noopener">@22segge_coach →</a>
+      </article>
+
+      <article class="coach">
+        <div class="role">HYROX Performance Coach · Mental coach</div>
+        <h3>Ria Suchánek<br>Hrušovská</h3>
+        <p class="quote">"You train your body. You train your head too. On race day it comes down to which one is stronger."</p>
+        <p>A coach with a huge range, from CrossFit and deep stabilization to mental coaching in sport. She writes the programs, coaches and races alongside Láďa, and makes sure performance goes up while the body holds up.</p>
+        <ul class="creds">
+          <li>MSc</li><li>HYROX Performance Coach</li><li>Mental Coach (Newton University)</li><li>CrossFit L2</li><li>Licensed Personal Trainer</li><li>Aarmy Coach</li><li>Les Mills</li><li>Nutrition Specialist (Nutris)</li><li>Deep Stabilization System</li>
+        </ul>
+        <a class="ig" href="https://instagram.com/riahrusovskaofficial" target="_blank" rel="noopener">@riahrusovskaofficial →</a>
+      </article>
+    </div>
+
+    <div class="together">
+      <div class="display gold">Stronger together.</div>
+      <p>STR2G is about people who train honestly and pull each other forward. You get a plan, a community and two coaches who know exactly how the 7th kilometre feels.</p>
+    </div>
+  </div>
+</section>
+
+<section id="athletes">
+  <div class="wrap">
+    <p class="eyebrow">Athletes</p>
+    <h2 class="display h2">What athletes <span class="gold">say.</span></h2>
+    <div class="quotes">
+      <figure class="q">
+        <div class="mark">“</div>
+        <blockquote>The Running for HYROX program improved the part of the race I struggled with most. Easy runs, intervals, threshold work and running under fatigue. I got faster and much better at holding my pace between stations.</blockquote>
+        <figcaption class="who"><b>Anna Müller</b> · Running for HYROX</figcaption>
+      </figure>
+      <figure class="q">
+        <div class="mark">“</div>
+        <blockquote>Láďa's training is well structured and intense. It met every expectation. Everyone could choose the load and difficulty that let them finish the whole session.</blockquote>
+        <figcaption class="who"><b>Lukáš Kubík</b></figcaption>
+      </figure>
+      <figure class="q">
+        <div class="mark">“</div>
+        <blockquote>1:1 coaching completely changed how I approach training. Running pace, strength, stations and race strategy. A clear plan and individual feedback made a huge difference to my confidence and performance on race day.</blockquote>
+        <figcaption class="who"><b>Martin Lacina</b> · 1:1 coaching</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <p class="eyebrow">FAQ</p>
+    <h2 class="display h2">Common <span class="gold">questions.</span></h2>
+    <div class="faq">
+      <details>
+        <summary>Do I need HYROX experience?</summary>
+        <p>No. If you're starting out, go with HYROX Basic. It builds your base and teaches you the stations. Competitor, Pro Athlete and the race builds are for people already training consistently.</p>
+      </details>
+      <details>
+        <summary>Can beginners follow the programs?</summary>
+        <p>Yes. You scale loads and volume to your level. The goal is to finish each session with quality, not just survive it.</p>
+      </details>
+      <details>
+        <summary>Do you have a program for Doubles?</summary>
+        <p>Yes, the <a href="#doubles">8-Week HYROX Doubles</a> build. It covers splitting the work, station strategy and shared pacing. The other programs work for Doubles too, since you both still need to run well under fatigue.</p>
+      </details>
+      <details>
+        <summary>Program or 1:1 coaching?</summary>
+        <p>A program is one plan shared by everyone on it, with scaling options. <a href="#coaching">1:1 coaching</a> is written only for you around your performance, recovery and schedule, and adjusted as you go. If you have a specific goal or limited time, 1:1 gets you there faster.</p>
+      </details>
+      <details>
+        <summary>12-week or 8-week race build?</summary>
+        <p>If you have the time, take 12 weeks. You get a proper base before the intensity. Eight weeks is for athletes who already train regularly and want to sharpen up for a race.</p>
+      </details>
+      <details>
+        <summary>What equipment do I need?</summary>
+        <p>Ideally a gym with ergs and HYROX equipment. Missing something? Message us on Instagram and we'll suggest a swap.</p>
+      </details>
+      <details>
+        <summary>How do I cancel a monthly subscription?</summary>
+        <p>You manage your subscription directly in Strivee. Race builds and specialist blocks are a one-time payment.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="final">
+  <div class="wrap">
+    <h2 class="display">Race day won't wait.<br><span class="gold">Start now.</span></h2>
+    <p class="lead">Pick a program, get Strivee and tomorrow morning you'll know exactly what's on.</p>
+    <div class="cta-row">
+      <a class="btn btn-gold" href="#programs">Pick a program <span class="arrow">→</span></a>
+      <a class="btn btn-ghost" href="https://train.strivee.app/p/str2g-hyrox" target="_blank" rel="noopener">All programs on Strivee</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 STR2G · Stronger Together · Programs run in the Strivee app</div>
+    <div class="links">
+      <a href="https://instagram.com/22segge_coach" target="_blank" rel="noopener">@22segge_coach</a>
+      <a href="https://instagram.com/riahrusovskaofficial" target="_blank" rel="noopener">@riahrusovskaofficial</a>
+      <a href="https://instagram.com/hyroxprague" target="_blank" rel="noopener">@hyroxprague</a>
+      <a href="https://ladislavsuchanek.cz" target="_blank" rel="noopener">ladislavsuchanek.cz</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  document.documentElement.lang='en';
+  var names={basic:'HYROX Basic',competitor:'HYROX Competitor',pro:'HYROX Pro Athlete',raceprep:'12-Week HYROX Race Prep',singles:'8-Week HYROX Singles',doubles:'8-Week HYROX Doubles',running:'Running for HYROX 2.0',taper:'2-Week HYROX Taper 2.0',coaching:'HYROX Individual Program 1:1'};
+  var hint=document.getElementById('chooser-hint');
+  document.querySelectorAll('.chooser button').forEach(function(b){
+    b.addEventListener('click',function(){
+      document.querySelectorAll('.chooser button').forEach(function(x){x.setAttribute('aria-pressed','false')});
+      b.setAttribute('aria-pressed','true');
+      document.querySelectorAll('.hit').forEach(function(c){c.classList.remove('hit')});
+      var t=document.getElementById(b.dataset.target);
+      t.classList.add('hit');
+      hint.textContent='→ Our pick: '+names[b.dataset.target];
+      var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      t.scrollIntoView({behavior:reduce?'auto':'smooth',block:'center'});
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
