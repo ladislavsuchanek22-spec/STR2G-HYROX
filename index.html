@@ -61,7 +61,8 @@ section + section{border-top:1px solid var(--line)}
 
 .nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:rgba(5,5,5,.86);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
 .nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;height:68px}
-.logo{display:flex;align-items:baseline;gap:12px;text-decoration:none}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none}
+.logo .mark{width:34px;height:34px;border:1px solid var(--line);border-radius:7px;flex:none}
 .logo b{font-family:var(--display);font-weight:900;font-style:italic;font-size:30px;line-height:1}
 .logo small{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
 .navlinks{display:flex;align-items:center;gap:26px}
@@ -226,7 +227,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
 
 <nav class="nav" aria-label="Main">
   <div class="wrap">
-    <a class="logo" href="#top"><b>STR<span class="gold">2</span>G</b><small>Online HYROX programs</small></a>
+    <a class="logo" href="#top" aria-label="STR2G HYROX home"><img class="mark" src="/favicon.svg" alt="" width="34" height="34"><b>STR<span class="gold">2</span>G</b><small>Online HYROX programs</small></a>
     <div class="navlinks">
       <a class="txt" href="#programs">Programs</a>
       <a class="txt" href="#coaching">1:1</a>
@@ -541,7 +542,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
 
 <footer>
   <div class="wrap">
-    <div>© 2026 STR2G · Stronger Together · Programs run in the Strivee app</div>
+    <div style="display:flex;align-items:center;gap:12px"><img src="/favicon.svg" alt="" width="26" height="26" style="border:1px solid var(--line);border-radius:6px"><span>© 2026 STR2G · Stronger Together · Programs run in the Strivee app</span></div>
     <div class="links">
       <a href="https://instagram.com/22segge_coach" target="_blank" rel="noopener">@22segge_coach</a>
       <a href="https://instagram.com/riahrusovskaofficial" target="_blank" rel="noopener">@riahrusovskaofficial</a>
