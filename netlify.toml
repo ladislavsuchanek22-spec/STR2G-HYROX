@@ -13,3 +13,10 @@
   to = "https://gillette-clear-gel-hyrox.netlify.app/"
   status = 301
   force = true
+
+# Old Netlify address -> main domain, so Google indexes only str2g.com
+[[redirects]]
+  from = "https://str2g-hyrox.netlify.app/*"
+  to = "https://str2g.com/:splat"
+  status = 301
+  force = true
