@@ -6,7 +6,7 @@ Edit index.html (English) and the i18n/*.json files, then re-run.
 import json, re, pathlib, sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-BASE = "https://str2g-hyrox.netlify.app"
+BASE = "https://str2g.com"
 LANGS = {"cs": "cs_CZ", "de": "de_DE", "pl": "pl_PL"}
 ATTRS = ("alt", "aria-label", "content", "title")
 
