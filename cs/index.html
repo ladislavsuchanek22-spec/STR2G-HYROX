@@ -80,7 +80,8 @@ section + section{border-top:1px solid var(--line)}
 .lang a{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-decoration:none;color:var(--muted);padding:7px 8px;line-height:1}
 .lang a:hover{color:var(--fg)}
 .lang a[aria-current="page"]{background:var(--fg);color:var(--bg)}
-@media (max-width:420px){.lang a{padding:7px 6px}.nav .btn{padding:8px 11px 7px;font-size:14px}}
+.nav .btn{white-space:nowrap}
+@media (max-width:420px){.lang a{padding:7px 6px}.nav .btn{padding:8px 11px 7px;font-size:14px}.logo b{display:none}}
 @media (max-width:900px){.navlinks a.txt{display:none}.logo small{display:none}}
 
 .hero{position:relative;min-height:min(92vh,860px);display:flex;align-items:flex-end;overflow:hidden;border-bottom:1px solid var(--line)}
