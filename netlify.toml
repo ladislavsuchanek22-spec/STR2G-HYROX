@@ -5,17 +5,29 @@
 # Gillette web: jen na vlastní adrese gillette-clear-gel-hyrox.netlify.app (na str2g.com dál 404)
 [[redirects]]
   from = "https://gillette-clear-gel-hyrox.netlify.app/*"
-  to = "/gillette/:splat"
+  to = "/gcg/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "https://main--gillette-clear-gel-hyrox.netlify.app/*"
-  to = "/gillette/:splat"
+  to = "/gcg/:splat"
   status = 200
   force = true
 
-# Gillette zatím nepublikovat: vrací 404
+# Gillette na str2g.com nepublikovat: vrací 404
+[[redirects]]
+  from = "https://str2g.com/gcg/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "https://www.str2g.com/gcg/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
 [[redirects]]
   from = "/gillette/*"
   to = "/404.html"
