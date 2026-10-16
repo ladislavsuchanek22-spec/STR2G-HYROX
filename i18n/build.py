@@ -15,6 +15,13 @@ ATTRS = ("alt", "aria-label", "content", "title")
 
 src = (ROOT / "index.html").read_text(encoding="utf-8")
 
+# Tracking snippet (i18n/tracking.html) is copied verbatim into every language,
+# never run through the translator.
+TRACK = (ROOT / "i18n" / "tracking.html").read_text(encoding="utf-8").rstrip("\n")
+TRACK_MARK = "<!--STR2G_TRACKING-->"
+assert TRACK in src, "index.html must contain i18n/tracking.html right after <meta charset>"
+src = src.replace(TRACK, TRACK_MARK, 1)
+
 
 def translate_text(html, t, missing):
     parts = re.split(r"(<[^>]+>)", html)
@@ -51,6 +58,7 @@ for lang, locale in LANGS.items():
     t = json.loads((ROOT / "i18n" / f"{lang}.json").read_text(encoding="utf-8"))
     missing = set()
     out = translate_text(src, t, missing)
+    out = out.replace(TRACK_MARK, TRACK, 1)
     out = out.replace('<html lang="en">', f'<html lang="{lang}">', 1)
     out = out.replace('content="en_GB"', f'content="{locale}"', 1)
     out = out.replace(f'<link rel="canonical" href="{BASE}/">', f'<link rel="canonical" href="{BASE}/{lang}/">', 1)
