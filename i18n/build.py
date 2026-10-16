@@ -54,6 +54,7 @@ for lang, locale in LANGS.items():
     out = out.replace('<html lang="en">', f'<html lang="{lang}">', 1)
     out = out.replace('content="en_GB"', f'content="{locale}"', 1)
     out = out.replace(f'<link rel="canonical" href="{BASE}/">', f'<link rel="canonical" href="{BASE}/{lang}/">', 1)
+    out = out.replace(f'<meta property="og:url" content="{BASE}/">', f'<meta property="og:url" content="{BASE}/{lang}/">', 1)
     out = out.replace(' aria-current="page">EN<', '>EN<', 1)
     out = out.replace(f'hreflang="{lang}" lang="{lang}">', f'hreflang="{lang}" lang="{lang}" aria-current="page">', 1)
     out = re.sub(r'(src|content)="img/', r'\1="../img/', out)

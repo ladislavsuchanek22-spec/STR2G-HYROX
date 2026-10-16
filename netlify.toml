@@ -2,15 +2,22 @@
   publish = "."
   command = ""
 
+# Gillette project moved to hyrox-prague.eu/gillette/ (one strong domain instead of a netlify.app address)
+[[redirects]]
+  from = "https://gillette-clear-gel-hyrox.netlify.app/*"
+  to = "https://hyrox-prague.eu/gillette/:splat"
+  status = 301
+  force = true
+
 [[redirects]]
   from = "/gillette/*"
-  to = "https://gillette-clear-gel-hyrox.netlify.app/:splat"
+  to = "https://hyrox-prague.eu/gillette/:splat"
   status = 301
   force = true
 
 [[redirects]]
   from = "/gillette"
-  to = "https://gillette-clear-gel-hyrox.netlify.app/"
+  to = "https://hyrox-prague.eu/gillette/"
   status = 301
   force = true
 
