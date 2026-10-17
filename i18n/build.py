@@ -1,15 +1,18 @@
-"""Build /cs/, /de/ and /pl/ from the English index.html.
+"""Build /cs/, /sk/, /de/, /pl/, /fr/ from the English index.html + market landing pages (i18n/pages.py) + sitemap.xml.
 
 Run from the repo root:  python3 i18n/build.py
 Edit index.html (English) and the i18n/*.json files, then re-run.
 """
 import json, re, pathlib, sys
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+from pages_content import T as PT, SLUGS, price
+import pages
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 BASE = "https://str2g.com"
-LANGS = {"cs": "cs_CZ", "de": "de_DE", "pl": "pl_PL"}
+LANGS = {"cs": "cs_CZ", "sk": "sk_SK", "de": "de_DE", "pl": "pl_PL", "fr": "fr_FR"}
 # Other STR2G websites: English URL in the source -> per-language path
-XLINKS = {u: {"cs": "/", "de": "/de/", "pl": "/pl/"} for u in (
+XLINKS = {u: {"cs": "/", "sk": "/", "de": "/de/", "pl": "/pl/", "fr": "/en/"} for u in (
     "https://hyrox-prague.eu/en/", "https://hyroxtrainingclub.cz/en/", "https://formfactorygames.cz/en/")}
 ATTRS = ("alt", "aria-label", "content", "title")
 
@@ -57,7 +60,13 @@ def translate_text(html, t, missing):
 for lang, locale in LANGS.items():
     t = json.loads((ROOT / "i18n" / f"{lang}.json").read_text(encoding="utf-8"))
     missing = set()
-    out = translate_text(src, t, missing)
+    page_src = src.replace('<a href="/hyrox-training-plan/">HYROX training plan</a>', f'<a href="{SLUGS["plan"][lang]}">{PT[lang]["ui"]["plan_link"]}</a>', 1)
+    page_src = page_src.replace('<a href="/online-hyrox-coach/">Online HYROX coach</a>', f'<a href="{SLUGS["coach"][lang]}">{PT[lang]["ui"]["coach_link"]}</a>', 1)
+    out = translate_text(page_src, t, missing)
+    def _fx(m, lang=lang):
+        approx = price(lang, int(m.group(1)))[1]
+        return f'<em class="fx">{approx}</em>' if approx else ""
+    out = re.sub(r'<em class="fx" data-czk="(\d+)">[^<]*</em>', _fx, out)
     out = out.replace(TRACK_MARK, TRACK, 1)
     out = out.replace('<html lang="en">', f'<html lang="{lang}">', 1)
     out = out.replace('content="en_GB"', f'content="{locale}"', 1)
@@ -76,3 +85,20 @@ for lang, locale in LANGS.items():
     print(f"{lang}: written, {len(missing)} untranslated text nodes")
     for m in sorted(missing):
         print("   ·", m[:90])
+
+
+# ---- landing pages pro trhy + sitemap
+pages.build(ROOT)
+ALL = ["en", "cs", "sk", "de", "pl", "fr"]
+HOMES = {l: (f"{BASE}/" if l == "en" else f"{BASE}/{l}/") for l in ALL}
+LASTMOD = "2026-10-17"
+def _entry(loc, alts):
+    links = "".join(f'\n    <xhtml:link rel="alternate" hreflang="{l}" href="{u}"/>' for l, u in alts.items())
+    links += f'\n    <xhtml:link rel="alternate" hreflang="x-default" href="{alts["en"]}"/>'
+    return f"  <url>\n    <loc>{loc}</loc>\n    <lastmod>{LASTMOD}</lastmod>{links}\n  </url>"
+entries = []
+for group in (HOMES, {l: BASE + SLUGS["plan"][l] for l in ALL}, {l: BASE + SLUGS["coach"][l] for l in ALL}):
+    for l in ALL:
+        entries.append(_entry(group[l], group))
+(ROOT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n' + "\n".join(entries) + "\n</urlset>\n", encoding="utf-8")
+print(f"sitemap.xml: {len(entries)} URLs")
