@@ -122,7 +122,10 @@
     de: ['Wir nutzen Cookies, um die Website zu messen und dir relevante Werbung zu zeigen. Nur mit deiner Zustimmung.', 'Akzeptieren', 'Ablehnen'],
     pl: ['Używamy plików cookie do pomiaru strony i wyświetlania trafnych reklam. Tylko za Twoją zgodą.', 'Akceptuję', 'Odrzuć'],
     sk: ['Používame cookies na meranie webu a zobrazenie relevantnej reklamy. Len s tvojím súhlasom.', 'Súhlasím', 'Odmietnuť'],
-    fr: ['Nous utilisons des cookies pour mesurer le site et te montrer des publicités pertinentes. Uniquement avec ton accord.', 'Accepter', 'Refuser']
+    fr: ['Nous utilisons des cookies pour mesurer le site et te montrer des publicités pertinentes. Uniquement avec ton accord.', 'Accepter', 'Refuser'],
+    es: ['Usamos cookies para medir la web y mostrarte publicidad relevante. Solo con tu consentimiento.', 'Aceptar', 'Rechazar'],
+    it: ['Usiamo i cookie per misurare il sito e mostrarti pubblicità pertinente. Solo con il tuo consenso.', 'Accetto', 'Rifiuta'],
+    nl: ['We gebruiken cookies om de site te meten en je relevante advertenties te tonen. Alleen met je toestemming.', 'Accepteren', 'Weigeren']
   };
 
   function showBanner() {
@@ -182,6 +185,9 @@
 <link rel="alternate" hreflang="de" href="https://str2g.com/de/hyrox-online-coaching/">
 <link rel="alternate" hreflang="pl" href="https://str2g.com/pl/trener-hyrox-online/">
 <link rel="alternate" hreflang="fr" href="https://str2g.com/fr/coach-hyrox-en-ligne/">
+<link rel="alternate" hreflang="es" href="https://str2g.com/es/entrenador-hyrox-online/">
+<link rel="alternate" hreflang="it" href="https://str2g.com/it/coach-hyrox-online/">
+<link rel="alternate" hreflang="nl" href="https://str2g.com/nl/hyrox-online-coach/">
 <link rel="alternate" hreflang="x-default" href="https://str2g.com/online-hyrox-coach/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="en_GB">
@@ -421,7 +427,8 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
 .coach .coach-links{margin-top:auto;display:flex;flex-wrap:wrap;gap:6px 20px}
 .coach .coach-links .ig{margin-top:0}
 .shead p a{color:var(--fg);text-decoration-color:var(--accent);text-underline-offset:3px}
-@media (max-width:560px){.nav .navlinks .btn{display:none}.lang a{padding:7px 5px;letter-spacing:.04em}}
+@media (max-width:560px){.nav .navlinks .btn{display:none}.lang a{padding:7px 5px;letter-spacing:.04em}.lang{max-width:calc(100vw - 110px);overflow-x:auto;scrollbar-width:none;flex-wrap:nowrap}.lang::-webkit-scrollbar{display:none}}
+@media (max-width:1180px) and (min-width:561px){.navlinks a.txt{display:none}}
 .display{overflow-wrap:break-word;hyphens:auto}
 .shead>*,.group-label>*,.together>*,.grid>*{min-width:0}
 .together .display,.card h4{overflow-wrap:break-word;hyphens:auto}
@@ -474,7 +481,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
     <div class="navlinks">
       <a class="txt" href="/#programs">Programmes</a>
       <a class="txt" href="/hyrox-training-plan/">HYROX training plan</a>
-      <nav class="lang" aria-label="Language"><a href="/online-hyrox-coach/" hreflang="en" lang="en" aria-current="page">EN</a><a href="/cs/online-hyrox-trener/" hreflang="cs" lang="cs">CZ</a><a href="/sk/online-hyrox-trener/" hreflang="sk" lang="sk">SK</a><a href="/de/hyrox-online-coaching/" hreflang="de" lang="de">DE</a><a href="/pl/trener-hyrox-online/" hreflang="pl" lang="pl">PL</a><a href="/fr/coach-hyrox-en-ligne/" hreflang="fr" lang="fr">FR</a></nav>
+      <nav class="lang" aria-label="Language"><a href="/online-hyrox-coach/" hreflang="en" lang="en" aria-current="page">EN</a><a href="/cs/online-hyrox-trener/" hreflang="cs" lang="cs">CZ</a><a href="/sk/online-hyrox-trener/" hreflang="sk" lang="sk">SK</a><a href="/de/hyrox-online-coaching/" hreflang="de" lang="de">DE</a><a href="/pl/trener-hyrox-online/" hreflang="pl" lang="pl">PL</a><a href="/fr/coach-hyrox-en-ligne/" hreflang="fr" lang="fr">FR</a><a href="/es/entrenador-hyrox-online/" hreflang="es" lang="es">ES</a><a href="/it/coach-hyrox-online/" hreflang="it" lang="it">IT</a><a href="/nl/hyrox-online-coach/" hreflang="nl" lang="nl">NL</a></nav>
       <a class="btn btn-gold" href="#pick">Start now</a>
     </div>
   </div>

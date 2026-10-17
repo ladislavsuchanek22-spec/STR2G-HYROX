@@ -122,7 +122,10 @@
     de: ['Wir nutzen Cookies, um die Website zu messen und dir relevante Werbung zu zeigen. Nur mit deiner Zustimmung.', 'Akzeptieren', 'Ablehnen'],
     pl: ['Używamy plików cookie do pomiaru strony i wyświetlania trafnych reklam. Tylko za Twoją zgodą.', 'Akceptuję', 'Odrzuć'],
     sk: ['Používame cookies na meranie webu a zobrazenie relevantnej reklamy. Len s tvojím súhlasom.', 'Súhlasím', 'Odmietnuť'],
-    fr: ['Nous utilisons des cookies pour mesurer le site et te montrer des publicités pertinentes. Uniquement avec ton accord.', 'Accepter', 'Refuser']
+    fr: ['Nous utilisons des cookies pour mesurer le site et te montrer des publicités pertinentes. Uniquement avec ton accord.', 'Accepter', 'Refuser'],
+    es: ['Usamos cookies para medir la web y mostrarte publicidad relevante. Solo con tu consentimiento.', 'Aceptar', 'Rechazar'],
+    it: ['Usiamo i cookie per misurare il sito e mostrarti pubblicità pertinente. Solo con il tuo consenso.', 'Accetto', 'Rifiuta'],
+    nl: ['We gebruiken cookies om de site te meten en je relevante advertenties te tonen. Alleen met je toestemming.', 'Accepteren', 'Weigeren']
   };
 
   function showBanner() {
@@ -182,6 +185,9 @@
 <link rel="alternate" hreflang="de" href="https://str2g.com/de/hyrox-trainingsplan/">
 <link rel="alternate" hreflang="pl" href="https://str2g.com/pl/plan-treningowy-hyrox/">
 <link rel="alternate" hreflang="fr" href="https://str2g.com/fr/programme-hyrox/">
+<link rel="alternate" hreflang="es" href="https://str2g.com/es/plan-entrenamiento-hyrox/">
+<link rel="alternate" hreflang="it" href="https://str2g.com/it/programma-allenamento-hyrox/">
+<link rel="alternate" hreflang="nl" href="https://str2g.com/nl/hyrox-trainingsschema/">
 <link rel="alternate" hreflang="x-default" href="https://str2g.com/hyrox-training-plan/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="pl_PL">
@@ -421,7 +427,8 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
 .coach .coach-links{margin-top:auto;display:flex;flex-wrap:wrap;gap:6px 20px}
 .coach .coach-links .ig{margin-top:0}
 .shead p a{color:var(--fg);text-decoration-color:var(--accent);text-underline-offset:3px}
-@media (max-width:560px){.nav .navlinks .btn{display:none}.lang a{padding:7px 5px;letter-spacing:.04em}}
+@media (max-width:560px){.nav .navlinks .btn{display:none}.lang a{padding:7px 5px;letter-spacing:.04em}.lang{max-width:calc(100vw - 110px);overflow-x:auto;scrollbar-width:none;flex-wrap:nowrap}.lang::-webkit-scrollbar{display:none}}
+@media (max-width:1180px) and (min-width:561px){.navlinks a.txt{display:none}}
 .display{overflow-wrap:break-word;hyphens:auto}
 .shead>*,.group-label>*,.together>*,.grid>*{min-width:0}
 .together .display,.card h4{overflow-wrap:break-word;hyphens:auto}
@@ -474,7 +481,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
     <div class="navlinks">
       <a class="txt" href="/pl/#programs">Programy</a>
       <a class="txt" href="/pl/trener-hyrox-online/">Trener HYROX online</a>
-      <nav class="lang" aria-label="Język"><a href="/hyrox-training-plan/" hreflang="en" lang="en">EN</a><a href="/cs/hyrox-treninkovy-plan/" hreflang="cs" lang="cs">CZ</a><a href="/sk/hyrox-treningovy-plan/" hreflang="sk" lang="sk">SK</a><a href="/de/hyrox-trainingsplan/" hreflang="de" lang="de">DE</a><a href="/pl/plan-treningowy-hyrox/" hreflang="pl" lang="pl" aria-current="page">PL</a><a href="/fr/programme-hyrox/" hreflang="fr" lang="fr">FR</a></nav>
+      <nav class="lang" aria-label="Język"><a href="/hyrox-training-plan/" hreflang="en" lang="en">EN</a><a href="/cs/hyrox-treninkovy-plan/" hreflang="cs" lang="cs">CZ</a><a href="/sk/hyrox-treningovy-plan/" hreflang="sk" lang="sk">SK</a><a href="/de/hyrox-trainingsplan/" hreflang="de" lang="de">DE</a><a href="/pl/plan-treningowy-hyrox/" hreflang="pl" lang="pl" aria-current="page">PL</a><a href="/fr/programme-hyrox/" hreflang="fr" lang="fr">FR</a><a href="/es/plan-entrenamiento-hyrox/" hreflang="es" lang="es">ES</a><a href="/it/programma-allenamento-hyrox/" hreflang="it" lang="it">IT</a><a href="/nl/hyrox-trainingsschema/" hreflang="nl" lang="nl">NL</a></nav>
       <a class="btn btn-gold" href="#pick">Zacznij teraz</a>
     </div>
   </div>

@@ -10,9 +10,9 @@ import pages
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 BASE = "https://str2g.com"
-LANGS = {"cs": "cs_CZ", "sk": "sk_SK", "de": "de_DE", "pl": "pl_PL", "fr": "fr_FR"}
+LANGS = {"cs": "cs_CZ", "sk": "sk_SK", "de": "de_DE", "pl": "pl_PL", "fr": "fr_FR", "es": "es_ES", "it": "it_IT", "nl": "nl_NL"}
 # Other STR2G websites: English URL in the source -> per-language path
-XLINKS = {u: {"cs": "/", "sk": "/", "de": "/de/", "pl": "/pl/", "fr": "/en/"} for u in (
+XLINKS = {u: {"cs": "/", "sk": "/", "de": "/de/", "pl": "/pl/", "fr": "/en/", "es": "/en/", "it": "/en/", "nl": "/en/"} for u in (
     "https://hyrox-prague.eu/en/", "https://hyroxtrainingclub.cz/en/", "https://formfactorygames.cz/en/")}
 ATTRS = ("alt", "aria-label", "content", "title")
 
@@ -89,7 +89,7 @@ for lang, locale in LANGS.items():
 
 # ---- landing pages pro trhy + sitemap
 pages.build(ROOT)
-ALL = ["en", "cs", "sk", "de", "pl", "fr"]
+ALL = ["en", "cs", "sk", "de", "pl", "fr", "es", "it", "nl"]
 HOMES = {l: (f"{BASE}/" if l == "en" else f"{BASE}/{l}/") for l in ALL}
 LASTMOD = "2026-10-17"
 def _entry(loc, alts):
