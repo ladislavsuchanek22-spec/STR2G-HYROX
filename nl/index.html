@@ -1,0 +1,794 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<!--
+  STR2G – měření pro reklamu
+  Co to dělá:
+  1) Cookie lišta (souhlas / odmítnutí) – bez souhlasu se Meta Pixel vůbec nenačte.
+  2) Google tag (GA4 + Google Ads) v režimu Consent Mode v2 – před souhlasem nic neukládá.
+  3) Každý klik na platební odkaz do Strivee = InitiateCheckout (Meta) + begin_checkout (GA4) + konverze (Google Ads), včetně názvu programu a ceny.
+  4) Funkce window.str2gLead('kviz') pro budoucí kvíz / formulář = Lead (Meta) + generate_lead (GA4) + konverze (Ads).
+  5) window.str2gConsentReset() znovu otevře cookie lištu.
+-->
+<script>
+(function () {
+  var CFG = {
+    META_PIXEL_ID: '1343098769871797',
+    GA4_ID: 'G-P21WD6TY8N',
+    ADS_ID: 'AW-11061084387',
+    ADS_CHECKOUT_LABEL: 'lFZiCPf0iZ8dEOOBq5op',
+    ADS_LEAD_LABEL: 'xPRgCPr0iZ8dEOOBq5op'
+  };
+
+  var KEY = 'str2g_consent';
+  function getConsent() { try { return localStorage.getItem(KEY); } catch (e) { return null; } }
+  function setConsent(v) { try { localStorage.setItem(KEY, v); } catch (e) {} }
+  function has(id) { return id && id.indexOf('DOPLNIT') === -1; }
+
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { window.dataLayer.push(arguments); }
+  window.gtag = window.gtag || gtag;
+  gtag('consent', 'default', {
+    ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied',
+    analytics_storage: 'denied', wait_for_update: 500
+  });
+  gtag('js', new Date());
+  if (has(CFG.GA4_ID)) gtag('config', CFG.GA4_ID);
+  if (has(CFG.ADS_ID)) gtag('config', CFG.ADS_ID);
+  var firstId = has(CFG.GA4_ID) ? CFG.GA4_ID : (has(CFG.ADS_ID) ? CFG.ADS_ID : null);
+  if (firstId) {
+    var gs = document.createElement('script');
+    gs.async = true;
+    gs.src = 'https://www.googletagmanager.com/gtag/js?id=' + firstId;
+    document.head.appendChild(gs);
+  }
+
+  var metaLoaded = false;
+  function loadMeta() {
+    if (metaLoaded || !has(CFG.META_PIXEL_ID)) return;
+    metaLoaded = true;
+    !function (f, b, e, v, n, t, s) {
+      if (f.fbq) return; n = f.fbq = function () { n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments); };
+      if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0'; n.queue = [];
+      t = b.createElement(e); t.async = !0; t.src = v; s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s);
+    }(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+    window.fbq('init', CFG.META_PIXEL_ID);
+    window.fbq('track', 'PageView');
+  }
+
+  function grant() {
+    gtag('consent', 'update', {
+      ad_storage: 'granted', ad_user_data: 'granted', ad_personalization: 'granted', analytics_storage: 'granted'
+    });
+    loadMeta();
+  }
+  function granted() { return getConsent() === 'yes'; }
+  if (granted()) grant();
+
+  function programInfo(a) {
+    var name = a.getAttribute('data-program') || '';
+    var value = parseInt(a.getAttribute('data-value') || '0', 10) || 0;
+    if (name && value) return { name: name, value: value };
+    var el = a;
+    for (var i = 0; i < 8 && el; i++) {
+      el = el.parentElement;
+      if (!el || !el.querySelector) continue;
+      var h = el.querySelector('h3, h4');
+      if (h) {
+        if (!name) name = h.textContent.replace(/\s+/g, ' ').trim();
+        if (!value) {
+          var t = el.textContent;
+          var m = t.match(/CZK\s*([\d][\d.,\u00a0 ]*\d|\d)/) || t.match(/(\d[\d.,\u00a0 ]*\d|\d)\s*Kč/);
+          if (m) value = parseInt(m[1].replace(/[^\d]/g, ''), 10) || 0;
+        }
+        break;
+      }
+    }
+    return { name: name || 'STR2G program', value: value };
+  }
+
+  document.addEventListener('click', function (e) {
+    var a = e.target && e.target.closest ? e.target.closest('a[href*="train.strivee.app/payment"]') : null;
+    if (!a) return;
+    var p = programInfo(a);
+
+    gtag('event', 'begin_checkout', { currency: 'CZK', value: p.value, items: [{ item_name: p.name, price: p.value }] });
+    if (has(CFG.ADS_ID) && has(CFG.ADS_CHECKOUT_LABEL)) {
+      gtag('event', 'conversion', { send_to: CFG.ADS_ID + '/' + CFG.ADS_CHECKOUT_LABEL, value: p.value, currency: 'CZK' });
+    }
+    if (granted() && window.fbq) {
+      window.fbq('track', 'InitiateCheckout', { content_name: p.name, value: p.value, currency: 'CZK' });
+    }
+
+    var newTab = a.target === '_blank' || e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1;
+    if (!newTab) {
+      e.preventDefault();
+      setTimeout(function () { window.location.href = a.href; }, 300);
+    }
+  }, true);
+
+  window.str2gLead = function (source) {
+    gtag('event', 'generate_lead', { lead_source: source || 'web' });
+    if (has(CFG.ADS_ID) && has(CFG.ADS_LEAD_LABEL)) {
+      gtag('event', 'conversion', { send_to: CFG.ADS_ID + '/' + CFG.ADS_LEAD_LABEL });
+    }
+    if (granted() && window.fbq) window.fbq('track', 'Lead', { content_name: source || 'web' });
+  };
+
+  var TXT = {
+    en: ['We use cookies to measure the site and show you relevant ads. Only with your consent.', 'Accept', 'Reject'],
+    cs: ['Používáme cookies na měření webu a zobrazení relevantní reklamy. Jen s tvým souhlasem.', 'Souhlasím', 'Odmítnout'],
+    de: ['Wir nutzen Cookies, um die Website zu messen und dir relevante Werbung zu zeigen. Nur mit deiner Zustimmung.', 'Akzeptieren', 'Ablehnen'],
+    pl: ['Używamy plików cookie do pomiaru strony i wyświetlania trafnych reklam. Tylko za Twoją zgodą.', 'Akceptuję', 'Odrzuć'],
+    sk: ['Používame cookies na meranie webu a zobrazenie relevantnej reklamy. Len s tvojím súhlasom.', 'Súhlasím', 'Odmietnuť'],
+    fr: ['Nous utilisons des cookies pour mesurer le site et te montrer des publicités pertinentes. Uniquement avec ton accord.', 'Accepter', 'Refuser'],
+    es: ['Usamos cookies para medir la web y mostrarte publicidad relevante. Solo con tu consentimiento.', 'Aceptar', 'Rechazar'],
+    it: ['Usiamo i cookie per misurare il sito e mostrarti pubblicità pertinente. Solo con il tuo consenso.', 'Accetto', 'Rifiuta'],
+    nl: ['We gebruiken cookies om de site te meten en je relevante advertenties te tonen. Alleen met je toestemming.', 'Accepteren', 'Weigeren']
+  };
+
+  function showBanner() {
+    if (document.getElementById('str2g-consent')) return;
+    var lang = (document.documentElement.lang || 'en').slice(0, 2).toLowerCase();
+    var t = TXT[lang] || TXT.en;
+    var box = document.createElement('div');
+    box.id = 'str2g-consent';
+    box.setAttribute('role', 'dialog');
+    box.setAttribute('aria-live', 'polite');
+    box.style.cssText = 'position:fixed;left:16px;right:16px;bottom:16px;z-index:99999;max-width:560px;margin:0 auto;' +
+      'background:#0d0d0d;color:#f2f2f2;border:1px solid #2a2a2a;border-radius:12px;padding:16px;' +
+      'font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.4)';
+    var p = document.createElement('p');
+    p.style.cssText = 'margin:0 0 12px';
+    p.textContent = t[0];
+    var row = document.createElement('div');
+    row.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap';
+    function btn(label, primary, fn) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = label;
+      b.style.cssText = 'flex:1 1 120px;padding:10px 14px;border-radius:8px;cursor:pointer;font-weight:700;font-size:14px;' +
+        (primary ? 'background:#C9A950;color:#050505;border:1px solid #C9A950' : 'background:transparent;color:#f2f2f2;border:1px solid #f2f2f2');
+      b.onclick = fn;
+      return b;
+    }
+    row.appendChild(btn(t[1], true, function () { setConsent('yes'); grant(); box.remove(); }));
+    row.appendChild(btn(t[2], false, function () { setConsent('no'); box.remove(); }));
+    box.appendChild(p);
+    box.appendChild(row);
+    document.body.appendChild(box);
+  }
+
+  window.str2gConsentReset = function () {
+    try { localStorage.removeItem(KEY); } catch (e) {}
+    showBanner();
+  };
+
+  if (!getConsent()) {
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', showBanner);
+    else showBanner();
+  }
+})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HYROX online coaching & trainingsschema's | STR2G</title>
+<meta name="description" content="HYROX online coach en trainingsschema's van Láďa en Ria Suchánek. Voor elk niveau, van maandschema tot 12 weken wedstrijdvoorbereiding. In de Strivee-app.">
+<meta property="og:title" content="HYROX online coaching & trainingsschema's | STR2G">
+<meta property="og:description" content="Gestructureerde HYROX-programma's van Láďa & Ria Suchánek. Hardlopen, kracht, stations en tempo. Op je telefoon.">
+<meta property="og:image" content="https://str2g.com/img/lada-ria-finish-line.jpg">
+<meta name="theme-color" content="#050505">
+<meta name="google-site-verification" content="SrmBIZppwrQAD9y8VO0Kd-viE5CwP-86--lh2cew3o4">
+<meta name="google-site-verification" content="Jh70QkTyD7Dq2cxr-DIrMJOG0HXUw_6pjIctD3XOH5E">
+<meta property="og:locale" content="nl_NL">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://str2g.com/nl/">
+<meta property="og:site_name" content="STR2G HYROX">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="https://str2g.com/nl/">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "@id": "https://str2g.com/#org", "name": "STR2G HYROX", "alternateName": "STR2G · Stronger Together", "url": "https://str2g.com/", "logo": "https://str2g.com/favicon.svg", "description": "Online HYROX training programs by Ladislav Suchánek and Ria Suchánek Hrušovská.", "founder": [{"@id": "https://hyrox-prague.eu/#lada"}, {"@id": "https://hyrox-prague.eu/#ria"}], "sameAs": ["https://hyrox-prague.eu/", "https://www.instagram.com/hyroxprague/", "https://train.strivee.app/p/str2g-hyrox"], "hasOfferCatalog": {"@type": "OfferCatalog", "name": "STR2G HYROX online programs", "itemListElement": [{"@type": "Offer", "price": "750", "priceCurrency": "CZK", "availability": "https://schema.org/InStock", "url": "https://train.strivee.app/p/str2g-hyrox", "itemOffered": {"@type": "Service", "name": "HYROX Basic", "description": "Monthly online HYROX training plan", "serviceType": "Online HYROX coaching", "provider": {"@id": "https://str2g.com/#org"}}, "priceSpecification": {"@type": "UnitPriceSpecification", "price": "750", "priceCurrency": "CZK", "billingDuration": "P1M"}}, {"@type": "Offer", "price": "960", "priceCurrency": "CZK", "availability": "https://schema.org/InStock", "url": "https://train.strivee.app/p/str2g-hyrox", "itemOffered": {"@type": "Service", "name": "HYROX Competitor", "description": "Monthly online HYROX program for regular racers", "serviceType": "Online HYROX coaching", "provider": {"@id": "https://str2g.com/#org"}}, "priceSpecification": {"@type": "UnitPriceSpecification", "price": "960", "priceCurrency": "CZK", "billingDuration": "P1M"}}, {"@type": "Offer", "price": "1350", "priceCurrency": "CZK", "availability": "https://schema.org/InStock", "url": "https://train.strivee.app/p/str2g-hyrox", "itemOffered": {"@type": "Service", "name": "HYROX Pro Athlete", "description": "Monthly online HYROX program for advanced athletes", "serviceType": "Online HYROX coaching", "provider": {"@id": "https://str2g.com/#org"}}, "priceSpecification": {"@type": "UnitPriceSpecification", "price": "1350", "priceCurrency": "CZK", "billingDuration": "P1M"}}, {"@type": "Offer", "price": "1900", "priceCurrency": "CZK", "availability": "https://schema.org/InStock", "url": "https://train.strivee.app/p/str2g-hyrox", "itemOffered": {"@type": "Service", "name": "12-Week HYROX Race Prep", "description": "12-week HYROX race preparation", "serviceType": "Online HYROX coaching", "provider": {"@id": "https://str2g.com/#org"}}}, {"@type": "Offer", "price": "1500", "priceCurrency": "CZK", "availability": "https://schema.org/InStock", "url": "https://train.strivee.app/p/str2g-hyrox", "itemOffered": {"@type": "Service", "name": "8-Week HYROX Singles", "description": "8-week build for a HYROX Singles race", "serviceType": "Online HYROX coaching", "provider": {"@id": "https://str2g.com/#org"}}}, {"@type": "Offer", "price": "1700", "priceCurrency": "CZK", "availability": "https://schema.org/InStock", "url": "https://train.strivee.app/p/str2g-hyrox", "itemOffered": {"@type": "Service", "name": "8-Week HYROX Doubles", "description": "8-week build for a HYROX Doubles race", "serviceType": "Online HYROX coaching", "provider": {"@id": "https://str2g.com/#org"}}}, {"@type": "Offer", "price": "1000", "priceCurrency": "CZK", "availability": "https://schema.org/InStock", "url": "https://train.strivee.app/p/str2g-hyrox", "itemOffered": {"@type": "Service", "name": "Running for HYROX 2.0", "description": "12-week running block for HYROX", "serviceType": "Online HYROX coaching", "provider": {"@id": "https://str2g.com/#org"}}}, {"@type": "Offer", "price": "550", "priceCurrency": "CZK", "availability": "https://schema.org/InStock", "url": "https://train.strivee.app/p/str2g-hyrox", "itemOffered": {"@type": "Service", "name": "2-Week HYROX Taper 2.0", "description": "2-week taper before a HYROX race", "serviceType": "Online HYROX coaching", "provider": {"@id": "https://str2g.com/#org"}}}, {"@type": "Offer", "price": "3500", "priceCurrency": "CZK", "availability": "https://schema.org/InStock", "url": "https://train.strivee.app/p/str2g-hyrox", "itemOffered": {"@type": "Service", "name": "HYROX Individual Program 1:1", "description": "1:1 online HYROX coaching with an individual program", "serviceType": "Online HYROX coaching", "provider": {"@id": "https://str2g.com/#org"}}, "priceSpecification": {"@type": "UnitPriceSpecification", "price": "3500", "priceCurrency": "CZK", "billingDuration": "P1M"}}]}, "areaServed": "Worldwide", "knowsAbout": ["HYROX", "HYROX training", "HYROX programming", "Online coaching", "Functional fitness"]}, {"@type": "Person", "@id": "https://hyrox-prague.eu/#lada", "name": "Ladislav Suchánek", "jobTitle": "HYROX Performance Coach", "url": "https://hyrox-prague.eu/", "sameAs": ["https://www.ladislavsuchanek.cz/", "https://www.instagram.com/22segge_coach/"]}, {"@type": "Person", "@id": "https://hyrox-prague.eu/#ria", "name": "Ria Suchánek Hrušovská", "jobTitle": "HYROX Performance Coach", "url": "https://hyrox-prague.eu/", "sameAs": ["https://www.instagram.com/riahrusovskaofficial/"]}, {"@type": "WebSite", "@id": "https://str2g.com/#web", "url": "https://str2g.com/", "name": "STR2G HYROX", "publisher": {"@id": "https://str2g.com/#org"}, "inLanguage": ["en", "cs", "sk", "de", "pl", "fr", "es", "it", "nl"]}]}</script>
+<link rel="alternate" hreflang="en" href="https://str2g.com/">
+<link rel="alternate" hreflang="cs" href="https://str2g.com/cs/">
+<link rel="alternate" hreflang="de" href="https://str2g.com/de/">
+<link rel="alternate" hreflang="pl" href="https://str2g.com/pl/">
+<link rel="alternate" hreflang="sk" href="https://str2g.com/sk/">
+<link rel="alternate" hreflang="fr" href="https://str2g.com/fr/">
+<link rel="alternate" hreflang="es" href="https://str2g.com/es/">
+<link rel="alternate" hreflang="it" href="https://str2g.com/it/">
+<link rel="alternate" hreflang="nl" href="https://str2g.com/nl/">
+<link rel="alternate" hreflang="x-default" href="https://str2g.com/">
+<link rel="icon" href="/favicon.ico?v=2" sizes="any">
+<link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png?v=2" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2">
+<link rel="manifest" href="/site.webmanifest?v=2">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700&family=Barlow+Condensed:ital,wght@0,700;0,800;1,800;1,900&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Matches hyrox-prague.eu: near-black, muted gold, Barlow Condensed italic display, numbered sections, photo-led. */
+:root{
+  --bg:#050505; --panel:#0F0F0E; --line:#262521;
+  --fg:#FFFFFF; --muted:#9A978F; --accent:#C9A950; --on-accent:#050505;
+  --display:"Barlow Condensed","Arial Narrow",Impact,sans-serif;
+  --body:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  --wrap:1200px;
+  --gut-l:max(20px,env(safe-area-inset-left,0px));
+  --gut-r:max(20px,env(safe-area-inset-right,0px));
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+a{color:inherit}
+.wrap{max-width:var(--wrap);margin:0 auto;padding-left:var(--gut-l);padding-right:var(--gut-r)}
+
+.display{font-family:var(--display);font-weight:900;font-style:italic;text-transform:uppercase;line-height:.9;margin:0;text-wrap:balance}
+.gold{color:var(--accent)}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin:0 0 16px}
+.lead{font-size:clamp(17px,1.6vw,19px);color:var(--muted);max-width:60ch;margin:0}
+section{padding-block:clamp(72px,9vw,120px)}
+section + section{border-top:1px solid var(--line)}
+
+.shead{display:grid;grid-template-columns:1fr minmax(0,380px);gap:20px 48px;align-items:end;margin-bottom:52px}
+.shead .eyebrow{grid-column:1/-1;margin-bottom:-4px}
+.shead h2{font-size:clamp(44px,6.4vw,80px)}
+.shead h2 .num{display:inline-block;margin-right:.22em;font-weight:800;color:transparent;-webkit-text-stroke:1.5px var(--accent)}
+.shead p{color:var(--muted);margin:0;font-size:16px}
+@media (max-width:820px){.shead{grid-template-columns:1fr}}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font-family:var(--display);font-weight:800;font-style:italic;text-transform:uppercase;font-size:20px;letter-spacing:.02em;padding:14px 26px 13px;text-decoration:none;border:1.5px solid var(--accent);transition:background .15s,color .15s,border-color .15s;cursor:pointer}
+.btn-gold{background:var(--accent);color:var(--on-accent)}
+.btn-gold:hover{background:var(--fg);border-color:var(--fg)}
+.btn-ghost{background:transparent;color:var(--fg);border-color:rgba(255,255,255,.55)}
+.btn-ghost:hover{border-color:var(--fg);background:rgba(255,255,255,.06)}
+.btn:focus-visible,button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:rgba(5,5,5,.86);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;height:68px}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none}
+.logo .mark{width:34px;height:34px;border:1px solid var(--line);border-radius:7px;flex:none}
+.logo b{font-family:var(--display);font-weight:900;font-style:italic;font-size:30px;line-height:1}
+.logo small{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+.navlinks{display:flex;align-items:center;gap:26px}
+.navlinks a.txt{font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;color:var(--muted)}
+.navlinks a.txt:hover{color:var(--fg)}
+.nav .btn{font-size:15px;padding:9px 16px 8px}
+.lang{display:flex;border:1px solid var(--line)}
+.lang a{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-decoration:none;color:var(--muted);padding:7px 8px;line-height:1}
+.lang a:hover{color:var(--fg)}
+.lang a[aria-current="page"]{background:var(--fg);color:var(--bg)}
+.nav .btn{white-space:nowrap}
+@media (max-width:420px){.lang a{padding:7px 6px}.nav .btn{padding:8px 11px 7px;font-size:14px}.logo b{display:none}}
+@media (max-width:900px){.navlinks a.txt{display:none}.logo small{display:none}}
+
+.hero{position:relative;min-height:min(92vh,860px);display:flex;align-items:flex-end;overflow:hidden;border-bottom:1px solid var(--line)}
+.hero-img{position:absolute;top:0;right:0;bottom:0;left:auto;width:64%;height:100%;object-fit:cover;object-position:46% 35%}
+.hero::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(5,5,5,1) 0%,rgba(5,5,5,1) 36%,rgba(5,5,5,.55) 48%,rgba(5,5,5,.05) 70%,rgba(5,5,5,.15) 100%),linear-gradient(0deg,rgba(5,5,5,1) 0%,rgba(5,5,5,0) 30%)}
+@media (max-width:900px){.hero-img{width:100%;object-position:50% 30%}.hero::before{background:linear-gradient(0deg,rgba(5,5,5,1) 8%,rgba(5,5,5,.78) 55%,rgba(5,5,5,.35) 100%)}}
+.hero .wrap{position:relative;z-index:2;width:100%;padding-block:120px 48px}
+.hero h1{font-size:clamp(60px,10.5vw,148px)}
+.hero .lead{color:rgba(255,255,255,.88);margin-top:22px;max-width:52ch}
+.cta-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px}
+.facts{display:grid;grid-template-columns:repeat(4,1fr);margin-top:64px;border-top:1px solid rgba(255,255,255,.18)}
+.fact{padding:18px 20px 4px 0}
+.fact + .fact{padding-left:20px;border-left:1px solid rgba(255,255,255,.18)}
+.fact .l{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.fact .n{font-family:var(--display);font-weight:900;font-style:italic;font-size:clamp(34px,4vw,48px);line-height:1;margin-top:8px;font-variant-numeric:tabular-nums}
+@media (max-width:760px){.facts{grid-template-columns:repeat(2,1fr)}.fact:nth-child(3){padding-left:0;border-left:0}.fact:nth-child(n+3){border-top:1px solid rgba(255,255,255,.18)}}
+
+.ticker{background:var(--panel);border-bottom:1px solid var(--line);overflow:hidden;white-space:nowrap}
+.ticker-track{display:inline-flex;padding-block:13px;animation:run 70s linear infinite}
+.ticker span{font-family:var(--display);font-weight:800;font-style:italic;text-transform:uppercase;font-size:21px;padding:0 18px;color:var(--muted)}
+.ticker span.st{color:var(--fg)}
+.ticker span.st em{font-style:normal;font-family:var(--mono);font-size:11px;color:var(--accent);margin-left:8px}
+@keyframes run{to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.ticker-track{animation:none}}
+
+.approach{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:48px;align-items:stretch}
+.approach figure{margin:0;position:relative;min-height:420px}
+.approach figure img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%}
+.approach figcaption{position:absolute;left:0;bottom:0;background:var(--bg);font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:9px 14px}
+.pillars{border-top:1px solid var(--line)}
+.pillar{display:grid;grid-template-columns:150px 1fr;gap:20px;padding:20px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.pillar h3{font-family:var(--display);font-weight:800;font-style:italic;text-transform:uppercase;font-size:30px;line-height:1;margin:0}
+.pillar p{margin:0;color:var(--muted)}
+@media (max-width:900px){.approach{grid-template-columns:1fr}.approach figure{min-height:0;aspect-ratio:4/5;max-height:560px}}
+@media (max-width:480px){.pillar{grid-template-columns:1fr;gap:6px}}
+
+.chooser{display:flex;flex-wrap:wrap;gap:8px}
+.chooser button{background:var(--panel);color:var(--fg);border:1px solid var(--line);font-family:var(--body);font-size:15px;font-weight:500;padding:11px 16px;cursor:pointer}
+.chooser button:hover{border-color:var(--muted)}
+.chooser button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.chooser-hint{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:14px;min-height:1.6em}
+
+.group-label{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:60px 0 18px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.group-label h3{font-family:var(--display);font-weight:800;font-style:italic;text-transform:uppercase;font-size:34px;margin:0;line-height:1}
+.group-label p{margin:0;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.grid.two{grid-template-columns:repeat(2,1fr)}
+@media (max-width:980px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:640px){.grid,.grid.two{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);padding:26px 24px 24px;display:flex;flex-direction:column;gap:16px;min-width:0;transition:border-color .2s,transform .2s,box-shadow .2s;scroll-margin-top:110px}
+.card:hover{border-color:#3a3833}
+.card.hit{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),0 18px 50px -24px rgba(201,169,80,.55);transform:translateY(-3px)}
+.card .kind{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.card h4{font-family:var(--display);font-weight:900;font-style:italic;text-transform:uppercase;font-size:38px;line-height:.92;margin:0;text-wrap:balance}
+.price{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;font-variant-numeric:tabular-nums}
+.price b{font-family:var(--display);font-weight:900;font-style:italic;font-size:44px;line-height:1}
+.price span{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.meta{display:grid;grid-template-columns:repeat(3,1fr);border-block:1px solid var(--line)}
+.meta div{padding:10px 0;font-family:var(--mono);font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;line-height:1.35}
+.meta div + div{padding-left:12px;border-left:1px solid var(--line)}
+.meta strong{display:block;font-family:var(--display);font-style:italic;font-weight:800;font-size:26px;color:var(--fg);letter-spacing:0}
+.card p{margin:0;font-size:15.5px;color:var(--muted)}
+.card .for{color:var(--fg);font-weight:500}
+.card .actions{margin-top:auto;display:flex;gap:10px;flex-wrap:wrap;padding-top:4px}
+.card .actions .btn{font-size:17px;padding:11px 18px 10px;flex:1 1 auto}
+
+.one{margin-top:60px;display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);border:1px solid var(--accent);background:var(--panel);scroll-margin-top:110px;transition:box-shadow .2s}
+.one.hit{box-shadow:0 0 0 2px var(--accent)}
+.one figure{margin:0;position:relative;min-height:380px}
+.one figure img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:32% 30%}
+.one .body{padding:clamp(26px,4vw,44px);display:flex;flex-direction:column;gap:18px;min-width:0}
+.one h3{font-family:var(--display);font-weight:900;font-style:italic;text-transform:uppercase;font-size:clamp(42px,5vw,64px);line-height:.88;margin:0}
+.one p{margin:0;color:var(--muted)}
+.one .price b{font-size:54px}
+.one ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:0 24px}
+.one li{border-bottom:1px solid var(--line);padding:10px 0 10px 18px;position:relative;font-size:15.5px}
+.one li::before{content:"";position:absolute;left:0;top:21px;width:8px;height:2px;background:var(--accent)}
+.one .actions{display:flex;gap:10px;flex-wrap:wrap}
+@media (max-width:860px){.one{grid-template-columns:1fr}.one figure{min-height:0;aspect-ratio:3/2}.one ul{grid-template-columns:1fr}}
+
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media (max-width:820px){.steps{grid-template-columns:1fr}}
+.step{background:var(--panel);border:1px solid var(--line);padding:24px}
+.step .num{font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:.1em}
+.step h3{font-family:var(--display);font-weight:800;font-style:italic;text-transform:uppercase;font-size:30px;line-height:1;margin:10px 0}
+.step p{margin:0;color:var(--muted);font-size:15.5px}
+.app-list{margin-top:28px;display:flex;flex-wrap:wrap;gap:8px}
+.app-list span{font-family:var(--mono);font-size:11.5px;border:1px solid var(--line);padding:7px 12px}
+
+.coaches{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:980px){.coaches{grid-template-columns:1fr}}
+.coach{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);background:var(--panel);border:1px solid var(--line);min-width:0}
+.coach figure{margin:0;position:relative;min-height:440px}
+.coach figure img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.coach .body{padding:26px 24px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.coach .role{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.coach h3{font-family:var(--display);font-weight:900;font-style:italic;text-transform:uppercase;font-size:clamp(36px,3.6vw,46px);line-height:.9;margin:0}
+.coach p{margin:0;color:var(--muted);font-size:15.5px}
+.coach p.quote{color:var(--fg);font-size:16.5px;border-left:2px solid var(--accent);padding-left:12px}
+.creds{display:flex;flex-wrap:wrap;gap:6px;margin:0;padding:0;list-style:none}
+.creds li{font-family:var(--mono);font-size:10.5px;border:1px solid var(--line);padding:5px 8px}
+.coach .ig{font-family:var(--mono);font-size:12px;color:var(--accent);text-decoration:none;margin-top:auto}
+.coach .ig:hover{text-decoration:underline}
+@media (max-width:560px){.coach{grid-template-columns:1fr}.coach figure{min-height:0;aspect-ratio:4/5}}
+
+.together{margin-top:16px;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,.7fr);background:var(--panel);border:1px solid var(--line)}
+.together .body{padding:clamp(28px,4vw,48px);display:flex;flex-direction:column;justify-content:center;gap:16px}
+.together .display{font-size:clamp(46px,6vw,78px)}
+.together p{margin:0;color:var(--muted);max-width:56ch}
+.together figure{margin:0;position:relative;min-height:420px}
+.together figure img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 25%}
+@media (max-width:820px){.together{grid-template-columns:1fr}.together figure{min-height:0;aspect-ratio:4/5;max-height:620px}}
+
+.gallery{display:grid;grid-template-columns:1.4fr 1fr 1fr;grid-template-rows:280px 280px;gap:12px}
+.gallery figure{margin:0;position:relative;overflow:hidden;background:var(--panel)}
+.gallery img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease}
+.gallery figure:hover img{transform:scale(1.03)}
+.gallery .g1{grid-row:1/3}
+.gallery .g1 img{object-position:40% 50%}
+.gallery .g4 img{object-position:50% 20%}
+@media (prefers-reduced-motion:reduce){.gallery img{transition:none}}
+@media (max-width:820px){.gallery{grid-template-columns:1fr 1fr;grid-template-rows:auto}.gallery .g1{grid-row:auto;grid-column:1/-1;aspect-ratio:16/10}.gallery figure:not(.g1){aspect-ratio:1/1}.gallery .g5{display:none}}
+
+.quotes{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media (max-width:900px){.quotes{grid-template-columns:1fr}}
+.q{background:var(--panel);border:1px solid var(--line);padding:26px 24px;display:flex;flex-direction:column;gap:18px;margin:0;min-width:0}
+.q blockquote{margin:0;font-size:16.5px}
+.q .mark{font-family:var(--display);font-weight:900;font-style:italic;font-size:64px;line-height:.5;color:var(--accent);height:22px}
+.q .who{margin-top:auto;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.q .who b{color:var(--fg);font-weight:500}
+
+.faq{border-top:1px solid var(--line);max-width:880px}
+details{border-bottom:1px solid var(--line)}
+summary{list-style:none;cursor:pointer;padding:22px 40px 22px 0;position:relative;font-family:var(--display);font-weight:800;font-style:italic;text-transform:uppercase;font-size:26px;line-height:1.05}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";position:absolute;right:4px;top:18px;font-style:normal;color:var(--accent);font-size:30px;transition:transform .2s}
+details[open] summary::after{transform:rotate(45deg)}
+details p{margin:0 0 22px;color:var(--muted);max-width:68ch}
+details a{color:var(--accent)}
+
+.final{position:relative;overflow:hidden}
+.final .bgimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 40%;opacity:.3}
+.final::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(5,5,5,.95),rgba(5,5,5,.55))}
+.final .wrap{position:relative;z-index:2}
+.final h2{font-size:clamp(56px,9vw,128px)}
+.final .lead{color:rgba(255,255,255,.85);margin-top:20px}
+
+footer{border-top:1px solid var(--line);padding-block:34px 42px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+footer .wrap{display:flex;flex-wrap:wrap;gap:14px 32px;justify-content:space-between}
+footer a{text-decoration:none;color:var(--fg)}
+footer a:hover{color:var(--accent)}
+footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
+.net{flex-basis:100%;padding-bottom:24px;margin-bottom:6px;border-bottom:1px solid var(--line)}
+.net-h{margin:0 0 14px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.net ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px 24px}
+.net a{display:grid;gap:3px;color:var(--fg)}
+.net b{font-family:var(--display);font-style:italic;font-weight:800;font-size:22px;line-height:1.05;text-transform:uppercase}
+.net span{font-family:var(--body);font-size:14px;line-height:1.35;color:var(--muted)}
+.net i{font-style:normal;color:var(--muted)}
+.net a:hover b{color:var(--accent)}
+.coach .coach-links{margin-top:auto;display:flex;flex-wrap:wrap;gap:6px 20px}
+.coach .coach-links .ig{margin-top:0}
+.shead p a{color:var(--fg);text-decoration-color:var(--accent);text-underline-offset:3px}
+@media (max-width:560px){.nav .navlinks .btn{display:none}.lang a{padding:7px 5px;letter-spacing:.04em}.lang{max-width:calc(100vw - 110px);overflow-x:auto;scrollbar-width:none;flex-wrap:nowrap}.lang::-webkit-scrollbar{display:none}}
+@media (max-width:1180px) and (min-width:561px){.navlinks a.txt{display:none}}
+.display{overflow-wrap:break-word;hyphens:auto}
+.shead>*,.group-label>*,.together>*,.grid>*{min-width:0}
+.together .display,.card h4{overflow-wrap:break-word;hyphens:auto}
+@media (max-width:560px){.together .display{font-size:clamp(34px,10vw,48px)}}
+@media (max-width:560px){.shead h2{font-size:clamp(34px,9.5vw,44px)}.group-label h3{font-size:clamp(22px,7vw,28px);overflow-wrap:break-word}}
+.price .fx{display:block;width:100%;font-style:normal;font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:4px;letter-spacing:.02em}
+.guides{display:flex;flex-wrap:wrap;gap:8px 20px;margin:0 0 18px;padding:0 0 18px;border-bottom:1px solid var(--line)}
+.guides a{color:var(--fg);text-decoration:none;font-weight:500}
+.guides a:hover{color:var(--accent)}
+</style>
+</head>
+<body>
+
+<nav class="nav" aria-label="Hoofdmenu">
+  <div class="wrap">
+    <a class="logo" href="#top" aria-label="STR2G HYROX home"><img class="mark" src="/favicon.svg?v=2" alt="" width="34" height="34"><b>STR<span class="gold">2</span>G</b><small>Online HYROX-programma's</small></a>
+    <div class="navlinks">
+      <a class="txt" href="#programs">Programma's</a>
+      <a class="txt" href="#coaching">1:1</a>
+      <a class="txt" href="#coaches">Coaches</a>
+      <a class="txt" href="#faq">FAQ</a>
+      <nav class="lang" aria-label="Taal"><a href="/" hreflang="en" lang="en">EN</a><a href="/cs/" hreflang="cs" lang="cs">CZ</a><a href="/sk/" hreflang="sk" lang="sk">SK</a><a href="/de/" hreflang="de" lang="de">DE</a><a href="/pl/" hreflang="pl" lang="pl">PL</a><a href="/fr/" hreflang="fr" lang="fr">FR</a><a href="/es/" hreflang="es" lang="es">ES</a><a href="/it/" hreflang="it" lang="it">IT</a><a href="/nl/" hreflang="nl" lang="nl" aria-current="page">NL</a></nav>
+      <a class="btn btn-gold" href="#programs">Nu starten</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <img class="hero-img" src="../img/lada-ria-finish-line.webp" alt="Láďa en Ria komen samen over de HYROX-finish" fetchpriority="high">
+  <div class="wrap">
+    <p class="eyebrow">HYROX Performance Coaching · Online · Wereldwijd</p>
+    <h1 class="display">HYROX is geen<br>willekeurige<br><span class="gold">workout.</span></h1>
+    <p class="lead">HYROX-training met structuur. Hardlopen, kracht, stations en tempo in één schema. Voor je eerste race of je volgende PR. Elke training op je telefoon.</p>
+    <div class="cta-row">
+      <a class="btn btn-gold" href="#programs">Kies een programma</a>
+      <a class="btn btn-ghost" href="#pick">Help me kiezen</a>
+    </div>
+    <div class="facts">
+      <div class="fact"><div class="l">Programma's</div><div class="n">9</div></div>
+      <div class="fact"><div class="l">Láďa · HYROX Berlijn</div><div class="n">1:11:12</div></div>
+      <div class="fact"><div class="l">STR2G-clubs</div><div class="n">3 steden</div></div>
+      <div class="fact"><div class="l">Coaches die zelf racen</div><div class="n">2</div></div>
+    </div>
+  </div>
+</header>
+
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track">
+    <span>1 km lopen</span><span class="st">SkiErg<em>1000 m</em></span><span>1 km lopen</span><span class="st">Sled Push<em>50 m</em></span><span>1 km lopen</span><span class="st">Sled Pull<em>50 m</em></span><span>1 km lopen</span><span class="st">Burpee Broad Jumps<em>80 m</em></span><span>1 km lopen</span><span class="st">Row<em>1000 m</em></span><span>1 km lopen</span><span class="st">Farmers Carry<em>200 m</em></span><span>1 km lopen</span><span class="st">Sandbag Lunges<em>100 m</em></span><span>1 km lopen</span><span class="st">Wall Balls<em>100 herh.</em></span>
+    <span>1 km lopen</span><span class="st">SkiErg<em>1000 m</em></span><span>1 km lopen</span><span class="st">Sled Push<em>50 m</em></span><span>1 km lopen</span><span class="st">Sled Pull<em>50 m</em></span><span>1 km lopen</span><span class="st">Burpee Broad Jumps<em>80 m</em></span><span>1 km lopen</span><span class="st">Row<em>1000 m</em></span><span>1 km lopen</span><span class="st">Farmers Carry<em>200 m</em></span><span>1 km lopen</span><span class="st">Sandbag Lunges<em>100 m</em></span><span>1 km lopen</span><span class="st">Wall Balls<em>100 herh.</em></span>
+  </div>
+</div>
+
+<section id="approach">
+  <div class="wrap">
+    <div class="shead">
+      <p class="eyebrow">Zo trainen we</p>
+      <h2 class="display"><span class="num">01</span><span>Geen <span class="gold">giswerk.</span></span></h2>
+      <p>Iedereen kan een zware workout schrijven. Een goed schema brengt je klaar aan de start en over de finish zonder tijd te verliezen.</p>
+    </div>
+    <div class="approach">
+      <figure>
+        <img src="../img/lada-finish-help.webp" alt="Láďa helpt een uitgeputte atleet overeind" loading="lazy">
+        <figcaption>Werken onder vermoeidheid</figcaption>
+      </figure>
+      <div class="pillars">
+        <div class="pillar"><h3>Hardlopen</h3><p>De helft van de race. Tempo, loopeconomie en lopen dat overeind blijft na de sleds.</p></div>
+        <div class="pillar"><h3>Kracht</h3><p>Een sterkere atleet duwt de sled sneller en verlaat het station frisser.</p></div>
+        <div class="pillar"><h3>Stations</h3><p>Techniek die seconden en energie bespaart op alle acht stations.</p></div>
+        <div class="pillar"><h3>Vermoeidheid</h3><p>Lopen na de stations en werken onder vermoeidheid. Wat op racedag het verschil maakt.</p></div>
+        <div class="pillar"><h3>Hoofd</h3><p>Tactiek, tempo en je inspanning vasthouden als het pijn begint te doen.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="programs">
+  <div class="wrap">
+    <div class="shead" id="pick">
+      <p class="eyebrow">Programma's</p>
+      <h2 class="display"><span class="num">02</span><span>Begin waar <span class="gold">je nu staat.</span></span></h2>
+      <p>Maandprogramma's, racevoorbereidingen, gerichte blokken en 1:1 coaching. Klik wat bij je past en we wijzen je het juiste programma aan.</p>
+    </div>
+
+    <div class="chooser" role="group" aria-label="Vind je programma">
+      <button type="button" id="ch-start" data-target="basic">Ik ben nieuw in HYROX</button>
+      <button type="button" id="ch-comp" data-target="competitor">Ik race en wil een snellere tijd</button>
+      <button type="button" id="ch-pro" data-target="pro">Ik wil het hoogste maandniveau</button>
+      <button type="button" id="ch-12" data-target="raceprep">Mijn race is over 12 weken</button>
+      <button type="button" id="ch-8" data-target="singles">Mijn race is over 8 weken</button>
+      <button type="button" id="ch-dbl" data-target="doubles">We racen Doubles</button>
+      <button type="button" id="ch-run" data-target="running">Hardlopen houdt me tegen</button>
+      <button type="button" id="ch-taper" data-target="taper">Mijn race is over 2 weken</button>
+      <button type="button" id="ch-one" data-target="coaching">Ik wil een schema alleen voor mij</button>
+    </div>
+    <p class="chooser-hint" id="chooser-hint" aria-live="polite"></p>
+
+    <div class="group-label"><h3>Maandprogramma's</h3><p>Abonnement · beheer je in Strivee</p></div>
+    <div class="grid">
+      <article class="card" id="basic">
+        <div class="kind">Basis</div>
+        <h4>HYROX Basic</h4>
+        <div class="price"><b>750 CZK</b><span>/ maand</span><em class="fx">≈ € 31</em></div>
+        <div class="meta"><div><strong>5</strong>dagen / week</div><div><strong>60</strong>min / dag</div><div><strong>1</strong>sessie / dag</div></div>
+        <p class="for">Voor wie serieus met HYROX-training wil beginnen.</p>
+        <p>Hardlopen, kracht en HYROX-bewegingen in één schema. Je bouwt je basis, verbetert je techniek en maakt een routine die je volhoudt.</p>
+        <div class="actions"><a class="btn btn-gold" href="https://train.strivee.app/payment/gFN1JqRA8MF3l3uICbyS" target="_blank" rel="noopener" data-program="HYROX Basic" data-value="750">Start</a><a class="btn btn-ghost" href="https://train.strivee.app/program/gFN1JqRA8MF3l3uICbyS" target="_blank" rel="noopener">Details</a></div>
+      </article>
+      <article class="card" id="competitor">
+        <div class="kind">Prestatie</div>
+        <h4>HYROX Competitor</h4>
+        <div class="price"><b>960 CZK</b><span>/ maand</span><em class="fx">≈ € 40</em></div>
+        <div class="meta"><div><strong>6</strong>dagen / week</div><div><strong>120</strong>min / dag</div><div><strong>2</strong>sessies / dag</div></div>
+        <p class="for">Voor ervaren racers die een snellere tijd willen.</p>
+        <p>Meer hardlopen, meer werkcapaciteit, kracht, racetempo en snelle overgangen. Voor wie consequent traint en een duidelijk doel heeft.</p>
+        <div class="actions"><a class="btn btn-gold" href="https://train.strivee.app/payment/qbr9Mj9XTUdnrsc5F7kZ" target="_blank" rel="noopener" data-program="HYROX Competitor" data-value="960">Start</a><a class="btn btn-ghost" href="https://train.strivee.app/program/qbr9Mj9XTUdnrsc5F7kZ" target="_blank" rel="noopener">Details</a></div>
+      </article>
+      <article class="card" id="pro">
+        <div class="kind">Topniveau</div>
+        <h4>HYROX Pro Athlete</h4>
+        <div class="price"><b>1.350 CZK</b><span>/ maand</span><em class="fx">≈ € 56</em></div>
+        <div class="meta"><div><strong>6</strong>dagen / week</div><div><strong>75</strong>min / dag</div><div><strong>1</strong>sessie / dag</div></div>
+        <p class="for">Voor wie HYROX serieus neemt en het beste wil wat we doen.</p>
+        <p>Hardlopen en functioneel werk in een duidelijke structuur, techniekvideo's en begeleiding bij tempo, herstel en rust. Je prestatie stijgt zonder overtraining.</p>
+        <div class="actions"><a class="btn btn-gold" href="https://train.strivee.app/payment/D6kVnKDHN2Y3sKO0sPGI" target="_blank" rel="noopener" data-program="HYROX Pro Athlete" data-value="1350">Start</a><a class="btn btn-ghost" href="https://train.strivee.app/program/D6kVnKDHN2Y3sKO0sPGI" target="_blank" rel="noopener">Details</a></div>
+      </article>
+    </div>
+
+    <div class="group-label"><h3>Racevoorbereidingen</h3><p>Eenmalige betaling · je hebt een racedatum</p></div>
+    <div class="grid">
+      <article class="card" id="raceprep">
+        <div class="kind">12 weken tot de race</div>
+        <h4>12-Week HYROX Race Prep</h4>
+        <div class="price"><b>1.900 CZK</b><span>eenmalig</span><em class="fx">≈ € 79</em></div>
+        <div class="meta"><div><strong>6</strong>dagen / week</div><div><strong>90</strong>min / dag</div><div><strong>12</strong>weken</div></div>
+        <p class="for">Voor wie op racedag wil presteren, niet alleen finishen.</p>
+        <p>De complete voorbereiding. Eerst de basis, dan intensiteit en racespecifiek werk, daarna de laatste fine-tuning. Tempo, stations, overgangen en prestatie onder vermoeidheid.</p>
+        <div class="actions"><a class="btn btn-gold" href="https://train.strivee.app/payment/0dvaQ3aahjzyCoWmPgMz" target="_blank" rel="noopener" data-program="12-Week HYROX Race Prep" data-value="1900">Kopen</a><a class="btn btn-ghost" href="https://train.strivee.app/program/0dvaQ3aahjzyCoWmPgMz" target="_blank" rel="noopener">Details</a></div>
+      </article>
+      <article class="card" id="singles">
+        <div class="kind">8 weken · Singles</div>
+        <h4>8-Week HYROX Singles</h4>
+        <div class="price"><b>1.500 CZK</b><span>eenmalig</span><em class="fx">≈ € 62</em></div>
+        <div class="meta"><div><strong>6</strong>dagen / week</div><div><strong>60</strong>min / dag</div><div><strong>8</strong>weken</div></div>
+        <p class="for">Voor wie een trainingsbasis heeft en een race op de kalender.</p>
+        <p>Een complete voorbereiding van acht weken. Hardlopen, kracht, HYROX-sessies en lopen na stations. Hoe dichter bij de race, hoe specifieker.</p>
+        <div class="actions"><a class="btn btn-gold" href="https://train.strivee.app/payment/tsC3Khz8zSQMLLIs9Fnp" target="_blank" rel="noopener" data-program="8-Week HYROX Singles" data-value="1500">Kopen</a><a class="btn btn-ghost" href="https://train.strivee.app/program/tsC3Khz8zSQMLLIs9Fnp" target="_blank" rel="noopener">Details</a></div>
+      </article>
+      <article class="card" id="doubles">
+        <div class="kind">8 weken · Doubles</div>
+        <h4>8-Week HYROX Doubles</h4>
+        <div class="price"><b>1.700 CZK</b><span>eenmalig</span><em class="fx">≈ € 70</em></div>
+        <div class="meta"><div><strong>6</strong>dagen / week</div><div><strong>75</strong>min / dag</div><div><strong>8</strong>weken</div></div>
+        <p class="for">Voor duo's die slim willen racen, niet alleen samen.</p>
+        <p>Individuele conditie plus het teamaspect: strategie op de stations, werk verdelen, gezamenlijk tempo en raceverloop. Gebruik ieders sterke punten.</p>
+        <div class="actions"><a class="btn btn-gold" href="https://train.strivee.app/payment/QFgjJOqEU6Y1x58k0SBH" target="_blank" rel="noopener" data-program="8-Week HYROX Doubles" data-value="1700">Kopen</a><a class="btn btn-ghost" href="https://train.strivee.app/program/QFgjJOqEU6Y1x58k0SBH" target="_blank" rel="noopener">Details</a></div>
+      </article>
+    </div>
+
+    <div class="group-label"><h3>Gerichte blokken</h3><p>Eenmalige betaling · één doel goed aangepakt</p></div>
+    <div class="grid two">
+      <article class="card" id="running">
+        <div class="kind">Running for HYROX</div>
+        <h4>Running for HYROX 2.0</h4>
+        <div class="price"><b>1.000 CZK</b><span>eenmalig</span><em class="fx">≈ € 41</em></div>
+        <div class="meta"><div><strong>6</strong>dagen / week</div><div><strong>75</strong>min / dag</div><div><strong>12</strong>weken</div></div>
+        <p class="for">Voor iedereen die tijd verliest op het lopen.</p>
+        <p>Loopeconomie, tempo, aerobe capaciteit en kwalitatief lopen onder vermoeidheid. Rustige duurlopen, tempo, intervallen en racetempo. Los of naast je krachttraining.</p>
+        <div class="actions"><a class="btn btn-gold" href="https://train.strivee.app/payment/l4LKqbJX8ezlAEDBm6Dg" target="_blank" rel="noopener" data-program="Running for HYROX 2.0" data-value="1000">Kopen</a><a class="btn btn-ghost" href="https://train.strivee.app/program/l4LKqbJX8ezlAEDBm6Dg" target="_blank" rel="noopener">Details</a></div>
+      </article>
+      <article class="card" id="taper">
+        <div class="kind">Laatste 2 weken</div>
+        <h4>2-Week HYROX Taper 2.0</h4>
+        <div class="price"><b>550 CZK</b><span>eenmalig</span><em class="fx">≈ € 23</em></div>
+        <div class="meta"><div><strong>6</strong>dagen / week</div><div><strong>90</strong>min / dag</div><div><strong>2</strong>weken</div></div>
+        <p class="for">Voor iedereen met een race om de hoek. Open, Doubles of Pro.</p>
+        <p>Het werk is gedaan. Verspil het nu niet. We schroeven het volume terug, houden je scherp op racetempo en je staat aan de start met frisse benen en een duidelijk plan.</p>
+        <div class="actions"><a class="btn btn-gold" href="https://train.strivee.app/payment/JBwt4zlJKA0vCQn9cfih" target="_blank" rel="noopener" data-program="2-Week HYROX Taper 2.0" data-value="550">Kopen</a><a class="btn btn-ghost" href="https://train.strivee.app/program/JBwt4zlJKA0vCQn9cfih" target="_blank" rel="noopener">Details</a></div>
+      </article>
+    </div>
+
+    <div class="one" id="coaching">
+      <figure><img src="../img/lada-coaching.webp" alt="Láďa coacht een atleet in de gym" loading="lazy"></figure>
+      <div class="body">
+        <p class="eyebrow" style="margin:0">Premium · 1:1 coaching</p>
+        <h3>HYROX Individual Program <span class="gold">1:1</span></h3>
+        <p>Een schema dat alleen voor jou is geschreven. Afgestemd op je conditie, je racedoel, de tijd die je echt hebt, waar je traint en wat je tegenhoudt. Aangepast op basis van je resultaten en feedback.</p>
+        <div class="price"><b>3.500 CZK</b><span>/ maand · ≈ 6 dagen per week</span><em class="fx">≈ € 145</em></div>
+        <ul>
+          <li>Persoonlijk schema, geen template</li>
+          <li>Regelmatige aanpassingen</li>
+          <li>Gericht werken aan zwakke punten</li>
+          <li>Tempo en racestrategie</li>
+          <li>Coaching op overgangen</li>
+          <li>Direct contact met je coach</li>
+        </ul>
+        <div class="actions">
+          <a class="btn btn-gold" href="https://train.strivee.app/payment/Ckjr2cZAiemzMVVr8F1D" target="_blank" rel="noopener" data-program="HYROX Individual Program 1:1" data-value="3500">Start 1:1</a>
+          <a class="btn btn-ghost" href="https://train.strivee.app/program/Ckjr2cZAiemzMVVr8F1D" target="_blank" rel="noopener">Details</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <div class="shead">
+      <p class="eyebrow">Zo werkt het</p>
+      <h2 class="display"><span class="num">03</span><span>Geen pdf's. <span class="gold">Gewoon trainen.</span></span></h2>
+      <p>Je schema staat in de Strivee-app. Je opent hem, ziet de training van vandaag, doet het werk en logt je resultaat.</p>
+    </div>
+    <div class="steps">
+      <div class="step"><div class="num">STAP 1</div><h3>Kies een programma</h3><p>Klik op Start of Kopen. De betaling loopt veilig via Strivee.</p></div>
+      <div class="step"><div class="num">STAP 2</div><h3>Download Strivee</h3><p>iOS en Android. Log in en je programma staat klaar.</p></div>
+      <div class="step"><div class="num">STAP 3</div><h3>Train en log</h3><p>Elke dag weet je wat er op het programma staat. Log je resultaat en zie jezelf beter worden.</p></div>
+    </div>
+    <div class="app-list">
+      <span>Dagelijkse trainingen op je telefoon</span><span>Leaderboard bij elke training</span><span>Maxima, percentages, benchmarks</span><span>Community en reacties</span><span>Log je eigen extra trainingen</span>
+    </div>
+  </div>
+</section>
+
+<section id="coaches">
+  <div class="wrap">
+    <div class="shead">
+      <p class="eyebrow">Coaches</p>
+      <h2 class="display"><span class="num">04</span><span>Wie <span class="gold">je coacht.</span></span></h2>
+      <p>Geen anoniem team achter een scherm. We schrijven de programma's zelf, testen ze op onszelf en in onze clubs, en racen ermee.</p>
+    </div>
+    <div class="coaches">
+      <article class="coach">
+        <figure><img src="../img/lada-coaching.webp" alt="Láďa Suchánek" loading="lazy" style="object-position:38% 30%"></figure>
+        <div class="body">
+          <div class="role">Head coach · oprichter STR2G</div>
+          <h3>Láďa<br>Suchánek</h3>
+          <p class="quote">"Training heeft structuur nodig, niet alleen willekeurig hard werk. Races win je met tempo en je hoofd."</p>
+          <p>Coach voor kracht, conditie, hardlopen en HYROX. Leidt samen met Form Factory de STR2G HYROX-clubs in Praag, Brno en Ostrava en coacht online atleten over de hele wereld. Racet zelf: 1:11:12 in Berlijn.</p>
+          <ul class="creds"><li>HYROX Performance Coach L1</li><li>CrossFit L1</li><li>OPEX CCP</li><li>Precision Nutrition L1</li><li>Running Coach</li><li>Sportmassage</li></ul>
+          <div class="coach-links"><a class="ig" href="https://instagram.com/22segge_coach" target="_blank" rel="noopener">@22segge_coach →</a><a class="ig" href="https://hyrox-prague.eu/en/" target="_blank" rel="noopener">hyrox-prague.eu →</a></div>
+        </div>
+      </article>
+      <article class="coach">
+        <figure><img src="../img/ria-portrait.webp" alt="Ria Suchánek Hrušovská" loading="lazy" style="object-position:50% 25%"></figure>
+        <div class="body">
+          <div class="role">Coach · mental coach</div>
+          <h3>Ria Suchánek<br>Hrušovská, MSc.</h3>
+          <p class="quote">"Je traint je lichaam. Je traint ook je hoofd. Op racedag beslist welke van de twee sterker is."</p>
+          <p>Van CrossFit en diepe stabilisatie tot mental coaching in de sport. Ze schrijft de programma's, coacht en racet samen met Láďa, en zorgt dat je prestatie stijgt terwijl je lichaam het volhoudt.</p>
+          <ul class="creds"><li>HYROX Performance Coach</li><li>Mental coach (Newton University)</li><li>CrossFit L2</li><li>Gediplomeerd personal trainer</li><li>Aarmy Coach</li><li>Les Mills</li><li>Voedingsspecialist (Nutris)</li><li>Deep Stabilization System</li></ul>
+          <a class="ig" href="https://instagram.com/riahrusovskaofficial" target="_blank" rel="noopener">@riahrusovskaofficial →</a>
+        </div>
+      </article>
+    </div>
+
+    <div class="together">
+      <div class="body">
+        <p class="eyebrow" style="margin:0">STR2G · Stronger together</p>
+        <h3 class="display">We racen wat<br><span class="gold">we programmeren.</span></h3>
+        <p>STR2G draait om mensen die eerlijk trainen en elkaar vooruit trekken. Je krijgt een schema, een community en twee coaches die precies weten hoe de 7e kilometer voelt.</p>
+      </div>
+      <figure><img src="../img/lada-ria-finish-time.webp" alt="Láďa en Ria bij het HYROX-tijdenbord" loading="lazy"></figure>
+    </div>
+  </div>
+</section>
+
+<section id="inside">
+  <div class="wrap">
+    <div class="shead">
+      <p class="eyebrow">Binnen STR2G</p>
+      <h2 class="display"><span class="num">05</span><span>Clubs. Races. <span class="gold">Mensen.</span></span></h2>
+      <p>Dezelfde programmering draait in onze HYROX-clubs in Praag, Brno en Ostrava. Online krijg je hetzelfde schema, waar je ook traint. <a href="https://hyroxtrainingclub.cz/en/" target="_blank" rel="noopener">Lessen en clubs →</a></p>
+    </div>
+    <div class="gallery">
+      <figure class="g1"><img src="../img/ria-class-timer.webp" alt="Ria leidt een les van de HYROX Training Club" loading="lazy"></figure>
+      <figure class="g2"><img src="../img/ria-coaching-group.webp" alt="Ria coacht een groep atleten" loading="lazy"></figure>
+      <figure class="g3"><img src="../img/lada-finish-help.webp" alt="Láďa helpt een atleet na een zware inspanning" loading="lazy" style="object-position:50% 45%"></figure>
+      <figure class="g4"><img src="../img/lada-ria-race-day.webp" alt="Láďa en Ria na een HYROX-race" loading="lazy"></figure>
+      <figure class="g5"><img src="../img/lada-coaching.webp" alt="Láďa praat met een atleet in de club" loading="lazy" style="object-position:60% 40%"></figure>
+    </div>
+  </div>
+</section>
+
+<section id="athletes">
+  <div class="wrap">
+    <div class="shead">
+      <p class="eyebrow">Atleten</p>
+      <h2 class="display"><span class="num">06</span><span>Wat atleten <span class="gold">zeggen.</span></span></h2>
+      <p>Echte feedback van atleten over onze programma's en 1:1 coaching.</p>
+    </div>
+    <div class="quotes">
+      <figure class="q"><div class="mark">“</div><blockquote>Het Running for HYROX-programma verbeterde precies het deel van de race waar ik het meeste moeite mee had. Rustige duurlopen, intervallen, drempelwerk en lopen onder vermoeidheid. Ik ben sneller en houd mijn tempo tussen de stations veel beter vast.</blockquote><figcaption class="who"><b>Anna Müller</b> · Running for HYROX</figcaption></figure>
+      <figure class="q"><div class="mark">“</div><blockquote>De training van Láďa is goed gestructureerd en intensief. Hij voldeed aan alle verwachtingen. Iedereen kon zelf gewicht en zwaarte kiezen om de hele training af te maken.</blockquote><figcaption class="who"><b>Lukáš Kubík</b></figcaption></figure>
+      <figure class="q"><div class="mark">“</div><blockquote>1:1 coaching veranderde volledig hoe ik train. Looptempo, kracht, stations en racestrategie. Een duidelijk schema en individuele feedback maakten een enorm verschil voor mijn zelfvertrouwen en mijn prestatie op racedag.</blockquote><figcaption class="who"><b>Martin Lacina</b> · 1:1 coaching</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <div class="shead">
+      <p class="eyebrow">FAQ</p>
+      <h2 class="display"><span class="num">07</span><span>Veelgestelde <span class="gold">vragen.</span></span></h2>
+      <p>Nog een andere vraag? Stuur ons een bericht op Instagram.</p>
+    </div>
+    <div class="faq">
+      <details><summary>Heb ik HYROX-ervaring nodig?</summary><p>Nee. Begin je net, kies dan HYROX Basic. Het bouwt je basis op en leert je de stations. Competitor, Pro Athlete en de racevoorbereidingen zijn voor wie al regelmatig traint.</p></details>
+      <details><summary>Kunnen beginners de programma's volgen?</summary><p>Ja. Je past gewichten en volume aan je niveau aan. Het doel is elke training met kwaliteit af te maken, niet alleen te overleven.</p></details>
+      <details><summary>Hebben jullie een programma voor Doubles?</summary><p>Ja, de voorbereiding <a href="#doubles">8-Week HYROX Doubles</a>. Die behandelt werkverdeling, stationsstrategie en gezamenlijk tempo. De andere programma's werken ook voor Doubles, want jullie moeten allebei goed lopen onder vermoeidheid.</p></details>
+      <details><summary>Programma of 1:1 coaching?</summary><p>Een programma is één schema voor iedereen die het volgt, met opties om op te schalen of af te schalen. <a href="#coaching">1:1 coaching</a> wordt alleen voor jou geschreven op basis van je prestatie, herstel en agenda, en onderweg bijgestuurd.</p></details>
+      <details><summary>12 of 8 weken voorbereiding?</summary><p>Heb je de tijd, kies dan 12 weken. Je bouwt een stevige basis voordat de intensiteit komt. Acht weken is voor wie al regelmatig traint en zich wil aanscherpen voor een race.</p></details>
+      <details><summary>Welke uitrusting heb ik nodig?</summary><p>Idealiter een gym met ergometers en HYROX-materiaal. Mis je iets? Stuur ons een bericht op Instagram en we stellen een alternatief voor.</p></details>
+      <details><summary>Hoe zeg ik een maandabonnement op?</summary><p>Je beheert je abonnement direct in Strivee. Racevoorbereidingen en gerichte blokken betaal je eenmalig.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="final">
+  <img class="bgimg" src="../img/lada-ria-finish-line.webp" alt="" loading="lazy">
+  <div class="wrap">
+    <h2 class="display">Racedag<br>wacht niet.<br><span class="gold">Begin nu.</span></h2>
+    <p class="lead">Kies een programma, download Strivee en morgenochtend weet je precies wat er op het programma staat.</p>
+    <div class="cta-row">
+      <a class="btn btn-gold" href="#programs">Kies een programma</a>
+      <a class="btn btn-ghost" href="https://train.strivee.app/p/str2g-hyrox" target="_blank" rel="noopener">Alle programma's op Strivee</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <nav class="guides" aria-label="Guides"><a href="/nl/hyrox-trainingsschema/">HYROX trainingsschema</a><a href="/nl/hyrox-online-coach/">HYROX online coach</a></nav>
+    <nav class="net" aria-label="STR2G-websites"><p class="net-h">STR2G-websites</p><ul><li><a href="https://hyrox-prague.eu/en/" target="_blank" rel="noopener"><b>HYROX Prague</b><span>HYROX-training en racevoorbereiding</span><i>hyrox-prague.eu</i></a></li><li><a href="https://hyroxtrainingclub.cz/en/" target="_blank" rel="noopener"><b>HYROX Training Club</b><span>HYROX-lessen in Praag, Brno en Ostrava</span><i>hyroxtrainingclub.cz</i></a></li><li><a href="https://formfactorygames.cz/en/" target="_blank" rel="noopener"><b>Form Factory Games</b><span>Race · 5 dec 2026</span><i>formfactorygames.cz</i></a></li><li><a href="https://www.ladislavsuchanek.cz/" target="_blank" rel="noopener"><b>Ladislav Suchánek</b><span>Personal training, voeding &amp; massage</span><i>ladislavsuchanek.cz</i></a></li></ul></nav>
+    <div style="display:flex;align-items:center;gap:12px"><img loading="lazy" decoding="async" src="/favicon.svg?v=2" alt="" width="26" height="26" style="border:1px solid var(--line);border-radius:6px"><span>© 2026 STR2G · Stronger Together · Programma's draaien in de Strivee-app</span></div>
+    <div class="links">
+      <a href="https://instagram.com/22segge_coach" target="_blank" rel="noopener">@22segge_coach</a>
+      <a href="https://instagram.com/riahrusovskaofficial" target="_blank" rel="noopener">@riahrusovskaofficial</a>
+      <a href="#" onclick="str2gConsentReset();return false;">Cookie-instellingen</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  document.querySelectorAll('.lang a').forEach(function(a){a.addEventListener('click',function(){try{localStorage.setItem('str2g-lang',a.getAttribute('hreflang'))}catch(e){}})});
+  var names={basic:'HYROX Basic',competitor:'HYROX Competitor',pro:'HYROX Pro Athlete',raceprep:'12-Week HYROX Race Prep',singles:'8-Week HYROX Singles',doubles:'8-Week HYROX Doubles',running:'Running for HYROX 2.0',taper:'2-Week HYROX Taper 2.0',coaching:'HYROX Individual Program 1:1'};
+  var hint=document.getElementById('chooser-hint');
+  document.querySelectorAll('.chooser button').forEach(function(b){
+    b.addEventListener('click',function(){
+      document.querySelectorAll('.chooser button').forEach(function(x){x.setAttribute('aria-pressed','false')});
+      b.setAttribute('aria-pressed','true');
+      document.querySelectorAll('.hit').forEach(function(c){c.classList.remove('hit')});
+      var t=document.getElementById(b.dataset.target);
+      t.classList.add('hit');
+      hint.textContent='→ Ons advies: '+names[b.dataset.target];
+      var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      t.scrollIntoView({behavior:reduce?'auto':'smooth',block:'center'});
+    });
+  });
+})();
+</script>
+</body>
+</html>

@@ -12,8 +12,8 @@ from pathlib import Path
 from pages_content import T, SLUGS, HOME, LOCALE, COUNTRY, PROGRAMS, PLAN_PICKS, price
 
 BASE = "https://str2g.com"
-LANG_LABEL = {"en": "EN", "cs": "CZ", "sk": "SK", "de": "DE", "pl": "PL", "fr": "FR"}
-ORDER = ["en", "cs", "sk", "de", "pl", "fr"]
+LANG_LABEL = {"en": "EN", "cs": "CZ", "sk": "SK", "de": "DE", "pl": "PL", "fr": "FR", "es": "ES", "it": "IT", "nl": "NL"}
+ORDER = ["en", "cs", "sk", "de", "pl", "fr", "es", "it", "nl"]
 NET = {  # weby STR2G v patičce podle jazyka
     "en": [("https://hyrox-prague.eu/en/", "HYROX Prague"), ("https://hyroxtrainingclub.cz/en/", "HYROX Training Club"),
            ("https://formfactorygames.cz/en/", "Form Factory Games"), ("https://www.ladislavsuchanek.cz/", "Ladislav Suchánek")],
@@ -25,7 +25,7 @@ NET["de"] = [("https://hyrox-prague.eu/de/", "HYROX Prague"), ("https://hyroxtra
              ("https://formfactorygames.cz/de/", "Form Factory Games"), ("https://www.ladislavsuchanek.cz/", "Ladislav Suchánek")]
 NET["pl"] = [("https://hyrox-prague.eu/pl/", "HYROX Prague"), ("https://hyroxtrainingclub.cz/pl/", "HYROX Training Club"),
              ("https://formfactorygames.cz/pl/", "Form Factory Games"), ("https://www.ladislavsuchanek.cz/", "Ladislav Suchánek")]
-NET["fr"] = NET["en"]
+NET["fr"] = NET["es"] = NET["it"] = NET["nl"] = NET["en"]
 
 EXTRA_CSS = """
 .lp-hero{min-height:min(78vh,720px)}

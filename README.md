@@ -32,11 +32,11 @@ English is `index.html` (source). Czech, German and Polish live in `/cs/`, `/de/
 2. Add or update the matching lines in `i18n/cs.json`, `i18n/de.json`, `i18n/pl.json` (key = exact English text).
 3. Run `python3 i18n/build.py` and commit everything.
 
-## Trhy a landing pages (SK, FR, UK + DE, PL, CZ)
+## Trhy a landing pages (EN/UK, CZ, SK, DE, PL, FR, ES, IT, NL)
 
-- Hlavní stránka: EN (`/`, i pro UK), `/cs/`, `/sk/`, `/de/`, `/pl/`, `/fr/`. Překlady v `i18n/*.json`.
+- Hlavní stránka: EN (`/`, i pro UK), `/cs/`, `/sk/`, `/de/`, `/pl/`, `/fr/`, `/es/`, `/it/`, `/nl/`. Překlady v `i18n/*.json`.
 - Landing pages pro každý trh: obsah v `i18n/pages_content.py`, šablona v `i18n/pages.py`.
-  - Tréninkový plán: `/hyrox-training-plan/`, `/cs/hyrox-treninkovy-plan/`, `/sk/hyrox-treningovy-plan/`, `/de/hyrox-trainingsplan/`, `/pl/plan-treningowy-hyrox/`, `/fr/programme-hyrox/`
-  - Online trenér: `/online-hyrox-coach/`, `/cs/online-hyrox-trener/`, `/sk/online-hyrox-trener/`, `/de/hyrox-online-coaching/`, `/pl/trener-hyrox-online/`, `/fr/coach-hyrox-en-ligne/`
+  - Tréninkový plán: `/hyrox-training-plan/`, `/cs/hyrox-treninkovy-plan/`, `/sk/hyrox-treningovy-plan/`, `/de/hyrox-trainingsplan/`, `/pl/plan-treningowy-hyrox/`, `/fr/programme-hyrox/`, `/es/plan-entrenamiento-hyrox/`, `/it/programma-allenamento-hyrox/`, `/nl/hyrox-trainingsschema/`
+  - Online trenér: `/online-hyrox-coach/`, `/cs/online-hyrox-trener/`, `/sk/online-hyrox-trener/`, `/de/hyrox-online-coaching/`, `/pl/trener-hyrox-online/`, `/fr/coach-hyrox-en-ligne/`, `/es/entrenador-hyrox-online/`, `/it/coach-hyrox-online/`, `/nl/hyrox-online-coach/`
 - Orientační ceny v €, £ a zł počítá `price()` v `pages_content.py` podle kurzů v `RATES`. Platí se vždy v CZK přes Strivee.
 - Po každé změně spusť `python3 i18n/build.py`. Přegeneruje jazyky, landing pages i `sitemap.xml`.
