@@ -2,38 +2,200 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://str2g.com/</loc>
-    <lastmod>2026-10-15</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://str2g.com/"/>
     <xhtml:link rel="alternate" hreflang="cs" href="https://str2g.com/cs/"/>
+    <xhtml:link rel="alternate" hreflang="sk" href="https://str2g.com/sk/"/>
     <xhtml:link rel="alternate" hreflang="de" href="https://str2g.com/de/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://str2g.com/pl/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://str2g.com/fr/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://str2g.com/"/>
   </url>
   <url>
     <loc>https://str2g.com/cs/</loc>
-    <lastmod>2026-10-15</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://str2g.com/"/>
     <xhtml:link rel="alternate" hreflang="cs" href="https://str2g.com/cs/"/>
+    <xhtml:link rel="alternate" hreflang="sk" href="https://str2g.com/sk/"/>
     <xhtml:link rel="alternate" hreflang="de" href="https://str2g.com/de/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://str2g.com/pl/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://str2g.com/fr/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://str2g.com/"/>
+  </url>
+  <url>
+    <loc>https://str2g.com/sk/</loc>
+    <lastmod>2026-10-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://str2g.com/"/>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://str2g.com/cs/"/>
+    <xhtml:link rel="alternate" hreflang="sk" href="https://str2g.com/sk/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://str2g.com/de/"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://str2g.com/pl/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://str2g.com/fr/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://str2g.com/"/>
   </url>
   <url>
     <loc>https://str2g.com/de/</loc>
-    <lastmod>2026-10-15</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://str2g.com/"/>
     <xhtml:link rel="alternate" hreflang="cs" href="https://str2g.com/cs/"/>
+    <xhtml:link rel="alternate" hreflang="sk" href="https://str2g.com/sk/"/>
     <xhtml:link rel="alternate" hreflang="de" href="https://str2g.com/de/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://str2g.com/pl/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://str2g.com/fr/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://str2g.com/"/>
   </url>
   <url>
     <loc>https://str2g.com/pl/</loc>
-    <lastmod>2026-10-15</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://str2g.com/"/>
     <xhtml:link rel="alternate" hreflang="cs" href="https://str2g.com/cs/"/>
+    <xhtml:link rel="alternate" hreflang="sk" href="https://str2g.com/sk/"/>
     <xhtml:link rel="alternate" hreflang="de" href="https://str2g.com/de/"/>
     <xhtml:link rel="alternate" hreflang="pl" href="https://str2g.com/pl/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://str2g.com/fr/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://str2g.com/"/>
+  </url>
+  <url>
+    <loc>https://str2g.com/fr/</loc>
+    <lastmod>2026-10-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://str2g.com/"/>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://str2g.com/cs/"/>
+    <xhtml:link rel="alternate" hreflang="sk" href="https://str2g.com/sk/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://str2g.com/de/"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://str2g.com/pl/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://str2g.com/fr/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://str2g.com/"/>
+  </url>
+  <url>
+    <loc>https://str2g.com/hyrox-training-plan/</loc>
+    <lastmod>2026-10-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://str2g.com/hyrox-training-plan/"/>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://str2g.com/cs/hyrox-treninkovy-plan/"/>
+    <xhtml:link rel="alternate" hreflang="sk" href="https://str2g.com/sk/hyrox-treningovy-plan/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://str2g.com/de/hyrox-trainingsplan/"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://str2g.com/pl/plan-treningowy-hyrox/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://str2g.com/fr/programme-hyrox/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://str2g.com/hyrox-training-plan/"/>
+  </url>
+  <url>
+    <loc>https://str2g.com/cs/hyrox-treninkovy-plan/</loc>
+    <lastmod>2026-10-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://str2g.com/hyrox-training-plan/"/>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://str2g.com/cs/hyrox-treninkovy-plan/"/>
+    <xhtml:link rel="alternate" hreflang="sk" href="https://str2g.com/sk/hyrox-treningovy-plan/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://str2g.com/de/hyrox-trainingsplan/"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://str2g.com/pl/plan-treningowy-hyrox/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://str2g.com/fr/programme-hyrox/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://str2g.com/hyrox-training-plan/"/>
+  </url>
+  <url>
+    <loc>https://str2g.com/sk/hyrox-treningovy-plan/</loc>
+    <lastmod>2026-10-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://str2g.com/hyrox-training-plan/"/>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://str2g.com/cs/hyrox-treninkovy-plan/"/>
+    <xhtml:link rel="alternate" hreflang="sk" href="https://str2g.com/sk/hyrox-treningovy-plan/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://str2g.com/de/hyrox-trainingsplan/"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://str2g.com/pl/plan-treningowy-hyrox/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://str2g.com/fr/programme-hyrox/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://str2g.com/hyrox-training-plan/"/>
+  </url>
+  <url>
+    <loc>https://str2g.com/de/hyrox-trainingsplan/</loc>
+    <lastmod>2026-10-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://str2g.com/hyrox-training-plan/"/>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://str2g.com/cs/hyrox-treninkovy-plan/"/>
+    <xhtml:link rel="alternate" hreflang="sk" href="https://str2g.com/sk/hyrox-treningovy-plan/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://str2g.com/de/hyrox-trainingsplan/"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://str2g.com/pl/plan-treningowy-hyrox/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://str2g.com/fr/programme-hyrox/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://str2g.com/hyrox-training-plan/"/>
+  </url>
+  <url>
+    <loc>https://str2g.com/pl/plan-treningowy-hyrox/</loc>
+    <lastmod>2026-10-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://str2g.com/hyrox-training-plan/"/>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://str2g.com/cs/hyrox-treninkovy-plan/"/>
+    <xhtml:link rel="alternate" hreflang="sk" href="https://str2g.com/sk/hyrox-treningovy-plan/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://str2g.com/de/hyrox-trainingsplan/"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://str2g.com/pl/plan-treningowy-hyrox/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://str2g.com/fr/programme-hyrox/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://str2g.com/hyrox-training-plan/"/>
+  </url>
+  <url>
+    <loc>https://str2g.com/fr/programme-hyrox/</loc>
+    <lastmod>2026-10-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://str2g.com/hyrox-training-plan/"/>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://str2g.com/cs/hyrox-treninkovy-plan/"/>
+    <xhtml:link rel="alternate" hreflang="sk" href="https://str2g.com/sk/hyrox-treningovy-plan/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://str2g.com/de/hyrox-trainingsplan/"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://str2g.com/pl/plan-treningowy-hyrox/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://str2g.com/fr/programme-hyrox/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://str2g.com/hyrox-training-plan/"/>
+  </url>
+  <url>
+    <loc>https://str2g.com/online-hyrox-coach/</loc>
+    <lastmod>2026-10-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://str2g.com/online-hyrox-coach/"/>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://str2g.com/cs/online-hyrox-trener/"/>
+    <xhtml:link rel="alternate" hreflang="sk" href="https://str2g.com/sk/online-hyrox-trener/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://str2g.com/de/hyrox-online-coaching/"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://str2g.com/pl/trener-hyrox-online/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://str2g.com/fr/coach-hyrox-en-ligne/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://str2g.com/online-hyrox-coach/"/>
+  </url>
+  <url>
+    <loc>https://str2g.com/cs/online-hyrox-trener/</loc>
+    <lastmod>2026-10-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://str2g.com/online-hyrox-coach/"/>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://str2g.com/cs/online-hyrox-trener/"/>
+    <xhtml:link rel="alternate" hreflang="sk" href="https://str2g.com/sk/online-hyrox-trener/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://str2g.com/de/hyrox-online-coaching/"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://str2g.com/pl/trener-hyrox-online/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://str2g.com/fr/coach-hyrox-en-ligne/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://str2g.com/online-hyrox-coach/"/>
+  </url>
+  <url>
+    <loc>https://str2g.com/sk/online-hyrox-trener/</loc>
+    <lastmod>2026-10-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://str2g.com/online-hyrox-coach/"/>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://str2g.com/cs/online-hyrox-trener/"/>
+    <xhtml:link rel="alternate" hreflang="sk" href="https://str2g.com/sk/online-hyrox-trener/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://str2g.com/de/hyrox-online-coaching/"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://str2g.com/pl/trener-hyrox-online/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://str2g.com/fr/coach-hyrox-en-ligne/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://str2g.com/online-hyrox-coach/"/>
+  </url>
+  <url>
+    <loc>https://str2g.com/de/hyrox-online-coaching/</loc>
+    <lastmod>2026-10-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://str2g.com/online-hyrox-coach/"/>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://str2g.com/cs/online-hyrox-trener/"/>
+    <xhtml:link rel="alternate" hreflang="sk" href="https://str2g.com/sk/online-hyrox-trener/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://str2g.com/de/hyrox-online-coaching/"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://str2g.com/pl/trener-hyrox-online/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://str2g.com/fr/coach-hyrox-en-ligne/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://str2g.com/online-hyrox-coach/"/>
+  </url>
+  <url>
+    <loc>https://str2g.com/pl/trener-hyrox-online/</loc>
+    <lastmod>2026-10-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://str2g.com/online-hyrox-coach/"/>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://str2g.com/cs/online-hyrox-trener/"/>
+    <xhtml:link rel="alternate" hreflang="sk" href="https://str2g.com/sk/online-hyrox-trener/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://str2g.com/de/hyrox-online-coaching/"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://str2g.com/pl/trener-hyrox-online/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://str2g.com/fr/coach-hyrox-en-ligne/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://str2g.com/online-hyrox-coach/"/>
+  </url>
+  <url>
+    <loc>https://str2g.com/fr/coach-hyrox-en-ligne/</loc>
+    <lastmod>2026-10-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://str2g.com/online-hyrox-coach/"/>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://str2g.com/cs/online-hyrox-trener/"/>
+    <xhtml:link rel="alternate" hreflang="sk" href="https://str2g.com/sk/online-hyrox-trener/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://str2g.com/de/hyrox-online-coaching/"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://str2g.com/pl/trener-hyrox-online/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://str2g.com/fr/coach-hyrox-en-ligne/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://str2g.com/online-hyrox-coach/"/>
   </url>
 </urlset>
