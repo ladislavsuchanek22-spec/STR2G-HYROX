@@ -394,6 +394,14 @@ section + section{border-top:1px solid var(--line)}
 .q .mark{font-family:var(--display);font-weight:900;font-style:italic;font-size:64px;line-height:.5;color:var(--accent);height:22px}
 .q .who{margin-top:auto;font-family:var(--mono);font-size:12px;color:var(--muted)}
 .q .who b{color:var(--fg);font-weight:500}
+.rfilter{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 20px}
+.rfilter button{background:var(--panel);color:var(--muted);border:1px solid var(--line);font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;padding:9px 13px;cursor:pointer}
+.rfilter button:hover{color:var(--fg);border-color:var(--muted)}
+.rfilter button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.rfilter button span{opacity:.6;margin-left:6px}
+.q .ptag{align-self:flex-start;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);border:1px solid var(--line);padding:4px 8px}
+.q .src{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.04em}
+.q .src a{color:inherit}
 
 .faq{border-top:1px solid var(--line);max-width:880px}
 details{border-bottom:1px solid var(--line)}
@@ -731,10 +739,11 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
       <h2 class="display"><span class="num">06</span><span>Was Athleten <span class="gold">sagen.</span></span></h2>
       <p>Echtes Feedback von Athleten zu unseren Programmen und zum 1:1 Coaching.</p>
     </div>
-    <div class="quotes">
-      <figure class="q"><div class="mark">“</div><blockquote>Running for HYROX hat genau den Teil des Rennens verbessert, mit dem ich am meisten Probleme hatte. Lockere Läufe, Intervalle, Schwellentraining und Laufen unter Ermüdung. Ich bin schneller geworden und halte mein Tempo zwischen den Stationen viel besser.</blockquote><figcaption class="who"><b>Anna Müller</b> · Running for HYROX</figcaption></figure>
-      <figure class="q"><div class="mark">“</div><blockquote>Das Training von Láďa ist gut strukturiert und intensiv. Es hat alle Erwartungen erfüllt. Jeder konnte Gewicht und Schwierigkeit so wählen, dass er die ganze Einheit durchziehen konnte.</blockquote><figcaption class="who"><b>Lukáš Kubík</b></figcaption></figure>
-      <figure class="q"><div class="mark">“</div><blockquote>Das 1:1 Coaching hat meine Einstellung zum Training komplett verändert. Lauftempo, Kraft, Stationen und Rennstrategie. Ein klarer Plan und individuelles Feedback haben mein Selbstvertrauen und meine Leistung am Renntag enorm gesteigert.</blockquote><figcaption class="who"><b>Martin Lacina</b> · 1:1 Coaching</figcaption></figure>
+    <div class="rfilter" id="rfilter" role="group" aria-label="Nach Programm filtern"><button type="button" id="rf-all" data-f="*" aria-pressed="true">Alle Programme</button></div>
+    <div class="quotes" id="reviews">
+      <figure class="q" data-program="Running for HYROX 2.0"><div class="mark">“</div><span class="ptag">Running for HYROX 2.0</span><blockquote>Running for HYROX hat genau den Teil des Rennens verbessert, mit dem ich am meisten Probleme hatte. Lockere Läufe, Intervalle, Schwellentraining und Laufen unter Ermüdung. Ich bin schneller geworden und halte mein Tempo zwischen den Stationen viel besser.</blockquote><figcaption class="who"><b>Anna Müller</b> · Running for HYROX</figcaption><p class="src"><a href="https://train.strivee.app/p/str2g-hyrox" target="_blank" rel="noopener">Bewertung auf Strivee</a></p></figure>
+      <figure class="q"><div class="mark">“</div><blockquote>Das Training von Láďa ist gut strukturiert und intensiv. Es hat alle Erwartungen erfüllt. Jeder konnte Gewicht und Schwierigkeit so wählen, dass er die ganze Einheit durchziehen konnte.</blockquote><figcaption class="who"><b>Lukáš Kubík</b></figcaption><p class="src"><a href="https://train.strivee.app/p/str2g-hyrox" target="_blank" rel="noopener">Bewertung auf Strivee</a></p></figure>
+      <figure class="q" data-program="HYROX Individual Program 1:1"><div class="mark">“</div><span class="ptag">HYROX Individual Program 1:1</span><blockquote>Das 1:1 Coaching hat meine Einstellung zum Training komplett verändert. Lauftempo, Kraft, Stationen und Rennstrategie. Ein klarer Plan und individuelles Feedback haben mein Selbstvertrauen und meine Leistung am Renntag enorm gesteigert.</blockquote><figcaption class="who"><b>Martin Lacina</b> · 1:1 Coaching</figcaption><p class="src"><a href="https://train.strivee.app/p/str2g-hyrox" target="_blank" rel="noopener">Bewertung auf Strivee</a></p></figure>
     </div>
   </div>
 </section>
@@ -1016,5 +1025,17 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
 })();
 </script>
 <!--/STR2G_NEWSLETTER-->
+<script>
+(function(){
+  var box=document.getElementById('rfilter'),cards=[].slice.call(document.querySelectorAll('#reviews .q'));
+  if(!box||!cards.length)return;
+  var counts={};cards.forEach(function(c){var p=c.getAttribute('data-program');if(p)counts[p]=(counts[p]||0)+1;});
+  var all=box.querySelector('[data-f="*"]');all.insertAdjacentHTML('beforeend','<span>'+cards.length+'</span>');
+  Object.keys(counts).forEach(function(p,i){var b=document.createElement('button');b.type='button';b.id='rf-'+i;b.setAttribute('data-f',p);b.setAttribute('aria-pressed','false');b.textContent=p;var n=document.createElement('span');n.textContent=counts[p];b.appendChild(n);box.appendChild(b);});
+  box.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;var f=b.getAttribute('data-f');
+    [].forEach.call(box.querySelectorAll('button'),function(x){x.setAttribute('aria-pressed',String(x===b));});
+    cards.forEach(function(c){c.hidden=!(f==='*'||c.getAttribute('data-program')===f);});});
+})();
+</script>
 </body>
 </html>
