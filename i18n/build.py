@@ -16,6 +16,14 @@ XLINKS = {u: {"cs": "/", "sk": "/", "de": "/de/", "pl": "/pl/", "fr": "/en/", "e
     "https://hyrox-prague.eu/en/", "https://hyroxtrainingclub.cz/en/", "https://formfactorygames.cz/en/")}
 ATTRS = ("alt", "aria-label", "content", "title")
 
+# Newsletter okno: i18n/newsletter.html je zdroj, do index.html se vždy přepíše aktuální verze
+import re as _re
+_idx = ROOT / "index.html"
+_nl = (ROOT / "i18n" / "newsletter.html").read_text(encoding="utf-8").rstrip("\n")
+_html = _idx.read_text(encoding="utf-8")
+_html = _re.sub(r"<!--STR2G_NEWSLETTER-->.*?<!--/STR2G_NEWSLETTER-->", lambda m: _nl, _html, count=1, flags=_re.S)
+_idx.write_text(_html, encoding="utf-8")
+
 src = (ROOT / "index.html").read_text(encoding="utf-8")
 
 # Tracking snippet (i18n/tracking.html) is copied verbatim into every language,
