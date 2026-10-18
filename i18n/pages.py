@@ -318,7 +318,10 @@ def page(lang, kind, parts):
 </body>
 </html>
 '''
-    return head + body + tail
+    html = head + body + tail
+    # Newsletter okno (i18n/newsletter.html) – stejné jako na hlavní stránce
+    nl = (Path(__file__).resolve().parent / "newsletter.html").read_text(encoding="utf-8").rstrip("\n")
+    return html.replace("</body>", nl + "\n</body>", 1)
 
 
 def build(root):
