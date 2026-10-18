@@ -16,16 +16,18 @@ LANG_LABEL = {"en": "EN", "cs": "CZ", "sk": "SK", "de": "DE", "pl": "PL", "fr": 
 ORDER = ["en", "cs", "sk", "de", "pl", "fr", "es", "it", "nl"]
 NET = {  # weby STR2G v patičce podle jazyka
     "en": [("https://hyrox-prague.eu/en/", "HYROX Prague"), ("https://hyroxtrainingclub.cz/en/", "HYROX Training Club"),
-           ("https://formfactorygames.cz/en/", "Form Factory Games"), ("https://www.ladislavsuchanek.cz/", "Ladislav Suchánek")],
+           ("https://formfactorygames.cz/en/", "Form Factory Games"), ("https://www.ladislavsuchanek.cz/", "Ladislav Suchánek"), ("RIA", "Ria Suchánek Hrušovská")],
 }
 NET["cs"] = [("https://hyrox-prague.eu/", "HYROX Prague"), ("https://hyroxtrainingclub.cz/", "HYROX Training Club"),
-             ("https://formfactorygames.cz/", "Form Factory Games"), ("https://www.ladislavsuchanek.cz/", "Ladislav Suchánek")]
+             ("https://formfactorygames.cz/", "Form Factory Games"), ("https://www.ladislavsuchanek.cz/", "Ladislav Suchánek"), ("RIA", "Ria Suchánek Hrušovská")]
 NET["sk"] = NET["cs"]
 NET["de"] = [("https://hyrox-prague.eu/de/", "HYROX Prague"), ("https://hyroxtrainingclub.cz/de/", "HYROX Training Club"),
-             ("https://formfactorygames.cz/de/", "Form Factory Games"), ("https://www.ladislavsuchanek.cz/", "Ladislav Suchánek")]
+             ("https://formfactorygames.cz/de/", "Form Factory Games"), ("https://www.ladislavsuchanek.cz/", "Ladislav Suchánek"), ("RIA", "Ria Suchánek Hrušovská")]
 NET["pl"] = [("https://hyrox-prague.eu/pl/", "HYROX Prague"), ("https://hyroxtrainingclub.cz/pl/", "HYROX Training Club"),
-             ("https://formfactorygames.cz/pl/", "Form Factory Games"), ("https://www.ladislavsuchanek.cz/", "Ladislav Suchánek")]
+             ("https://formfactorygames.cz/pl/", "Form Factory Games"), ("https://www.ladislavsuchanek.cz/", "Ladislav Suchánek"), ("RIA", "Ria Suchánek Hrušovská")]
 NET["fr"] = NET["es"] = NET["it"] = NET["nl"] = NET["en"]
+for _l, _v in NET.items():
+    NET[_l] = [(("https://riahrusovska.cz/" if _l in ("cs", "sk") else "https://riahrusovska.cz/en/") if u == "RIA" else u, n) for u, n in _v]
 
 EXTRA_CSS = """
 .lp-hero{min-height:min(78vh,720px)}

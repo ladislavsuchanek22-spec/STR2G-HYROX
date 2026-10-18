@@ -14,6 +14,7 @@ LANGS = {"cs": "cs_CZ", "sk": "sk_SK", "de": "de_DE", "pl": "pl_PL", "fr": "fr_F
 # Other STR2G websites: English URL in the source -> per-language path
 XLINKS = {u: {"cs": "/", "sk": "/", "de": "/de/", "pl": "/pl/", "fr": "/en/", "es": "/en/", "it": "/en/", "nl": "/en/"} for u in (
     "https://hyrox-prague.eu/en/", "https://hyroxtrainingclub.cz/en/", "https://formfactorygames.cz/en/")}
+XLINKS["https://riahrusovska.cz/en/"] = {l: ("/" if l in ("cs", "sk") else "/en/") for l in ("cs", "sk", "de", "pl", "fr", "es", "it", "nl")}
 ATTRS = ("alt", "aria-label", "content", "title")
 
 # Newsletter okno: i18n/newsletter.html je zdroj, do index.html se vždy přepíše aktuální verze
