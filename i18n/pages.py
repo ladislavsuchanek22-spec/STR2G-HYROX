@@ -63,6 +63,9 @@ EXTRA_CSS = """
 """
 
 
+PRIV_LBL = {"en": "Privacy policy", "cs": "Ochrana osobních údajů", "sk": "Ochrana osobných údajov", "de": "Datenschutz", "pl": "Polityka prywatności", "fr": "Confidentialité", "es": "Privacidad", "it": "Privacy", "nl": "Privacybeleid"}
+
+
 def extract(src):
     tracking = (Path(__file__).resolve().parent / "tracking.html").read_text(encoding="utf-8").rstrip("\n")
     style = re.search(r"<style>(.*?)</style>", src, re.S).group(1)
@@ -311,6 +314,7 @@ def page(lang, kind, parts):
     <div class="links">
       <a href="https://instagram.com/22segge_coach" target="_blank" rel="noopener">@22segge_coach</a>
       <a href="https://instagram.com/riahrusovskaofficial" target="_blank" rel="noopener">@riahrusovskaofficial</a>
+      <a href="{"/cs/ochrana-osobnich-udaju/" if lang in ("cs","sk") else "/privacy/"}">{PRIV_LBL[lang]}</a>
       <a href="#" onclick="str2gConsentReset();return false;">Cookies</a>
     </div>
   </div>

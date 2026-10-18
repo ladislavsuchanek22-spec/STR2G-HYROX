@@ -766,6 +766,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
     <div class="links">
       <a href="https://instagram.com/22segge_coach" target="_blank" rel="noopener">@22segge_coach</a>
       <a href="https://instagram.com/riahrusovskaofficial" target="_blank" rel="noopener">@riahrusovskaofficial</a>
+      <a href="/privacy/">Privacy policy</a>
       <a href="#" onclick="str2gConsentReset();return false;">Cookie settings</a>
     </div>
   </div>
@@ -821,6 +822,8 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
 #nl button.nl-go:hover{background:#fff;border-color:#fff}
 #nl button.nl-go[disabled]{opacity:.6;cursor:wait}
 #nl .nl-legal{font-size:12px;line-height:1.45;color:#7d7a73;margin:14px 0 0}
+#nl .nl-legal a{color:#9A978F}
+#nl .nl-legal a:hover{color:#fff}
 #nl .nl-err{color:#ff8a7a;font-size:13.5px;margin:10px 0 0;min-height:0}
 #nl .nl-x{position:absolute;top:8px;right:8px;width:40px;height:40px;background:transparent;border:0;color:#9A978F;font-size:26px;line-height:1;cursor:pointer;z-index:2}
 #nl .nl-x:hover{color:#fff}
@@ -845,15 +848,15 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
     IMAGE: '/img/lada-ria-race-day.webp'
   };
   var TXT = {
-    en: { eb: 'STR2G Newsletter', h: 'Train smarter for HYROX.', t: 'Practical tips straight from our coaching. Running, stations, pacing, race strategy. Plus new programs and discounts before anyone else.', n: 'First name', e: 'Email', b: 'Sign me up', l: 'No spam. Unsubscribe anytime with one click. We only use your email for the STR2G newsletter.', okh: "You're in.", okt: 'Thanks. Your first email is on the way soon.', err: 'Something went wrong. Try again in a minute.', x: 'Close' },
-    cs: { eb: 'STR2G Newsletter', h: 'Trénuj na HYROX chytřeji.', t: 'Praktické tipy přímo z naší trenérské praxe. Běh, stanice, tempo, taktika na závod. A nové programy a slevy uvidíš jako první.', n: 'Křestní jméno', e: 'E-mail', b: 'Chci odebírat', l: 'Žádný spam. Odhlásit se můžeš kdykoliv jedním klikem. E-mail použijeme jen pro STR2G newsletter.', okh: 'Jsi tam.', okt: 'Díky. První e-mail ti brzy dorazí.', err: 'Něco se pokazilo. Zkus to za chvíli znovu.', x: 'Zavřít' },
-    sk: { eb: 'STR2G Newsletter', h: 'Trénuj na HYROX múdrejšie.', t: 'Praktické tipy priamo z našej trénerskej praxe. Beh, stanice, tempo, taktika na pretek. A nové programy a zľavy uvidíš ako prvý.', n: 'Krstné meno', e: 'E-mail', b: 'Chcem odoberať', l: 'Žiadny spam. Odhlásiť sa môžeš kedykoľvek jedným klikom. E-mail použijeme len pre STR2G newsletter.', okh: 'Si tam.', okt: 'Vďaka. Prvý e-mail ti čoskoro príde.', err: 'Niečo sa pokazilo. Skús to o chvíľu znova.', x: 'Zavrieť' },
-    de: { eb: 'STR2G Newsletter', h: 'Trainier smarter für HYROX.', t: 'Praxistipps direkt aus unserem Coaching. Laufen, Stationen, Pacing, Rennstrategie. Dazu neue Programme und Rabatte vor allen anderen.', n: 'Vorname', e: 'E-Mail', b: 'Jetzt anmelden', l: 'Kein Spam. Abmeldung jederzeit mit einem Klick. Deine E-Mail nutzen wir nur für den STR2G Newsletter.', okh: 'Du bist dabei.', okt: 'Danke. Deine erste E-Mail kommt bald.', err: 'Etwas ist schiefgelaufen. Versuch es gleich nochmal.', x: 'Schließen' },
-    pl: { eb: 'STR2G Newsletter', h: 'Trenuj HYROX mądrzej.', t: 'Praktyczne wskazówki prosto z naszej pracy trenerskiej. Bieganie, stacje, tempo, taktyka na zawody. Do tego nowe programy i zniżki jako pierwszy.', n: 'Imię', e: 'E-mail', b: 'Zapisuję się', l: 'Zero spamu. Wypiszesz się w każdej chwili jednym kliknięciem. Twój e-mail wykorzystamy tylko do newslettera STR2G.', okh: 'Jesteś z nami.', okt: 'Dzięki. Pierwszy e-mail wkrótce do Ciebie dotrze.', err: 'Coś poszło nie tak. Spróbuj ponownie za chwilę.', x: 'Zamknij' },
-    fr: { eb: 'Newsletter STR2G', h: 'Entraîne-toi plus malin pour HYROX.', t: 'Des conseils concrets tirés de notre coaching. Course, stations, allure, stratégie de course. Et les nouveaux programmes et promos avant tout le monde.', n: 'Prénom', e: 'E-mail', b: 'Je m’inscris', l: 'Pas de spam. Désinscription en un clic à tout moment. Ton e-mail sert uniquement à la newsletter STR2G.', okh: 'C’est fait.', okt: 'Merci. Ton premier e-mail arrive bientôt.', err: 'Un problème est survenu. Réessaie dans une minute.', x: 'Fermer' },
-    es: { eb: 'Newsletter STR2G', h: 'Entrena HYROX con cabeza.', t: 'Consejos prácticos sacados de nuestro coaching. Carrera, estaciones, ritmo y estrategia de competición. Y los nuevos programas y descuentos antes que nadie.', n: 'Nombre', e: 'Email', b: 'Quiero apuntarme', l: 'Cero spam. Date de baja cuando quieras con un clic. Solo usamos tu email para la newsletter de STR2G.', okh: 'Ya estás dentro.', okt: 'Gracias. Tu primer email llegará pronto.', err: 'Algo ha fallado. Inténtalo de nuevo en un minuto.', x: 'Cerrar' },
-    it: { eb: 'Newsletter STR2G', h: 'Allenati per HYROX con più testa.', t: 'Consigli pratici direttamente dal nostro coaching. Corsa, stazioni, ritmo, strategia di gara. E i nuovi programmi e gli sconti prima di tutti.', n: 'Nome', e: 'Email', b: 'Mi iscrivo', l: 'Niente spam. Ti disiscrivi quando vuoi con un clic. Usiamo la tua email solo per la newsletter STR2G.', okh: 'Ci sei.', okt: 'Grazie. La tua prima email arriva presto.', err: 'Qualcosa è andato storto. Riprova tra un minuto.', x: 'Chiudi' },
-    nl: { eb: 'STR2G Nieuwsbrief', h: 'Train slimmer voor HYROX.', t: 'Praktische tips rechtstreeks uit onze coaching. Lopen, stations, pacing, racestrategie. Plus nieuwe programma’s en kortingen als eerste.', n: 'Voornaam', e: 'E-mail', b: 'Schrijf me in', l: 'Geen spam. Uitschrijven kan altijd met één klik. We gebruiken je e-mail alleen voor de STR2G nieuwsbrief.', okh: 'Je bent erbij.', okt: 'Bedankt. Je eerste e-mail komt eraan.', err: 'Er ging iets mis. Probeer het zo opnieuw.', x: 'Sluiten' }
+    en: { eb: 'STR2G Newsletter', h: 'Train smarter for HYROX.', t: 'Practical tips straight from our coaching. Running, stations, pacing, race strategy. Plus new programs and discounts before anyone else.', n: 'First name', e: 'Email', b: 'Sign me up', l: 'No spam. Unsubscribe anytime with one click. We only use your email for the STR2G newsletter.', okh: "You're in.", okt: 'Thanks. Your first email is on the way soon.', err: 'Something went wrong. Try again in a minute.', p: 'Privacy policy', x: 'Close' },
+    cs: { eb: 'STR2G Newsletter', h: 'Trénuj na HYROX chytřeji.', t: 'Praktické tipy přímo z naší trenérské praxe. Běh, stanice, tempo, taktika na závod. A nové programy a slevy uvidíš jako první.', n: 'Křestní jméno', e: 'E-mail', b: 'Chci odebírat', l: 'Žádný spam. Odhlásit se můžeš kdykoliv jedním klikem. E-mail použijeme jen pro STR2G newsletter.', okh: 'Jsi tam.', okt: 'Díky. První e-mail ti brzy dorazí.', err: 'Něco se pokazilo. Zkus to za chvíli znovu.', p: 'Ochrana osobních údajů', x: 'Zavřít' },
+    sk: { eb: 'STR2G Newsletter', h: 'Trénuj na HYROX múdrejšie.', t: 'Praktické tipy priamo z našej trénerskej praxe. Beh, stanice, tempo, taktika na pretek. A nové programy a zľavy uvidíš ako prvý.', n: 'Krstné meno', e: 'E-mail', b: 'Chcem odoberať', l: 'Žiadny spam. Odhlásiť sa môžeš kedykoľvek jedným klikom. E-mail použijeme len pre STR2G newsletter.', okh: 'Si tam.', okt: 'Vďaka. Prvý e-mail ti čoskoro príde.', err: 'Niečo sa pokazilo. Skús to o chvíľu znova.', p: 'Ochrana osobných údajov', x: 'Zavrieť' },
+    de: { eb: 'STR2G Newsletter', h: 'Trainier smarter für HYROX.', t: 'Praxistipps direkt aus unserem Coaching. Laufen, Stationen, Pacing, Rennstrategie. Dazu neue Programme und Rabatte vor allen anderen.', n: 'Vorname', e: 'E-Mail', b: 'Jetzt anmelden', l: 'Kein Spam. Abmeldung jederzeit mit einem Klick. Deine E-Mail nutzen wir nur für den STR2G Newsletter.', okh: 'Du bist dabei.', okt: 'Danke. Deine erste E-Mail kommt bald.', err: 'Etwas ist schiefgelaufen. Versuch es gleich nochmal.', p: 'Datenschutz', x: 'Schließen' },
+    pl: { eb: 'STR2G Newsletter', h: 'Trenuj HYROX mądrzej.', t: 'Praktyczne wskazówki prosto z naszej pracy trenerskiej. Bieganie, stacje, tempo, taktyka na zawody. Do tego nowe programy i zniżki jako pierwszy.', n: 'Imię', e: 'E-mail', b: 'Zapisuję się', l: 'Zero spamu. Wypiszesz się w każdej chwili jednym kliknięciem. Twój e-mail wykorzystamy tylko do newslettera STR2G.', okh: 'Jesteś z nami.', okt: 'Dzięki. Pierwszy e-mail wkrótce do Ciebie dotrze.', err: 'Coś poszło nie tak. Spróbuj ponownie za chwilę.', p: 'Polityka prywatności', x: 'Zamknij' },
+    fr: { eb: 'Newsletter STR2G', h: 'Entraîne-toi plus malin pour HYROX.', t: 'Des conseils concrets tirés de notre coaching. Course, stations, allure, stratégie de course. Et les nouveaux programmes et promos avant tout le monde.', n: 'Prénom', e: 'E-mail', b: 'Je m’inscris', l: 'Pas de spam. Désinscription en un clic à tout moment. Ton e-mail sert uniquement à la newsletter STR2G.', okh: 'C’est fait.', okt: 'Merci. Ton premier e-mail arrive bientôt.', err: 'Un problème est survenu. Réessaie dans une minute.', p: 'Confidentialité', x: 'Fermer' },
+    es: { eb: 'Newsletter STR2G', h: 'Entrena HYROX con cabeza.', t: 'Consejos prácticos sacados de nuestro coaching. Carrera, estaciones, ritmo y estrategia de competición. Y los nuevos programas y descuentos antes que nadie.', n: 'Nombre', e: 'Email', b: 'Quiero apuntarme', l: 'Cero spam. Date de baja cuando quieras con un clic. Solo usamos tu email para la newsletter de STR2G.', okh: 'Ya estás dentro.', okt: 'Gracias. Tu primer email llegará pronto.', err: 'Algo ha fallado. Inténtalo de nuevo en un minuto.', p: 'Privacidad', x: 'Cerrar' },
+    it: { eb: 'Newsletter STR2G', h: 'Allenati per HYROX con più testa.', t: 'Consigli pratici direttamente dal nostro coaching. Corsa, stazioni, ritmo, strategia di gara. E i nuovi programmi e gli sconti prima di tutti.', n: 'Nome', e: 'Email', b: 'Mi iscrivo', l: 'Niente spam. Ti disiscrivi quando vuoi con un clic. Usiamo la tua email solo per la newsletter STR2G.', okh: 'Ci sei.', okt: 'Grazie. La tua prima email arriva presto.', err: 'Qualcosa è andato storto. Riprova tra un minuto.', p: 'Privacy', x: 'Chiudi' },
+    nl: { eb: 'STR2G Nieuwsbrief', h: 'Train slimmer voor HYROX.', t: 'Praktische tips rechtstreeks uit onze coaching. Lopen, stations, pacing, racestrategie. Plus nieuwe programma’s en kortingen als eerste.', n: 'Voornaam', e: 'E-mail', b: 'Schrijf me in', l: 'Geen spam. Uitschrijven kan altijd met één klik. We gebruiken je e-mail alleen voor de STR2G nieuwsbrief.', okh: 'Je bent erbij.', okt: 'Bedankt. Je eerste e-mail komt eraan.', err: 'Er ging iets mis. Probeer het zo opnieuw.', p: 'Privacybeleid', x: 'Sluiten' }
   };
 
   var K_DONE = 'str2g_nl_done', K_SNOOZE = 'str2g_nl_snooze';
@@ -869,6 +872,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
 
   var lang = (document.documentElement.lang || 'en').slice(0, 2).toLowerCase();
   var t = TXT[lang] || TXT.en;
+  var PRIV = (lang === 'cs' || lang === 'sk') ? '/cs/ochrana-osobnich-udaju/' : '/privacy/';
   var shown = false, pending = false, root, lastFocus;
 
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
@@ -893,7 +897,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
             '<div class="nl-hp" aria-hidden="true"><input name="bot-field" tabindex="-1" autocomplete="off"></div>' +
             '<button type="submit" class="nl-go">' + esc(t.b) + '</button>' +
             '<p class="nl-err" role="alert"></p>' +
-            '<p class="nl-legal">' + esc(t.l) + '</p>' +
+            '<p class="nl-legal">' + esc(t.l) + ' <a href="' + PRIV + '" target="_blank" rel="noopener">' + esc(t.p) + '</a></p>' +
           '</form>' +
         '</div>' +
       '</div>';

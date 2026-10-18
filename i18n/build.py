@@ -76,6 +76,8 @@ for lang, locale in LANGS.items():
         return f'<em class="fx">{approx}</em>' if approx else ""
     out = re.sub(r'<em class="fx" data-czk="(\d+)">[^<]*</em>', _fx, out)
     out = out.replace(TRACK_MARK, TRACK, 1)
+    if lang in ("cs", "sk"):
+        out = out.replace('<a href="/privacy/">', '<a href="/cs/ochrana-osobnich-udaju/">', 1)
     out = out.replace('<html lang="en">', f'<html lang="{lang}">', 1)
     out = out.replace('content="en_GB"', f'content="{locale}"', 1)
     out = out.replace(f'<link rel="canonical" href="{BASE}/">', f'<link rel="canonical" href="{BASE}/{lang}/">', 1)
@@ -97,6 +99,11 @@ for lang, locale in LANGS.items():
 
 # ---- landing pages pro trhy + sitemap
 pages.build(ROOT)
+
+# ---- zásady ochrany osobních údajů
+import privacy
+_tr, _st, _fonts, _ver, _icons = pages.extract(src.replace(TRACK_MARK, TRACK, 1))
+privacy.build(ROOT, TRACK, _fonts, _icons)
 ALL = ["en", "cs", "sk", "de", "pl", "fr", "es", "it", "nl"]
 HOMES = {l: (f"{BASE}/" if l == "en" else f"{BASE}/{l}/") for l in ALL}
 LASTMOD = "2026-10-17"

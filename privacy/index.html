@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!--
+  STR2G – měření pro reklamu
+  Co to dělá:
+  1) Cookie lišta (souhlas / odmítnutí) – bez souhlasu se Meta Pixel vůbec nenačte.
+  2) Google tag (GA4 + Google Ads) v režimu Consent Mode v2 – před souhlasem nic neukládá.
+  3) Každý klik na platební odkaz do Strivee = InitiateCheckout (Meta) + begin_checkout (GA4) + konverze (Google Ads), včetně názvu programu a ceny.
+  4) Funkce window.str2gLead('kviz') pro budoucí kvíz / formulář = Lead (Meta) + generate_lead (GA4) + konverze (Ads).
+  5) window.str2gConsentReset() znovu otevře cookie lištu.
+-->
+<script>
+(function () {
+  var CFG = {
+    META_PIXEL_ID: '1343098769871797',
+    GA4_ID: 'G-P21WD6TY8N',
+    ADS_ID: 'AW-11061084387',
+    ADS_CHECKOUT_LABEL: 'lFZiCPf0iZ8dEOOBq5op',
+    ADS_LEAD_LABEL: 'xPRgCPr0iZ8dEOOBq5op'
+  };
+
+  var KEY = 'str2g_consent';
+  function getConsent() { try { return localStorage.getItem(KEY); } catch (e) { return null; } }
+  function setConsent(v) { try { localStorage.setItem(KEY, v); } catch (e) {} }
+  function has(id) { return id && id.indexOf('DOPLNIT') === -1; }
+
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { window.dataLayer.push(arguments); }
+  window.gtag = window.gtag || gtag;
+  gtag('consent', 'default', {
+    ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied',
+    analytics_storage: 'denied', wait_for_update: 500
+  });
+  gtag('js', new Date());
+  if (has(CFG.GA4_ID)) gtag('config', CFG.GA4_ID);
+  if (has(CFG.ADS_ID)) gtag('config', CFG.ADS_ID);
+  var firstId = has(CFG.GA4_ID) ? CFG.GA4_ID : (has(CFG.ADS_ID) ? CFG.ADS_ID : null);
+  if (firstId) {
+    var gs = document.createElement('script');
+    gs.async = true;
+    gs.src = 'https://www.googletagmanager.com/gtag/js?id=' + firstId;
+    document.head.appendChild(gs);
+  }
+
+  var metaLoaded = false;
+  function loadMeta() {
+    if (metaLoaded || !has(CFG.META_PIXEL_ID)) return;
+    metaLoaded = true;
+    !function (f, b, e, v, n, t, s) {
+      if (f.fbq) return; n = f.fbq = function () { n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments); };
+      if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0'; n.queue = [];
+      t = b.createElement(e); t.async = !0; t.src = v; s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s);
+    }(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+    window.fbq('init', CFG.META_PIXEL_ID);
+    window.fbq('track', 'PageView');
+  }
+
+  function grant() {
+    gtag('consent', 'update', {
+      ad_storage: 'granted', ad_user_data: 'granted', ad_personalization: 'granted', analytics_storage: 'granted'
+    });
+    loadMeta();
+  }
+  function granted() { return getConsent() === 'yes'; }
+  if (granted()) grant();
+
+  function programInfo(a) {
+    var name = a.getAttribute('data-program') || '';
+    var value = parseInt(a.getAttribute('data-value') || '0', 10) || 0;
+    if (name && value) return { name: name, value: value };
+    var el = a;
+    for (var i = 0; i < 8 && el; i++) {
+      el = el.parentElement;
+      if (!el || !el.querySelector) continue;
+      var h = el.querySelector('h3, h4');
+      if (h) {
+        if (!name) name = h.textContent.replace(/\s+/g, ' ').trim();
+        if (!value) {
+          var t = el.textContent;
+          var m = t.match(/CZK\s*([\d][\d.,\u00a0 ]*\d|\d)/) || t.match(/(\d[\d.,\u00a0 ]*\d|\d)\s*Kč/);
+          if (m) value = parseInt(m[1].replace(/[^\d]/g, ''), 10) || 0;
+        }
+        break;
+      }
+    }
+    return { name: name || 'STR2G program', value: value };
+  }
+
+  document.addEventListener('click', function (e) {
+    var a = e.target && e.target.closest ? e.target.closest('a[href*="train.strivee.app/payment"]') : null;
+    if (!a) return;
+    var p = programInfo(a);
+
+    gtag('event', 'begin_checkout', { currency: 'CZK', value: p.value, items: [{ item_name: p.name, price: p.value }] });
+    if (has(CFG.ADS_ID) && has(CFG.ADS_CHECKOUT_LABEL)) {
+      gtag('event', 'conversion', { send_to: CFG.ADS_ID + '/' + CFG.ADS_CHECKOUT_LABEL, value: p.value, currency: 'CZK' });
+    }
+    if (granted() && window.fbq) {
+      window.fbq('track', 'InitiateCheckout', { content_name: p.name, value: p.value, currency: 'CZK' });
+    }
+
+    var newTab = a.target === '_blank' || e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1;
+    if (!newTab) {
+      e.preventDefault();
+      setTimeout(function () { window.location.href = a.href; }, 300);
+    }
+  }, true);
+
+  window.str2gLead = function (source) {
+    gtag('event', 'generate_lead', { lead_source: source || 'web' });
+    if (has(CFG.ADS_ID) && has(CFG.ADS_LEAD_LABEL)) {
+      gtag('event', 'conversion', { send_to: CFG.ADS_ID + '/' + CFG.ADS_LEAD_LABEL });
+    }
+    if (granted() && window.fbq) window.fbq('track', 'Lead', { content_name: source || 'web' });
+  };
+
+  var TXT = {
+    en: ['We use cookies to measure the site and show you relevant ads. Only with your consent.', 'Accept', 'Reject'],
+    cs: ['Používáme cookies na měření webu a zobrazení relevantní reklamy. Jen s tvým souhlasem.', 'Souhlasím', 'Odmítnout'],
+    de: ['Wir nutzen Cookies, um die Website zu messen und dir relevante Werbung zu zeigen. Nur mit deiner Zustimmung.', 'Akzeptieren', 'Ablehnen'],
+    pl: ['Używamy plików cookie do pomiaru strony i wyświetlania trafnych reklam. Tylko za Twoją zgodą.', 'Akceptuję', 'Odrzuć'],
+    sk: ['Používame cookies na meranie webu a zobrazenie relevantnej reklamy. Len s tvojím súhlasom.', 'Súhlasím', 'Odmietnuť'],
+    fr: ['Nous utilisons des cookies pour mesurer le site et te montrer des publicités pertinentes. Uniquement avec ton accord.', 'Accepter', 'Refuser'],
+    es: ['Usamos cookies para medir la web y mostrarte publicidad relevante. Solo con tu consentimiento.', 'Aceptar', 'Rechazar'],
+    it: ['Usiamo i cookie per misurare il sito e mostrarti pubblicità pertinente. Solo con il tuo consenso.', 'Accetto', 'Rifiuta'],
+    nl: ['We gebruiken cookies om de site te meten en je relevante advertenties te tonen. Alleen met je toestemming.', 'Accepteren', 'Weigeren']
+  };
+
+  function showBanner() {
+    if (document.getElementById('str2g-consent')) return;
+    var lang = (document.documentElement.lang || 'en').slice(0, 2).toLowerCase();
+    var t = TXT[lang] || TXT.en;
+    var box = document.createElement('div');
+    box.id = 'str2g-consent';
+    box.setAttribute('role', 'dialog');
+    box.setAttribute('aria-live', 'polite');
+    box.style.cssText = 'position:fixed;left:16px;right:16px;bottom:16px;z-index:99999;max-width:560px;margin:0 auto;' +
+      'background:#0d0d0d;color:#f2f2f2;border:1px solid #2a2a2a;border-radius:12px;padding:16px;' +
+      'font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.4)';
+    var p = document.createElement('p');
+    p.style.cssText = 'margin:0 0 12px';
+    p.textContent = t[0];
+    var row = document.createElement('div');
+    row.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap';
+    function btn(label, primary, fn) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = label;
+      b.style.cssText = 'flex:1 1 120px;padding:10px 14px;border-radius:8px;cursor:pointer;font-weight:700;font-size:14px;' +
+        (primary ? 'background:#C9A950;color:#050505;border:1px solid #C9A950' : 'background:transparent;color:#f2f2f2;border:1px solid #f2f2f2');
+      b.onclick = fn;
+      return b;
+    }
+    row.appendChild(btn(t[1], true, function () { setConsent('yes'); grant(); box.remove(); }));
+    row.appendChild(btn(t[2], false, function () { setConsent('no'); box.remove(); }));
+    box.appendChild(p);
+    box.appendChild(row);
+    document.body.appendChild(box);
+  }
+
+  window.str2gConsentReset = function () {
+    try { localStorage.removeItem(KEY); } catch (e) {}
+    showBanner();
+  };
+
+  if (!getConsent()) {
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', showBanner);
+    else showBanner();
+  }
+})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy Policy | STR2G</title>
+<meta name="robots" content="noindex, follow">
+<link rel="canonical" href="https://str2g.com/privacy/">
+<link rel="alternate" hreflang="en" href="https://str2g.com/privacy/">
+<link rel="alternate" hreflang="cs" href="https://str2g.com/cs/ochrana-osobnich-udaju/">
+<link rel="icon" href="/favicon.ico?v=2" sizes="any">
+<link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png?v=2" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2">
+<link rel="manifest" href="/site.webmanifest?v=2">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700&family=Barlow+Condensed:ital,wght@0,700;0,800;1,800;1,900&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+:root{--bg:#050505;--panel:#0F0F0E;--line:#262521;--fg:#fff;--muted:#9A978F;--accent:#C9A950;
+--display:"Barlow Condensed","Arial Narrow",Impact,sans-serif;--body:"Archivo","Helvetica Neue",Arial,sans-serif;--mono:"JetBrains Mono",ui-monospace,Menlo,monospace;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:760px;margin:0 auto;padding:0 max(20px,env(safe-area-inset-left,0px))}
+header{border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:64px;gap:16px}
+.logo{font-family:var(--display);font-weight:900;font-style:italic;font-size:28px;color:var(--fg);text-decoration:none}
+.logo span{color:var(--accent)}
+header a.back{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-decoration:none}
+header a.back:hover{color:var(--fg)}
+main{padding:56px 0 80px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin:0 0 14px}
+h1{font-family:var(--display);font-weight:900;font-style:italic;text-transform:uppercase;font-size:clamp(44px,9vw,76px);line-height:.9;margin:0 0 28px}
+h2{font-family:var(--display);font-weight:800;font-style:italic;text-transform:uppercase;font-size:30px;line-height:1;margin:44px 0 14px;padding-top:28px;border-top:1px solid var(--line)}
+p,li{color:#D6D3CC}
+.lead{font-size:19px;color:var(--fg)}
+ul{padding-left:20px}
+li{margin:0 0 8px}
+b{color:var(--fg)}
+a{color:var(--accent)}
+a:hover{color:var(--fg)}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+footer{border-top:1px solid var(--line);padding:28px 0 40px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+</style>
+</head>
+<body>
+<header><div class="wrap"><a class="logo" href="/">STR<span>2</span>G</a><a class="back" href="/">← Back to STR2G</a></div></header>
+<main><div class="wrap">
+<p class="eyebrow">Effective 18 October 2026</p>
+<h1>Privacy Policy</h1>
+<p class="lead">This page explains what personal data we collect on str2g.com, why, and what we do with it. Written in plain language, binding all the same.</p>
+
+<h2>Who is responsible for your data</h2>
+<p>The data controller is <b>Ladislav Suchánek, company ID (IČO) 73563769</b>, Czech Republic. I run str2g.com under the STR2G HYROX brand together with Ria Suchánek Hrušovská.</p>
+<p>For anything related to your personal data, email <a href="mailto:info@ladislavsuchanek.cz">info@ladislavsuchanek.cz</a>.</p>
+
+<h2>Newsletter</h2>
+<ul>
+<li><b>What we collect:</b> your first name, email address, the site language and the page you signed up on.</li>
+<li><b>Why:</b> to send you our newsletter. Training tips, news and offers on STR2G programs.</li>
+<li><b>Legal basis:</b> your consent, given by submitting the form (Art. 6(1)(a) GDPR).</li>
+<li><b>How long:</b> until you unsubscribe. You can do that anytime via the link in every email or by writing to info@ladislavsuchanek.cz. After that we only keep your email with an unsubscribe record, so we never contact you again by mistake.</li>
+</ul>
+
+<h2>Cookies, analytics and ads</h2>
+<p>Analytics and advertising tools (Google Analytics 4, Google Ads and Meta Pixel) only run if you agree in the cookie banner. They show us where visitors come from, what they're interested in and which ads work. Without your consent the Meta Pixel doesn't load at all and Google stores no cookies.</p>
+<p>You can change your choice anytime in <a href="#" onclick="str2gConsentReset();return false;">Cookie settings</a>.</p>
+<p>The site also remembers a few technical things in your browser, like your language or that you closed the newsletter window. That information stays on your device.</p>
+
+<h2>Buying a program</h2>
+<p>Programs are bought and paid for in the Strivee app. The data you enter when you register, pay and train in the app is processed by Strivee under its own privacy policy.</p>
+
+<h2>Who we share data with</h2>
+<p>We never sell your data. We only share it with services the site and newsletter can't run without:</p>
+<ul>
+<li><b>MailerLite</b> (UAB MailerLite, Lithuania): sending the newsletter</li>
+<li><b>Netlify</b> (USA): website hosting and a backup of form signups</li>
+<li><b>Google</b> (Ireland / USA): analytics and advertising, only with your consent</li>
+<li><b>Meta Platforms</b> (Ireland / USA): ad measurement, only with your consent</li>
+</ul>
+<p>Transfers to US-based services rely on the EU–US Data Privacy Framework or the European Commission's standard contractual clauses.</p>
+
+<h2>Your rights</h2>
+<p>You have the right to:</p>
+<ul>
+<li>know what data we hold about you and get a copy,</li>
+<li>have it corrected or deleted,</li>
+<li>restrict or object to its processing,</li>
+<li>receive it in a common, portable format,</li>
+<li>withdraw your consent at any time (this doesn't affect processing before you withdrew),</li>
+<li>lodge a complaint with a data protection authority, in the Czech Republic the Office for Personal Data Protection (<a href="https://uoou.gov.cz/en" target="_blank" rel="noopener">uoou.gov.cz</a>), or the one in your own country.</li>
+</ul>
+<p>Just email <a href="mailto:info@ladislavsuchanek.cz">info@ladislavsuchanek.cz</a>. We reply within 30 days.</p>
+
+<h2>Changes</h2>
+<p>If we change this policy, the new version will be published here with a new date.</p>
+</div></main>
+<footer><div class="wrap">© 2026 STR2G · Ladislav Suchánek · IČO 73563769 · <a href="/cs/ochrana-osobnich-udaju/">Česky</a></div></footer>
+</body>
+</html>
