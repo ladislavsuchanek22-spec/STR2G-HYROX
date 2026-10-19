@@ -118,3 +118,7 @@ for group in (HOMES, {l: BASE + SLUGS["plan"][l] for l in ALL}, {l: BASE + SLUGS
         entries.append(_entry(group[l], group))
 (ROOT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n' + "\n".join(entries) + "\n</urlset>\n", encoding="utf-8")
 print(f"sitemap.xml: {len(entries)} URLs")
+
+# ---- FAQPage strukturovaná data (Google + AI vyhledávače)
+import faq_ld
+faq_ld.apply(ROOT)
