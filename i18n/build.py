@@ -24,6 +24,9 @@ _idx = ROOT / "index.html"
 _nl = (ROOT / "i18n" / "newsletter.html").read_text(encoding="utf-8").rstrip("\n")
 _html = _idx.read_text(encoding="utf-8")
 _html = _re.sub(r"<!--STR2G_NEWSLETTER-->.*?<!--/STR2G_NEWSLETTER-->", lambda m: _nl, _html, count=1, flags=_re.S)
+# Ukázkový týden zdarma: i18n/freeweek.html je zdroj, stejně jako newsletter
+_fw = (ROOT / "i18n" / "freeweek.html").read_text(encoding="utf-8").rstrip("\n")
+_html = _re.sub(r"<!--STR2G_FREEWEEK-->.*?<!--/STR2G_FREEWEEK-->", lambda m: _fw, _html, count=1, flags=_re.S)
 _idx.write_text(_html, encoding="utf-8")
 
 src = (ROOT / "index.html").read_text(encoding="utf-8")
