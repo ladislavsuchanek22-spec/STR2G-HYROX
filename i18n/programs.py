@@ -15,7 +15,6 @@ BASE = "https://str2g.com"
 LANG_LABEL = {"en": "EN", "cs": "CZ"}
 
 PROG_CSS = """
-.phases{grid-template-columns:repeat(var(--cols,4),minmax(0,1fr))}
 .lp-hero h1{font-size:clamp(52px,7.6vw,112px);hyphens:manual;overflow-wrap:normal}
 @media (max-width:620px){.buybox .cta-row{width:100%}.buybox .cta-row .btn{flex:1 1 100%}}
 .facts{display:grid;grid-template-columns:repeat(var(--cols,5),minmax(0,1fr));border-block:1px solid var(--line);margin-top:34px;max-width:980px}
@@ -35,8 +34,8 @@ PROG_CSS = """
 .buybox{display:flex;flex-wrap:wrap;align-items:flex-end;gap:18px 32px;margin-top:30px}
 .prog-nav{display:flex;flex-wrap:wrap;gap:8px 20px}
 .prog-nav a{color:var(--fg);text-decoration:none;font-weight:500}.prog-nav a:hover,.prog-nav a[aria-current]{color:var(--accent)}
-@media (max-width:980px){.facts{grid-template-columns:repeat(3,minmax(0,1fr))}.facts div:nth-child(3n+1){padding-left:0;border-left:0}.facts div:nth-child(n+4){border-top:1px solid var(--line)}.fitgrid{grid-template-columns:1fr;gap:28px}.phases{grid-template-columns:1fr 1fr}}
-@media (max-width:620px){.facts{grid-template-columns:repeat(2,minmax(0,1fr))}.facts div:nth-child(odd){padding-left:0;border-left:0}.facts div:nth-child(even){padding-left:14px;border-left:1px solid var(--line)}.facts div:nth-child(n+3){border-top:1px solid var(--line)}.facts strong{font-size:26px}.phases{grid-template-columns:1fr}}
+@media (max-width:980px){.facts{grid-template-columns:repeat(3,minmax(0,1fr))}.facts div:nth-child(3n+1){padding-left:0;border-left:0}.facts div:nth-child(n+4){border-top:1px solid var(--line)}.fitgrid{grid-template-columns:1fr;gap:28px}}
+@media (max-width:620px){.facts{grid-template-columns:repeat(2,minmax(0,1fr))}.facts div:nth-child(odd){padding-left:0;border-left:0}.facts div:nth-child(even){padding-left:14px;border-left:1px solid var(--line)}.facts div:nth-child(n+3){border-top:1px solid var(--line)}.facts strong{font-size:26px}}
 """
 
 
@@ -243,21 +242,6 @@ def page(lang, pid, parts):
   </div>
 </section>
 '''
-    if p.get("phases"):
-        ph = "".join(f'<div class="phase"><small>{escape(w)}</small><h3>{escape(n)}</h3><p>{escape(t)}</p></div>' for w, n, t in p["phases"])
-        cols = len(p["phases"])
-        h = (u["phases_h"][0].format(n=d["weeks"]), u["phases_h"][1])
-        body += f'''
-<section id="phases">
-  <div class="wrap">
-    <div class="shead"><p class="eyebrow">{escape(p["name"])}</p><h2 class="display"><span class="num">04</span><span>{two(h)}</span></h2></div>
-    <div class="phases" style="--cols:{cols}">{ph}</div>
-  </div>
-</section>
-'''
-    quote = ""
-    if p.get("quote"):
-        quote = f'<figure class="lp-quote"><blockquote>{escape(p["quote"][0])}</blockquote><figcaption>{escape(p["quote"][1])}</figcaption></figure>'
     body += f'''
 <section id="coaches">
   <div class="wrap">
@@ -265,7 +249,6 @@ def page(lang, pid, parts):
     <p class="lp-p">{u["lada"]}</p>
     <p class="lp-p">{u["ria"]}</p>
     <p class="lp-p">{escape(u["raced"])}</p>
-    {quote}
   </div>
 </section>
 '''
