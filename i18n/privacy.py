@@ -28,6 +28,14 @@ CONTENT = {
 <li><b>Jak dlouho:</b> dokud se neodhlásíš. Odhlásit se můžeš kdykoliv odkazem v každém e-mailu nebo zprávou na {EMAIL}. Po odhlášení si necháme jen e-mail se záznamem o odhlášení, abychom ti omylem znovu nepsali.</li>
 </ul>
 
+<h2>Ukázkový týden zdarma</h2>
+<ul>
+<li><b>Jaké údaje:</b> křestní jméno, e-mail, jazyk webu a program, jehož ukázku sis stáhl(a).</li>
+<li><b>Proč:</b> ukázkový týden v PDF dáváme zdarma výměnou za odběr STR2G newsletteru. Tvoje údaje použijeme k zápisu do newsletteru (viz výše) a k přehledu, o které programy je zájem.</li>
+<li><b>Na jakém základě:</b> tvůj souhlas, který dáváš zaškrtnutím políčka ve formuláři (čl. 6 odst. 1 písm. a) GDPR). Podmínka odběru je u formuláře jasně napsaná ještě před odesláním.</li>
+<li><b>Jak dlouho:</b> dokud se neodhlásíš z newsletteru. Odhlásit se můžeš kdykoliv jedním klikem v každém e-mailu, PDF ti zůstává.</li>
+</ul>
+
 <h2>Cookies, měření a reklama</h2>
 <p>Analytické a reklamní nástroje (Google Analytics 4, Google Ads a Meta Pixel) spouštíme jen s tvým souhlasem přes cookie lištu. Pomáhají nám zjistit, odkud lidé na web chodí, co je zajímá a které reklamy fungují. Bez souhlasu se Meta Pixel vůbec nenačte a Google neukládá žádné cookies.</p>
 <p>Souhlas můžeš kdykoliv změnit přes <a href="#" onclick="str2gConsentReset();return false;">Nastavení cookies</a>.</p>
@@ -80,6 +88,14 @@ CONTENT = {
 <li><b>Why:</b> to send you our newsletter. Training tips, news and offers on STR2G programs.</li>
 <li><b>Legal basis:</b> your consent, given by submitting the form (Art. 6(1)(a) GDPR).</li>
 <li><b>How long:</b> until you unsubscribe. You can do that anytime via the link in every email or by writing to {EMAIL}. After that we only keep your email with an unsubscribe record, so we never contact you again by mistake.</li>
+</ul>
+
+<h2>Free sample week</h2>
+<ul>
+<li><b>What we collect:</b> your first name, email address, the site language and the program whose sample you downloaded.</li>
+<li><b>Why:</b> the PDF sample week is free in exchange for subscribing to the STR2G newsletter. We use your details to add you to the newsletter (see above) and to see which programs people are interested in.</li>
+<li><b>Legal basis:</b> your consent, given by ticking the box in the form (Art. 6(1)(a) GDPR). The subscription condition is stated clearly next to the form before you submit it.</li>
+<li><b>How long:</b> until you unsubscribe from the newsletter. You can do that anytime with one click in every email, and you keep the PDF.</li>
 </ul>
 
 <h2>Cookies, analytics and ads</h2>
