@@ -108,7 +108,7 @@ PT_LANG = dict(
     pro=dict(
       name="HYROX Pro Athlete", kind="Programme mensuel · Niveau le plus haut", level="Compétiteurs expérimentés",
       title="HYROX Pro Athlete : notre meilleur programme mensuel | STR2G",
-      desc="Le meilleur de nos programmes HYROX mensuels. Course et travail fonctionnel bien structurés, vidéos techniques, conseils d'allure et de récupération. 6 jours, ~75 min.",
+      desc="Le meilleur de nos programmes HYROX mensuels. Course et fonctionnel bien structurés, vidéos techniques, conseils d'allure et de récup. 6 jours, ~75 min.",
       h1=("HYROX Pro Athlete.", "Le meilleur de nos programmes."),
       lead="Pour celles et ceux qui prennent l'HYROX au sérieux et veulent progresser mois après mois. Une structure claire, des vidéos techniques et des conseils sur l'allure, la récupération et le repos. La performance monte sans surentraînement.",
       fit=["Tu as déjà fait quelques HYROX et tu veux progresser mois après mois.",
@@ -137,7 +137,7 @@ PT_LANG = dict(
     raceprep=dict(
       name="HYROX Race Prep 12 semaines", kind="Préparation de course · 12 semaines", level="Avec une base",
       title="Plan HYROX 12 semaines : Race Prep | STR2G",
-      desc="Une préparation HYROX complète sur 12 semaines. Base, intensité, travail spécifique et affûtage final. 6 jours par semaine, environ 90 min. 2 100 CZK en une fois.",
+      desc="Une préparation HYROX complète sur 12 semaines. Base, intensité, spécifique et affûtage. 6 jours par semaine, environ 90 min. 2 100 CZK en une fois.",
       h1=("HYROX Race Prep 12 semaines.", "La préparation complète."),
       lead="Une course dans 12 semaines ? D'abord la base, puis l'intensité et le travail spécifique, enfin l'affûtage. Chaque qualité arrive dans le bon ordre, rien n'est laissé au hasard.",
       fit=["Ta course est dans 12 semaines environ.",
@@ -195,7 +195,7 @@ PT_LANG = dict(
     singles=dict(
       name="HYROX Singles 8 semaines", kind="Préparation de course · 8 semaines · Singles", level="Avec une base",
       title="Plan HYROX 8 semaines : Singles | STR2G",
-      desc="Plan HYROX de 8 semaines pour ceux qui ont déjà une base. Course, force, séances HYROX et course sous fatigue chaque semaine. 6 jours, environ 60 min. 1 500 CZK.",
+      desc="Plan HYROX de 8 semaines pour ceux qui ont une base. Course, force, séances HYROX et course sous fatigue chaque semaine. 6 jours, ~60 min. 1 500 CZK.",
       h1=("HYROX Singles 8 semaines.", "Course réservée. 8 semaines."),
       lead="Une préparation complète de huit semaines pour celles et ceux qui ont déjà une base d'entraînement. Course, force, séances HYROX et course sous fatigue. Plus la course approche, plus c'est spécifique.",
       fit=["Ta course est dans 8 semaines environ.",
@@ -224,7 +224,7 @@ PT_LANG = dict(
     doubles=dict(
       name="HYROX Doubles 8 semaines", kind="Préparation de course · 8 semaines · Doubles", level="Duos avec une base",
       title="Plan HYROX Doubles : 8 semaines pour les duos | STR2G",
-      desc="Plan HYROX Doubles de 8 semaines. La forme de chacun, plus la stratégie sur les stations, le partage du travail et l'allure commune. 6 jours, ~75 min. 1 700 CZK/athlète.",
+      desc="Plan HYROX Doubles de 8 semaines. La forme de chacun, la stratégie sur les stations et le partage du travail. 6 jours, ~75 min. 1 700 CZK par athlète.",
       h1=("HYROX Doubles 8 semaines.", "Ça se gagne au partage du travail."),
       lead="Huit semaines de préparation pour les duos. La forme de chacun, plus le côté équipe de la course : qui prend quelle station, comment répartir les répétitions, comment tenir une allure commune.",
       fit=["Vous courez un HYROX Doubles dans 8 semaines environ.",
@@ -253,7 +253,7 @@ PT_LANG = dict(
     running=dict(
       name="Running for HYROX 2.0", kind="Bloc spécifique · 12 semaines", level="Intermédiaire",
       title="Course à pied pour l'HYROX : plan de 12 semaines | STR2G",
-      desc="Un plan de course à pied de 12 semaines pour l'HYROX. Économie de course, allure, capacité aérobie et une course qui tient après les sleds. 6 jours, ~75 min. 1 000 CZK.",
+      desc="Plan de course à pied de 12 semaines pour l'HYROX. Économie, allure, capacité aérobie et une course qui tient après les sleds. 6 jours, ~75 min. 1 000 CZK.",
       h1=("Running for HYROX.", "Arrête de perdre du temps en course."),
       lead="La course, c'est la moitié de l'épreuve. Ce bloc de 12 semaines travaille l'économie de course, l'allure, la capacité aérobie et surtout une course qui tient après les sleds.",
       fit=["Tu perds des places en course, pas sur les stations.",
@@ -282,7 +282,7 @@ PT_LANG = dict(
     taper=dict(
       name="HYROX Taper 2.0 (2 semaines)", kind="Bloc spécifique · 2 dernières semaines", level="Toute course",
       title="HYROX Taper : plan de 2 semaines avant la course | STR2G",
-      desc="Les deux dernières semaines avant un HYROX. Moins de volume, intensité gardée, séances courtes à l'allure de course et un plan pour la semaine et le jour J. 550 CZK.",
+      desc="Les deux dernières semaines avant un HYROX. Moins de volume, intensité gardée, séances courtes à l'allure de course, un plan pour le jour J. 550 CZK.",
       h1=("HYROX Taper 2 semaines.", "Le travail est fait. Ne le gâche pas."),
       lead="Les deux dernières semaines avant ta course. On baisse le volume, on te garde affûté à l'allure de course et tu arrives au départ avec des jambes fraîches et un plan clair. Pour Open, Doubles et Pro.",
       fit=["Ta course est dans deux semaines.",

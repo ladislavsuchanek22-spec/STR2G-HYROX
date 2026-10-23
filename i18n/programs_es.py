@@ -79,7 +79,7 @@ PT_LANG = dict(
     competitor=dict(
       name="HYROX Competitor", kind="Programa mensual · Rendimiento", level="Competidores habituales",
       title="HYROX Competitor: entrena para bajar tu tiempo | STR2G",
-      desc="Programa HYROX online para quien ya compite y quiere bajar su tiempo. 6 días a la semana, hasta 2 sesiones al día. Carrera con fatiga, fuerza, ritmo. 960 CZK al mes.",
+      desc="Programa HYROX online para quien ya compite y quiere bajar su tiempo. 6 días a la semana, hasta 2 sesiones al día. Fuerza y ritmo de carrera. 960 CZK al mes.",
       h1=("HYROX Competitor.", "Ya compites. Ahora más rápido."),
       lead="Para quien entrena con constancia y tiene un objetivo claro. Más carrera, más capacidad de trabajo, fuerza, ritmo de carrera y transiciones rápidas entre la carrera y la estación.",
       fit=["Ya has hecho HYROX y sabes dónde pierdes tiempo.",
@@ -108,7 +108,7 @@ PT_LANG = dict(
     pro=dict(
       name="HYROX Pro Athlete", kind="Programa mensual · Nivel más alto", level="Competidores con experiencia",
       title="HYROX Pro Athlete: nuestro mejor programa mensual | STR2G",
-      desc="Lo mejor de nuestros programas HYROX mensuales. Carrera y trabajo funcional con estructura clara, vídeos de técnica, pautas de ritmo y recuperación. 6 días, ~75 min.",
+      desc="Lo mejor de nuestros programas HYROX mensuales. Carrera y funcional con estructura clara, vídeos de técnica, pautas de ritmo y recuperación. 6 días, ~75 min.",
       h1=("HYROX Pro Athlete.", "Lo mejor que hacemos en un programa."),
       lead="Para quien se toma HYROX en serio y quiere seguir mejorando mes a mes. Estructura clara, vídeos de técnica y pautas sobre ritmo, recuperación y descanso. El rendimiento sube sin sobreentrenar.",
       fit=["Ya has hecho varios HYROX y quieres seguir mejorando mes a mes.",
@@ -166,7 +166,7 @@ PT_LANG = dict(
     advanced=dict(
       name="HYROX Advanced 12 semanas", kind="Preparación de carrera · 12 semanas · todos los niveles", level="Todos los niveles",
       title="¿Primera carrera HYROX? Plan de 12 semanas | STR2G",
-      desc="Plan HYROX de 12 semanas para todos los niveles, pensado para la fecha de tu carrera. Fuerza, umbral, motor y simulaciones completas. 6 días, ~75 min. 1.900 CZK.",
+      desc="Plan HYROX de 12 semanas para todos los niveles, pensado para tu fecha de carrera. Fuerza, umbral, motor y simulaciones. 6 días, ~75 min. 1.900 CZK.",
       h1=("HYROX Advanced 12 semanas.", "¿Primera carrera? Sabrás qué te espera."),
       lead="Una preparación para todos los niveles, pensada para una fecha concreta. Fuerza, carrera en umbral, trabajo de motor, sesiones HYROX a ritmo y simulaciones completas. Todo apunta a la carrera, el sábado de la semana 12.",
       fit=["Tu primer HYROX es en unas 12 semanas.",
@@ -224,7 +224,7 @@ PT_LANG = dict(
     doubles=dict(
       name="HYROX Doubles 8 semanas", kind="Preparación de carrera · 8 semanas · Doubles", level="Parejas con base",
       title="Plan HYROX Doubles: 8 semanas para parejas | STR2G",
-      desc="Plan HYROX Doubles de 8 semanas. La forma de cada uno, más estrategia en las estaciones, reparto del trabajo y ritmo común. 6 días, ~75 min. 1.700 CZK por atleta.",
+      desc="Plan HYROX Doubles de 8 semanas. La forma de cada uno, estrategia en las estaciones y reparto del trabajo. 6 días, ~75 min. 1.700 CZK por atleta.",
       h1=("HYROX Doubles 8 semanas.", "Se gana repartiendo el trabajo."),
       lead="Ocho semanas de preparación para parejas. La forma de cada uno y la parte de equipo de la carrera: quién va a cada estación, cómo repartir las repeticiones y cómo mantener un ritmo común.",
       fit=["Competís en HYROX Doubles en unas 8 semanas.",
@@ -253,7 +253,7 @@ PT_LANG = dict(
     running=dict(
       name="Running for HYROX 2.0", kind="Bloque específico · 12 semanas", level="Nivel intermedio",
       title="Correr para HYROX: plan de carrera de 12 semanas | STR2G",
-      desc="Plan de carrera de 12 semanas para HYROX. Economía de carrera, ritmo, capacidad aeróbica y una carrera que aguanta después de los trineos. 6 días, ~75 min. 1.000 CZK.",
+      desc="Plan de carrera de 12 semanas para HYROX. Economía, ritmo, capacidad aeróbica y una carrera que aguanta tras los trineos. 6 días, ~75 min. 1.000 CZK.",
       h1=("Running for HYROX.", "Deja de perder tiempo corriendo."),
       lead="Correr es la mitad de la carrera. Este bloque de 12 semanas trabaja la economía de carrera, el ritmo, la capacidad aeróbica y, sobre todo, una carrera que aguanta después de los trineos.",
       fit=["Pierdes puestos corriendo, no en las estaciones.",
@@ -282,7 +282,7 @@ PT_LANG = dict(
     taper=dict(
       name="HYROX Taper 2.0 (2 semanas)", kind="Bloque específico · últimas 2 semanas", level="Cualquier carrera",
       title="HYROX taper: plan de 2 semanas antes de la carrera | STR2G",
-      desc="Las dos últimas semanas antes de un HYROX. Menos volumen, intensidad mantenida, sesiones cortas a ritmo de carrera y un plan para la semana y el día de carrera. 550 CZK.",
+      desc="Las dos últimas semanas antes de un HYROX. Menos volumen, intensidad mantenida, sesiones cortas a ritmo de carrera y un plan para el día D. 550 CZK.",
       h1=("HYROX Taper 2 semanas.", "El trabajo está hecho. No lo tires."),
       lead="Las dos últimas semanas antes de tu carrera. Bajamos el volumen, te mantenemos afilado a ritmo de carrera y llegas a la salida con las piernas frescas y un plan claro. Para Open, Doubles y Pro.",
       fit=["Tu carrera es en dos semanas.",

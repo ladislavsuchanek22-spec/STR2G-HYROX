@@ -1,0 +1,819 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<!--
+  STR2G – měření pro reklamu
+  Co to dělá:
+  1) Cookie lišta (souhlas / odmítnutí) – bez souhlasu se Meta Pixel vůbec nenačte.
+  2) Google tag (GA4 + Google Ads) v režimu Consent Mode v2 – před souhlasem nic neukládá.
+  3) Každý klik na platební odkaz do Strivee = InitiateCheckout (Meta) + begin_checkout (GA4) + konverze (Google Ads), včetně názvu programu a ceny.
+  4) Funkce window.str2gLead('kviz') pro budoucí kvíz / formulář = Lead (Meta) + generate_lead (GA4) + konverze (Ads).
+  5) window.str2gConsentReset() znovu otevře cookie lištu.
+-->
+<script>
+(function () {
+  var CFG = {
+    META_PIXEL_ID: '1343098769871797',
+    GA4_ID: 'G-P21WD6TY8N',
+    ADS_ID: 'AW-11061084387',
+    ADS_CHECKOUT_LABEL: 'lFZiCPf0iZ8dEOOBq5op',
+    ADS_LEAD_LABEL: 'xPRgCPr0iZ8dEOOBq5op'
+  };
+
+  var KEY = 'str2g_consent';
+  function getConsent() { try { return localStorage.getItem(KEY); } catch (e) { return null; } }
+  function setConsent(v) { try { localStorage.setItem(KEY, v); } catch (e) {} }
+  function has(id) { return id && id.indexOf('DOPLNIT') === -1; }
+
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { window.dataLayer.push(arguments); }
+  window.gtag = window.gtag || gtag;
+  gtag('consent', 'default', {
+    ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied',
+    analytics_storage: 'denied', wait_for_update: 500
+  });
+  gtag('js', new Date());
+  if (has(CFG.GA4_ID)) gtag('config', CFG.GA4_ID);
+  if (has(CFG.ADS_ID)) gtag('config', CFG.ADS_ID);
+  var firstId = has(CFG.GA4_ID) ? CFG.GA4_ID : (has(CFG.ADS_ID) ? CFG.ADS_ID : null);
+  if (firstId) {
+    var gs = document.createElement('script');
+    gs.async = true;
+    gs.src = 'https://www.googletagmanager.com/gtag/js?id=' + firstId;
+    document.head.appendChild(gs);
+  }
+
+  var metaLoaded = false;
+  function loadMeta() {
+    if (metaLoaded || !has(CFG.META_PIXEL_ID)) return;
+    metaLoaded = true;
+    !function (f, b, e, v, n, t, s) {
+      if (f.fbq) return; n = f.fbq = function () { n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments); };
+      if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0'; n.queue = [];
+      t = b.createElement(e); t.async = !0; t.src = v; s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s);
+    }(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+    window.fbq('init', CFG.META_PIXEL_ID);
+    window.fbq('track', 'PageView');
+  }
+
+  function grant() {
+    gtag('consent', 'update', {
+      ad_storage: 'granted', ad_user_data: 'granted', ad_personalization: 'granted', analytics_storage: 'granted'
+    });
+    loadMeta();
+  }
+  function granted() { return getConsent() === 'yes'; }
+  if (granted()) grant();
+
+  function programInfo(a) {
+    var name = a.getAttribute('data-program') || '';
+    var value = parseInt(a.getAttribute('data-value') || '0', 10) || 0;
+    if (name && value) return { name: name, value: value };
+    var el = a;
+    for (var i = 0; i < 8 && el; i++) {
+      el = el.parentElement;
+      if (!el || !el.querySelector) continue;
+      var h = el.querySelector('h3, h4');
+      if (h) {
+        if (!name) name = h.textContent.replace(/\s+/g, ' ').trim();
+        if (!value) {
+          var t = el.textContent;
+          var m = t.match(/CZK\s*([\d][\d.,\u00a0 ]*\d|\d)/) || t.match(/(\d[\d.,\u00a0 ]*\d|\d)\s*Kč/);
+          if (m) value = parseInt(m[1].replace(/[^\d]/g, ''), 10) || 0;
+        }
+        break;
+      }
+    }
+    return { name: name || 'STR2G program', value: value };
+  }
+
+  document.addEventListener('click', function (e) {
+    var a = e.target && e.target.closest ? e.target.closest('a[href*="train.strivee.app/payment"]') : null;
+    if (!a) return;
+    var p = programInfo(a);
+
+    gtag('event', 'begin_checkout', { currency: 'CZK', value: p.value, items: [{ item_name: p.name, price: p.value }] });
+    if (has(CFG.ADS_ID) && has(CFG.ADS_CHECKOUT_LABEL)) {
+      gtag('event', 'conversion', { send_to: CFG.ADS_ID + '/' + CFG.ADS_CHECKOUT_LABEL, value: p.value, currency: 'CZK' });
+    }
+    if (granted() && window.fbq) {
+      window.fbq('track', 'InitiateCheckout', { content_name: p.name, value: p.value, currency: 'CZK' });
+    }
+
+    var newTab = a.target === '_blank' || e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1;
+    if (!newTab) {
+      e.preventDefault();
+      setTimeout(function () { window.location.href = a.href; }, 300);
+    }
+  }, true);
+
+  window.str2gLead = function (source) {
+    gtag('event', 'generate_lead', { lead_source: source || 'web' });
+    if (has(CFG.ADS_ID) && has(CFG.ADS_LEAD_LABEL)) {
+      gtag('event', 'conversion', { send_to: CFG.ADS_ID + '/' + CFG.ADS_LEAD_LABEL });
+    }
+    if (granted() && window.fbq) window.fbq('track', 'Lead', { content_name: source || 'web' });
+  };
+
+  var TXT = {
+    en: ['We use cookies to measure the site and show you relevant ads. Only with your consent.', 'Accept', 'Reject'],
+    cs: ['Používáme cookies na měření webu a zobrazení relevantní reklamy. Jen s tvým souhlasem.', 'Souhlasím', 'Odmítnout'],
+    de: ['Wir nutzen Cookies, um die Website zu messen und dir relevante Werbung zu zeigen. Nur mit deiner Zustimmung.', 'Akzeptieren', 'Ablehnen'],
+    pl: ['Używamy plików cookie do pomiaru strony i wyświetlania trafnych reklam. Tylko za Twoją zgodą.', 'Akceptuję', 'Odrzuć'],
+    sk: ['Používame cookies na meranie webu a zobrazenie relevantnej reklamy. Len s tvojím súhlasom.', 'Súhlasím', 'Odmietnuť'],
+    fr: ['Nous utilisons des cookies pour mesurer le site et te montrer des publicités pertinentes. Uniquement avec ton accord.', 'Accepter', 'Refuser'],
+    es: ['Usamos cookies para medir la web y mostrarte publicidad relevante. Solo con tu consentimiento.', 'Aceptar', 'Rechazar'],
+    it: ['Usiamo i cookie per misurare il sito e mostrarti pubblicità pertinente. Solo con il tuo consenso.', 'Accetto', 'Rifiuta'],
+    nl: ['We gebruiken cookies om de site te meten en je relevante advertenties te tonen. Alleen met je toestemming.', 'Accepteren', 'Weigeren']
+  };
+
+  function showBanner() {
+    if (document.getElementById('str2g-consent')) return;
+    var lang = (document.documentElement.lang || 'en').slice(0, 2).toLowerCase();
+    var t = TXT[lang] || TXT.en;
+    var box = document.createElement('div');
+    box.id = 'str2g-consent';
+    box.setAttribute('role', 'dialog');
+    box.setAttribute('aria-live', 'polite');
+    box.style.cssText = 'position:fixed;left:16px;right:16px;bottom:16px;z-index:99999;max-width:560px;margin:0 auto;' +
+      'background:#0d0d0d;color:#f2f2f2;border:1px solid #2a2a2a;border-radius:12px;padding:16px;' +
+      'font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.4)';
+    var p = document.createElement('p');
+    p.style.cssText = 'margin:0 0 12px';
+    p.textContent = t[0];
+    var row = document.createElement('div');
+    row.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap';
+    function btn(label, primary, fn) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = label;
+      b.style.cssText = 'flex:1 1 120px;padding:10px 14px;border-radius:8px;cursor:pointer;font-weight:700;font-size:14px;' +
+        (primary ? 'background:#C9A950;color:#050505;border:1px solid #C9A950' : 'background:transparent;color:#f2f2f2;border:1px solid #f2f2f2');
+      b.onclick = fn;
+      return b;
+    }
+    row.appendChild(btn(t[1], true, function () { setConsent('yes'); grant(); box.remove(); }));
+    row.appendChild(btn(t[2], false, function () { setConsent('no'); box.remove(); }));
+    box.appendChild(p);
+    box.appendChild(row);
+    document.body.appendChild(box);
+  }
+
+  window.str2gConsentReset = function () {
+    try { localStorage.removeItem(KEY); } catch (e) {}
+    showBanner();
+  };
+
+  if (!getConsent()) {
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', showBanner);
+    else showBanner();
+  }
+})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Erstes HYROX Rennen? 12-Wochen Trainingsplan | STR2G</title>
+<meta name="description" content="12-Wochen-HYROX-Plan für jedes Level, aufgebaut auf dein Renndatum. Kraft, Schwellenläufe, Engine und Simulationen. 6 Tage pro Woche, ca. 75 Min. 1.900 CZK.">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="theme-color" content="#050505">
+<meta name="google-site-verification" content="SrmBIZppwrQAD9y8VO0Kd-viE5CwP-86--lh2cew3o4">
+<meta name="google-site-verification" content="Jh70QkTyD7Dq2cxr-DIrMJOG0HXUw_6pjIctD3XOH5E">
+<link rel="canonical" href="https://str2g.com/de/programme/12-wochen-hyrox-advanced/">
+<link rel="alternate" hreflang="en" href="https://str2g.com/programs/12-week-hyrox-advanced/">
+<link rel="alternate" hreflang="cs" href="https://str2g.com/cs/programy/12tydenni-hyrox-advanced/">
+<link rel="alternate" hreflang="sk" href="https://str2g.com/sk/programy/12-tyzdnovy-hyrox-advanced/">
+<link rel="alternate" hreflang="de" href="https://str2g.com/de/programme/12-wochen-hyrox-advanced/">
+<link rel="alternate" hreflang="pl" href="https://str2g.com/pl/programy/12-tygodni-hyrox-advanced/">
+<link rel="alternate" hreflang="fr" href="https://str2g.com/fr/programmes/12-semaines-hyrox-advanced/">
+<link rel="alternate" hreflang="es" href="https://str2g.com/es/programas/12-semanas-hyrox-advanced/">
+<link rel="alternate" hreflang="it" href="https://str2g.com/it/programmi/12-settimane-hyrox-advanced/">
+<link rel="alternate" hreflang="nl" href="https://str2g.com/nl/programmas/12-weken-hyrox-advanced/">
+<link rel="alternate" hreflang="x-default" href="https://str2g.com/programs/12-week-hyrox-advanced/">
+<meta property="og:type" content="product">
+<meta property="og:locale" content="de_DE">
+<meta property="og:site_name" content="STR2G HYROX">
+<meta property="og:url" content="https://str2g.com/de/programme/12-wochen-hyrox-advanced/">
+<meta property="og:title" content="Erstes HYROX Rennen? 12-Wochen Trainingsplan | STR2G">
+<meta property="og:description" content="12-Wochen-HYROX-Plan für jedes Level, aufgebaut auf dein Renndatum. Kraft, Schwellenläufe, Engine und Simulationen. 6 Tage pro Woche, ca. 75 Min. 1.900 CZK.">
+<meta property="og:image" content="https://str2g.com/img/lada-finish-help.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.ico?v=2" sizes="any">
+<link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png?v=2" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2">
+<link rel="manifest" href="/site.webmanifest?v=2">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700&family=Barlow+Condensed:ital,wght@0,700;0,800;1,800;1,900&family=JetBrains+Mono:wght@500&display=swap">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebPage", "@id": "https://str2g.com/de/programme/12-wochen-hyrox-advanced/", "url": "https://str2g.com/de/programme/12-wochen-hyrox-advanced/", "name": "Erstes HYROX Rennen? 12-Wochen Trainingsplan | STR2G", "description": "12-Wochen-HYROX-Plan für jedes Level, aufgebaut auf dein Renndatum. Kraft, Schwellenläufe, Engine und Simulationen. 6 Tage pro Woche, ca. 75 Min. 1.900 CZK.", "inLanguage": "de", "isPartOf": {"@id": "https://str2g.com/#web"}, "about": {"@id": "https://str2g.com/de/programme/12-wochen-hyrox-advanced/#product"}}, {"@type": "Product", "@id": "https://str2g.com/de/programme/12-wochen-hyrox-advanced/#product", "name": "STR2G 12-Week HYROX Advanced", "description": "12-Wochen-HYROX-Plan für jedes Level, aufgebaut auf dein Renndatum. Kraft, Schwellenläufe, Engine und Simulationen. 6 Tage pro Woche, ca. 75 Min. 1.900 CZK.", "brand": {"@type": "Brand", "name": "STR2G"}, "category": "Online HYROX training program", "image": "https://str2g.com/img/lada-finish-help.jpg", "offers": {"@type": "Offer", "price": "1900", "priceCurrency": "CZK", "availability": "https://schema.org/InStock", "url": "https://train.strivee.app/payment/PAAjJouaTHNtDEpVeWq2", "seller": {"@id": "https://str2g.com/#org"}}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "STR2G HYROX", "item": "https://str2g.com/de/"}, {"@type": "ListItem", "position": 2, "name": "Programme", "item": "https://str2g.com/de/#programs"}, {"@type": "ListItem", "position": 3, "name": "12-Wochen HYROX Advanced", "item": "https://str2g.com/de/programme/12-wochen-hyrox-advanced/"}]}, {"@type": "FAQPage", "@id": "https://str2g.com/de/programme/12-wochen-hyrox-advanced/#faq", "mainEntity": [{"@type": "Question", "name": "Ist es wirklich für das erste Rennen?", "acceptedAnswer": {"@type": "Answer", "text": "Ja. Es ist für jedes Level gebaut. Wenn du schon konsequent trainierst und mehr Umfang willst, nimm 12-Wochen HYROX Race Prep."}}, {"@type": "Question", "name": "Wann soll ich anfangen?", "acceptedAnswer": {"@type": "Answer", "text": "Zähl 12 Wochen von deinem Rennen zurück. Der Plan ist so gebaut, dass der Renntag auf den Samstag in Woche 12 fällt."}}, {"@type": "Question", "name": "Was, wenn mir die Renngewichte zu schwer sind?", "acceptedAnswer": {"@type": "Answer", "text": "Skaliere die Gewichte im Training. Der Plan baut die Kraft über 12 Wochen auf, und die Rennsimulationen zeigen dir, wo du stehst."}}, {"@type": "Question", "name": "Ist das ein Abo?", "acceptedAnswer": {"@type": "Answer", "text": "Nein. Eine Zahlung von 1.900 CZK für alle 12 Wochen."}}, {"@type": "Question", "name": "In welcher Sprache sind die Programme?", "acceptedAnswer": {"@type": "Answer", "text": "Pläne, Videos und Support sind auf Englisch. Du brauchst eine Übersetzung? Schreib uns, dann finden wir eine Lösung."}}]}]}</script>
+<style>
+/* Matches hyrox-prague.eu: near-black, muted gold, Barlow Condensed italic display, numbered sections, photo-led. */
+:root{
+  --bg:#050505; --panel:#0F0F0E; --line:#262521;
+  --fg:#FFFFFF; --muted:#9A978F; --accent:#C9A950; --on-accent:#050505;
+  --display:"Barlow Condensed","Arial Narrow",Impact,sans-serif;
+  --body:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  --wrap:1200px;
+  --gut-l:max(20px,env(safe-area-inset-left,0px));
+  --gut-r:max(20px,env(safe-area-inset-right,0px));
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+a{color:inherit}
+.wrap{max-width:var(--wrap);margin:0 auto;padding-left:var(--gut-l);padding-right:var(--gut-r)}
+
+.display{font-family:var(--display);font-weight:900;font-style:italic;text-transform:uppercase;line-height:.9;margin:0;text-wrap:balance}
+.gold{color:var(--accent)}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin:0 0 16px}
+.lead{font-size:clamp(17px,1.6vw,19px);color:var(--muted);max-width:60ch;margin:0}
+section{padding-block:clamp(72px,9vw,120px)}
+section + section{border-top:1px solid var(--line)}
+
+.shead{display:grid;grid-template-columns:1fr minmax(0,380px);gap:20px 48px;align-items:end;margin-bottom:52px}
+.shead .eyebrow{grid-column:1/-1;margin-bottom:-4px}
+.shead h2{font-size:clamp(44px,6.4vw,80px)}
+.shead h2 .num{display:inline-block;margin-right:.22em;font-weight:800;color:transparent;-webkit-text-stroke:1.5px var(--accent)}
+.shead p{color:var(--muted);margin:0;font-size:16px}
+@media (max-width:820px){.shead{grid-template-columns:1fr}}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font-family:var(--display);font-weight:800;font-style:italic;text-transform:uppercase;font-size:20px;letter-spacing:.02em;padding:14px 26px 13px;text-decoration:none;border:1.5px solid var(--accent);transition:background .15s,color .15s,border-color .15s;cursor:pointer}
+.btn-gold{background:var(--accent);color:var(--on-accent)}
+.btn-gold:hover{background:var(--fg);border-color:var(--fg)}
+.btn-ghost{background:transparent;color:var(--fg);border-color:rgba(255,255,255,.55)}
+.btn-ghost:hover{border-color:var(--fg);background:rgba(255,255,255,.06)}
+.btn:focus-visible,button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:rgba(5,5,5,.86);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;height:68px}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none}
+.logo .mark{width:34px;height:34px;border:1px solid var(--line);border-radius:7px;flex:none}
+.logo b{font-family:var(--display);font-weight:900;font-style:italic;font-size:30px;line-height:1}
+.logo small{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+.navlinks{display:flex;align-items:center;gap:26px}
+.navlinks a.txt{font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;color:var(--muted)}
+.navlinks a.txt:hover{color:var(--fg)}
+.nav .btn{font-size:15px;padding:9px 16px 8px}
+.lang{display:flex;border:1px solid var(--line)}
+.lang a{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-decoration:none;color:var(--muted);padding:7px 8px;line-height:1}
+.lang a:hover{color:var(--fg)}
+.lang a[aria-current="page"]{background:var(--fg);color:var(--bg)}
+.nav .btn{white-space:nowrap}
+@media (max-width:420px){.lang a{padding:7px 6px}.nav .btn{padding:8px 11px 7px;font-size:14px}.logo b{display:none}}
+@media (max-width:900px){.navlinks a.txt{display:none}.logo small{display:none}}
+
+.hero{position:relative;min-height:min(92vh,860px);display:flex;align-items:flex-end;overflow:hidden;border-bottom:1px solid var(--line)}
+.hero-img{position:absolute;top:0;right:0;bottom:0;left:auto;width:64%;height:100%;object-fit:cover;object-position:46% 35%}
+.hero::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(5,5,5,1) 0%,rgba(5,5,5,1) 36%,rgba(5,5,5,.55) 48%,rgba(5,5,5,.05) 70%,rgba(5,5,5,.15) 100%),linear-gradient(0deg,rgba(5,5,5,1) 0%,rgba(5,5,5,0) 30%)}
+@media (max-width:900px){.hero-img{width:100%;object-position:50% 30%}.hero::before{background:linear-gradient(0deg,rgba(5,5,5,1) 8%,rgba(5,5,5,.78) 55%,rgba(5,5,5,.35) 100%)}}
+.hero .wrap{position:relative;z-index:2;width:100%;padding-block:120px 48px}
+.hero h1{font-size:clamp(60px,10.5vw,148px)}
+.hero .lead{color:rgba(255,255,255,.88);margin-top:22px;max-width:52ch}
+.cta-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px}
+.facts{display:grid;grid-template-columns:repeat(4,1fr);margin-top:64px;border-top:1px solid rgba(255,255,255,.18)}
+.fact{padding:18px 20px 4px 0}
+.fact + .fact{padding-left:20px;border-left:1px solid rgba(255,255,255,.18)}
+.fact .l{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.fact .n{font-family:var(--display);font-weight:900;font-style:italic;font-size:clamp(34px,4vw,48px);line-height:1;margin-top:8px;font-variant-numeric:tabular-nums}
+@media (max-width:760px){.facts{grid-template-columns:repeat(2,1fr)}.fact:nth-child(3){padding-left:0;border-left:0}.fact:nth-child(n+3){border-top:1px solid rgba(255,255,255,.18)}}
+
+.ticker{background:var(--panel);border-bottom:1px solid var(--line);overflow:hidden;white-space:nowrap}
+.ticker-track{display:inline-flex;padding-block:13px;animation:run 70s linear infinite}
+.ticker span{font-family:var(--display);font-weight:800;font-style:italic;text-transform:uppercase;font-size:21px;padding:0 18px;color:var(--muted)}
+.ticker span.st{color:var(--fg)}
+.ticker span.st em{font-style:normal;font-family:var(--mono);font-size:11px;color:var(--accent);margin-left:8px}
+@keyframes run{to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.ticker-track{animation:none}}
+
+.approach{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:48px;align-items:stretch}
+.approach figure{margin:0;position:relative;min-height:420px}
+.approach figure img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%}
+.approach figcaption{position:absolute;left:0;bottom:0;background:var(--bg);font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:9px 14px}
+.pillars{border-top:1px solid var(--line)}
+.pillar{display:grid;grid-template-columns:150px 1fr;gap:20px;padding:20px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.pillar h3{font-family:var(--display);font-weight:800;font-style:italic;text-transform:uppercase;font-size:30px;line-height:1;margin:0}
+.pillar p{margin:0;color:var(--muted)}
+@media (max-width:900px){.approach{grid-template-columns:1fr}.approach figure{min-height:0;aspect-ratio:4/5;max-height:560px}}
+@media (max-width:480px){.pillar{grid-template-columns:1fr;gap:6px}}
+
+.chooser{display:flex;flex-wrap:wrap;gap:8px}
+.chooser button{background:var(--panel);color:var(--fg);border:1px solid var(--line);font-family:var(--body);font-size:15px;font-weight:500;padding:11px 16px;cursor:pointer}
+.chooser button:hover{border-color:var(--muted)}
+.chooser button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.chooser-hint{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:14px;min-height:1.6em}
+
+.group-label{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:60px 0 18px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.group-label h3{font-family:var(--display);font-weight:800;font-style:italic;text-transform:uppercase;font-size:34px;margin:0;line-height:1}
+.group-label p{margin:0;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.grid.two{grid-template-columns:repeat(2,1fr)}
+@media (max-width:980px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:640px){.grid,.grid.two{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);padding:26px 24px 24px;display:flex;flex-direction:column;gap:16px;min-width:0;transition:border-color .2s,transform .2s,box-shadow .2s;scroll-margin-top:110px}
+.card:hover{border-color:#3a3833}
+.card.hit{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),0 18px 50px -24px rgba(201,169,80,.55);transform:translateY(-3px)}
+.card .kind{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.card h4{font-family:var(--display);font-weight:900;font-style:italic;text-transform:uppercase;font-size:38px;line-height:.92;margin:0;text-wrap:balance}
+.price{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;font-variant-numeric:tabular-nums}
+.price b{font-family:var(--display);font-weight:900;font-style:italic;font-size:44px;line-height:1}
+.price span{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.meta{display:grid;grid-template-columns:repeat(3,1fr);border-block:1px solid var(--line)}
+.meta div{padding:10px 0;font-family:var(--mono);font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;line-height:1.35}
+.meta div + div{padding-left:12px;border-left:1px solid var(--line)}
+.meta strong{display:block;font-family:var(--display);font-style:italic;font-weight:800;font-size:26px;color:var(--fg);letter-spacing:0}
+.card p{margin:0;font-size:15.5px;color:var(--muted)}
+.card .for{color:var(--fg);font-weight:500}
+.card .actions{margin-top:auto;display:flex;gap:10px;flex-wrap:wrap;padding-top:4px}
+.card .actions .btn{font-size:17px;padding:11px 18px 10px;flex:1 1 auto}
+
+.one{margin-top:60px;display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);border:1px solid var(--accent);background:var(--panel);scroll-margin-top:110px;transition:box-shadow .2s}
+.one.hit{box-shadow:0 0 0 2px var(--accent)}
+.one figure{margin:0;position:relative;min-height:380px}
+.one figure img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:32% 30%}
+.one .body{padding:clamp(26px,4vw,44px);display:flex;flex-direction:column;gap:18px;min-width:0}
+.one h3{font-family:var(--display);font-weight:900;font-style:italic;text-transform:uppercase;font-size:clamp(42px,5vw,64px);line-height:.88;margin:0}
+.one p{margin:0;color:var(--muted)}
+.one .price b{font-size:54px}
+.one ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:0 24px}
+.one li{border-bottom:1px solid var(--line);padding:10px 0 10px 18px;position:relative;font-size:15.5px}
+.one li::before{content:"";position:absolute;left:0;top:21px;width:8px;height:2px;background:var(--accent)}
+.one .actions{display:flex;gap:10px;flex-wrap:wrap}
+@media (max-width:860px){.one{grid-template-columns:1fr}.one figure{min-height:0;aspect-ratio:3/2}.one ul{grid-template-columns:1fr}}
+
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media (max-width:820px){.steps{grid-template-columns:1fr}}
+.step{background:var(--panel);border:1px solid var(--line);padding:24px}
+.step .num{font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:.1em}
+.step h3{font-family:var(--display);font-weight:800;font-style:italic;text-transform:uppercase;font-size:30px;line-height:1;margin:10px 0}
+.step p{margin:0;color:var(--muted);font-size:15.5px}
+.app-list{margin-top:28px;display:flex;flex-wrap:wrap;gap:8px}
+.app-list span{font-family:var(--mono);font-size:11.5px;border:1px solid var(--line);padding:7px 12px}
+
+.coaches{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:980px){.coaches{grid-template-columns:1fr}}
+.coach{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);background:var(--panel);border:1px solid var(--line);min-width:0}
+.coach figure{margin:0;position:relative;min-height:440px}
+.coach figure img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.coach .body{padding:26px 24px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.coach .role{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.coach h3{font-family:var(--display);font-weight:900;font-style:italic;text-transform:uppercase;font-size:clamp(36px,3.6vw,46px);line-height:.9;margin:0}
+.coach p{margin:0;color:var(--muted);font-size:15.5px}
+.coach p.quote{color:var(--fg);font-size:16.5px;border-left:2px solid var(--accent);padding-left:12px}
+.creds{display:flex;flex-wrap:wrap;gap:6px;margin:0;padding:0;list-style:none}
+.creds li{font-family:var(--mono);font-size:10.5px;border:1px solid var(--line);padding:5px 8px}
+.coach .ig{font-family:var(--mono);font-size:12px;color:var(--accent);text-decoration:none;margin-top:auto}
+.coach .ig:hover{text-decoration:underline}
+@media (max-width:560px){.coach{grid-template-columns:1fr}.coach figure{min-height:0;aspect-ratio:4/5}}
+
+.together{margin-top:16px;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,.7fr);background:var(--panel);border:1px solid var(--line)}
+.together .body{padding:clamp(28px,4vw,48px);display:flex;flex-direction:column;justify-content:center;gap:16px}
+.together .display{font-size:clamp(46px,6vw,78px)}
+.together p{margin:0;color:var(--muted);max-width:56ch}
+.together figure{margin:0;position:relative;min-height:420px}
+.together figure img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 25%}
+@media (max-width:820px){.together{grid-template-columns:1fr}.together figure{min-height:0;aspect-ratio:4/5;max-height:620px}}
+
+.gallery{display:grid;grid-template-columns:1.4fr 1fr 1fr;grid-template-rows:280px 280px;gap:12px}
+.gallery figure{margin:0;position:relative;overflow:hidden;background:var(--panel)}
+.gallery img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease}
+.gallery figure:hover img{transform:scale(1.03)}
+.gallery .g1{grid-row:1/3}
+.gallery .g1 img{object-position:40% 50%}
+.gallery .g4 img{object-position:50% 20%}
+@media (prefers-reduced-motion:reduce){.gallery img{transition:none}}
+@media (max-width:820px){.gallery{grid-template-columns:1fr 1fr;grid-template-rows:auto}.gallery .g1{grid-row:auto;grid-column:1/-1;aspect-ratio:16/10}.gallery figure:not(.g1){aspect-ratio:1/1}.gallery .g5{display:none}}
+
+.quotes{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media (max-width:900px){.quotes{grid-template-columns:1fr}}
+.q{background:var(--panel);border:1px solid var(--line);padding:26px 24px;display:flex;flex-direction:column;gap:18px;margin:0;min-width:0}
+.q blockquote{margin:0;font-size:16.5px}
+.q .mark{font-family:var(--display);font-weight:900;font-style:italic;font-size:64px;line-height:.5;color:var(--accent);height:22px}
+.q .who{margin-top:auto;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.q .who b{color:var(--fg);font-weight:500}
+
+.faq{border-top:1px solid var(--line);max-width:880px}
+details{border-bottom:1px solid var(--line)}
+summary{list-style:none;cursor:pointer;padding:22px 40px 22px 0;position:relative;font-family:var(--display);font-weight:800;font-style:italic;text-transform:uppercase;font-size:26px;line-height:1.05}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";position:absolute;right:4px;top:18px;font-style:normal;color:var(--accent);font-size:30px;transition:transform .2s}
+details[open] summary::after{transform:rotate(45deg)}
+details p{margin:0 0 22px;color:var(--muted);max-width:68ch}
+details a{color:var(--accent)}
+
+.final{position:relative;overflow:hidden}
+.final .bgimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 40%;opacity:.3}
+.final::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(5,5,5,.95),rgba(5,5,5,.55))}
+.final .wrap{position:relative;z-index:2}
+.final h2{font-size:clamp(56px,9vw,128px)}
+.final .lead{color:rgba(255,255,255,.85);margin-top:20px}
+
+footer{border-top:1px solid var(--line);padding-block:34px 42px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+footer .wrap{display:flex;flex-wrap:wrap;gap:14px 32px;justify-content:space-between}
+footer a{text-decoration:none;color:var(--fg)}
+footer a:hover{color:var(--accent)}
+footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
+.net{flex-basis:100%;padding-bottom:24px;margin-bottom:6px;border-bottom:1px solid var(--line)}
+.net-h{margin:0 0 14px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.net ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px 24px}
+.net a{display:grid;gap:3px;color:var(--fg)}
+.net b{font-family:var(--display);font-style:italic;font-weight:800;font-size:22px;line-height:1.05;text-transform:uppercase}
+.net span{font-family:var(--body);font-size:14px;line-height:1.35;color:var(--muted)}
+.net i{font-style:normal;color:var(--muted)}
+.net a:hover b{color:var(--accent)}
+.coach .coach-links{margin-top:auto;display:flex;flex-wrap:wrap;gap:6px 20px}
+.coach .coach-links .ig{margin-top:0}
+.shead p a{color:var(--fg);text-decoration-color:var(--accent);text-underline-offset:3px}
+@media (max-width:560px){.nav .navlinks .btn{display:none}.lang a{padding:7px 5px;letter-spacing:.04em}.lang{max-width:calc(100vw - 110px);overflow-x:auto;scrollbar-width:none;flex-wrap:nowrap}.lang::-webkit-scrollbar{display:none}}
+@media (max-width:1180px) and (min-width:561px){.navlinks a.txt{display:none}}
+.display{overflow-wrap:break-word;hyphens:auto}
+.shead>*,.group-label>*,.together>*,.grid>*{min-width:0}
+.together .display,.card h4{overflow-wrap:break-word;hyphens:auto}
+@media (max-width:560px){.together .display{font-size:clamp(34px,10vw,48px)}}
+@media (max-width:560px){.shead h2{font-size:clamp(34px,9.5vw,44px)}.group-label h3{font-size:clamp(22px,7vw,28px);overflow-wrap:break-word}}
+.price .fx{display:block;width:100%;font-style:normal;font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:4px;letter-spacing:.02em}
+.guides{display:flex;flex-wrap:wrap;gap:8px 20px;margin:0 0 18px;padding:0 0 18px;border-bottom:1px solid var(--line)}
+.guides a{color:var(--fg);text-decoration:none;font-weight:500}
+.guides a:hover{color:var(--accent)}
+
+.lp-hero{min-height:min(78vh,720px)}
+.crumbs{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.crumbs a{color:var(--muted);text-decoration:none}.crumbs a:hover{color:var(--accent)}
+.lp-list{list-style:none;margin:0;padding:0;display:grid;gap:12px;max-width:820px}
+.lp-list li{position:relative;padding-left:26px;font-size:17px;line-height:1.55}
+.lp-list li::before{content:"";position:absolute;left:0;top:.62em;width:12px;height:2px;background:var(--accent)}
+.lp-list b{color:var(--fg)}
+.lp-p{max-width:820px;font-size:17px;line-height:1.6;color:var(--muted);margin:0 0 22px}
+.lp-p a,.lp-note a{color:var(--accent)}
+.lp-table{width:100%;max-width:980px;border-collapse:collapse;font-size:16px}
+.lp-table th{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);text-align:left;padding:0 14px 10px 0;border-bottom:2px solid var(--accent)}
+.lp-table td{overflow-wrap:anywhere;padding:14px 14px 14px 0;border-bottom:1px solid var(--line);vertical-align:top}
+.lp-table td:first-child{font-family:var(--display);font-style:italic;font-weight:800;font-size:22px;text-transform:uppercase;width:70px}
+.lp-table td:last-child{color:var(--muted)}
+.phases{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.phase{min-width:0;border-top:3px solid var(--accent);background:var(--panel,#0f0f0e);padding:20px}
+.phase small{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.phase h3{overflow-wrap:break-word;hyphens:auto;font-family:var(--display);font-style:italic;font-weight:800;font-size:28px;text-transform:uppercase;margin:6px 0 8px;line-height:1}
+.phase p{color:var(--muted);font-size:15px;margin:0}
+.lp-note{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:18px;max-width:820px;line-height:1.6}
+.lp-quote{margin:28px 0 0;max-width:820px;border-left:3px solid var(--accent);padding:6px 0 6px 20px}
+.lp-quote blockquote{margin:0 0 10px;font-size:19px;line-height:1.5}
+.lp-quote figcaption{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.lp-offer{margin-top:28px;max-width:520px}
+.lp-steps{counter-reset:s;list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.lp-steps li{counter-increment:s;background:var(--panel,#0f0f0e);border:1px solid var(--line);padding:20px;font-size:15.5px;line-height:1.5}
+.lp-steps li::before{content:counter(s,decimal-leading-zero);display:block;font-family:var(--display);font-style:italic;font-weight:900;font-size:40px;color:var(--accent);line-height:1;margin-bottom:10px}
+.guides{display:flex;flex-wrap:wrap;gap:8px 20px;margin:0 0 18px;padding:0 0 18px;border-bottom:1px solid var(--line)}
+.guides a{color:var(--fg);text-decoration:none;font-weight:500}.guides a:hover,.guides a[aria-current]{color:var(--accent)}
+@media (max-width:980px){.phases{grid-template-columns:1fr 1fr}.lp-steps{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.lp-hero h1{font-size:clamp(40px,11vw,60px)}.shead h2{font-size:clamp(34px,9.5vw,44px)}}
+@media (max-width:620px){.phases,.lp-steps{grid-template-columns:1fr}.lp-table td:first-child{width:48px;font-size:18px}.lp-table{font-size:15px}}
+
+.lp-hero h1{font-size:clamp(52px,7.6vw,112px);hyphens:manual;overflow-wrap:normal}
+@media (max-width:620px){.buybox .cta-row{width:100%}.buybox .cta-row .btn{flex:1 1 100%}}
+.facts{display:grid;grid-template-columns:repeat(var(--cols,5),minmax(0,1fr));border-block:1px solid var(--line);margin-top:34px;max-width:980px}
+.facts div{padding:14px 14px 14px 0;font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;line-height:1.35}
+.facts div+div{padding-left:14px;border-left:1px solid var(--line)}
+.facts strong{display:block;font-family:var(--display);font-style:italic;font-weight:800;font-size:30px;color:var(--fg);letter-spacing:0;line-height:1.05;margin-bottom:4px}
+.facts .lvl strong{font-size:22px;line-height:1.1}
+.fitgrid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:48px;align-items:start}
+.notfit{background:var(--panel);border:1px solid var(--line);padding:24px}
+.notfit h3{font-family:var(--display);font-style:italic;font-weight:800;text-transform:uppercase;font-size:26px;margin:0 0 14px;line-height:1}
+.notfit ul{list-style:none;margin:0;padding:0;display:grid;gap:14px}
+.notfit li{font-size:15.5px;line-height:1.5;color:var(--muted)}
+.notfit a{display:inline-block;margin-top:4px;color:var(--accent);font-weight:500;text-decoration:none}
+.notfit a:hover{text-decoration:underline}
+.app{margin-top:28px;max-width:820px;border-top:1px solid var(--line);padding-top:22px}
+.app h3{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:500;margin:0 0 12px}
+.buybox{display:flex;flex-wrap:wrap;align-items:flex-end;gap:18px 32px;margin-top:30px}
+.prog-nav{display:flex;flex-wrap:wrap;gap:8px 20px}
+.prog-nav a{color:var(--fg);text-decoration:none;font-weight:500}.prog-nav a:hover,.prog-nav a[aria-current]{color:var(--accent)}
+@media (max-width:980px){.facts{grid-template-columns:repeat(3,minmax(0,1fr))}.facts div:nth-child(3n+1){padding-left:0;border-left:0}.facts div:nth-child(n+4){border-top:1px solid var(--line)}.fitgrid{grid-template-columns:1fr;gap:28px}}
+@media (max-width:620px){.facts{grid-template-columns:repeat(2,minmax(0,1fr))}.facts div:nth-child(odd){padding-left:0;border-left:0}.facts div:nth-child(even){padding-left:14px;border-left:1px solid var(--line)}.facts div:nth-child(n+3){border-top:1px solid var(--line)}.facts strong{font-size:26px}}
+</style>
+</head>
+<body>
+
+<nav class="nav" aria-label="Main">
+  <div class="wrap">
+    <a class="logo" href="/de/" aria-label="STR2G HYROX"><img class="mark" src="/favicon.svg?v=2" alt="" width="34" height="34"><b>STR<span class="gold">2</span>G</b><small>12-Wochen HYROX Advanced</small></a>
+    <div class="navlinks">
+      <a class="txt" href="/de/#programs">Programme</a>
+      <a class="txt" href="/de/hyrox-trainingsplan/">HYROX Trainingsplan</a>
+      <nav class="lang" aria-label="Sprache"><a href="/programs/12-week-hyrox-advanced/" hreflang="en" lang="en">EN</a><a href="/cs/programy/12tydenni-hyrox-advanced/" hreflang="cs" lang="cs">CZ</a><a href="/sk/programy/12-tyzdnovy-hyrox-advanced/" hreflang="sk" lang="sk">SK</a><a href="/de/programme/12-wochen-hyrox-advanced/" hreflang="de" lang="de" aria-current="page">DE</a><a href="/pl/programy/12-tygodni-hyrox-advanced/" hreflang="pl" lang="pl">PL</a><a href="/fr/programmes/12-semaines-hyrox-advanced/" hreflang="fr" lang="fr">FR</a><a href="/es/programas/12-semanas-hyrox-advanced/" hreflang="es" lang="es">ES</a><a href="/it/programmi/12-settimane-hyrox-advanced/" hreflang="it" lang="it">IT</a><a href="/nl/programmas/12-weken-hyrox-advanced/" hreflang="nl" lang="nl">NL</a></nav>
+      <a class="btn btn-gold" href="https://train.strivee.app/payment/PAAjJouaTHNtDEpVeWq2" target="_blank" rel="noopener" data-program="12-Week HYROX Advanced" data-value="1900">Kaufen</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero lp-hero" id="top">
+  <img class="hero-img" src="/img/lada-finish-help.webp" alt="" fetchpriority="high">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="/de/">STR2G HYROX</a><span aria-hidden="true">/</span><a href="/de/#programs">Programme</a><span aria-hidden="true">/</span><span>12-Wochen HYROX Advanced</span></nav>
+    <p class="eyebrow">Rennvorbereitung · 12 Wochen · jedes Level</p>
+    <h1 class="display">12-Wochen HYROX Advanced.<br><span class="gold">Erstes Rennen? Du weißt, was kommt.</span></h1>
+    <p class="lead">Eine Rennvorbereitung für jedes Level, aufgebaut auf ein festes Datum. Kraft, Schwellenläufe, Engine-Arbeit, HYROX-Tempoeinheiten und komplette Simulationen. Alles läuft auf den Renntag am Samstag in Woche 12 zu.</p>
+    <div class="buybox">
+      <div class="price"><b>1.900 CZK</b><span>einmalig</span><em class="fx">≈ 79 €</em></div>
+      <div class="cta-row" style="margin-top:0">
+        <a class="btn btn-gold" href="https://train.strivee.app/payment/PAAjJouaTHNtDEpVeWq2" target="_blank" rel="noopener" data-program="12-Week HYROX Advanced" data-value="1900">Kaufen</a>
+        <a class="btn btn-ghost" href="/de/hyrox-trainingsplan/#pick">Alle Programme vergleichen</a>
+      </div>
+    </div>
+    <div class="facts" style="--cols:5"><div><strong>6</strong>Tage / Woche</div><div><strong>75</strong>Min. / Tag</div><div><strong>1</strong>Einheiten / Tag</div><div><strong>12</strong>Wochen</div><div class="lvl"><strong>Jedes Level</strong>Level</div></div>
+  </div>
+</header>
+
+<section id="fit">
+  <div class="wrap">
+    <div class="shead"><p class="eyebrow">12-Wochen HYROX Advanced</p><h2 class="display"><span class="num">01</span><span>Für wen <span class="gold">es ist.</span></span></h2></div>
+    <div class="fitgrid">
+      <ul class="lp-list"><li>Dein erstes HYROX ist in etwa 12 Wochen.</li><li>Du willst genau wissen, was dich jede Woche erwartet.</li><li>Du kannst sechs Tage pro Woche trainieren, etwa 75 Minuten.</li><li>Du willst mit Selbstvertrauen an den Start, nicht mit Hoffnung.</li></ul>
+      <aside class="notfit"><h3>Passt nicht, wenn…</h3><ul><li>Du trainierst schon konsequent und willst mehr Umfang.<br><a href="/de/programme/12-wochen-hyrox-race-prep/">12-Wochen HYROX Race Prep →</a></li><li>Du hast noch kein Renndatum.<br><a href="/de/programme/hyrox-basic/">HYROX Basic →</a></li></ul></aside>
+    </div>
+  </div>
+</section>
+
+<section id="inside">
+  <div class="wrap">
+    <div class="shead"><p class="eyebrow">12-Wochen HYROX Advanced</p><h2 class="display"><span class="num">02</span><span>Was <span class="gold">drin ist.</span></span></h2></div>
+    <ul class="lp-list"><li>Kraft und Arbeit an den Stationen.</li><li>Schwellenläufe und Renntempo.</li><li>Engine-Arbeit und HYROX-Tempoeinheiten.</li><li>Komplette Rennsimulationen vor dem Renntag.</li><li>Ein Plan, der genau auf den Renntag fällt: Samstag in Woche 12.</li></ul>
+    <div class="app"><h3>In der Strivee App</h3><ul class="lp-list"><li>Jede Einheit täglich auf deinem Handy.</li><li>Leaderboards für jedes Workout.</li><li>Fortschritt im Blick: Maxima, Prozente, Benchmarks.</li><li>Eigene Zusatzeinheiten kannst du auch eintragen.</li></ul></div>
+  </div>
+</section>
+
+<section id="week">
+  <div class="wrap">
+    <div class="shead"><p class="eyebrow">12-Wochen HYROX Advanced</p><h2 class="display"><span class="num">03</span><span>Eine typische <span class="gold">Woche.</span></span></h2></div>
+    <table class="lp-table"><thead><tr><th>Tag</th><th>Einheit</th><th>Ziel</th></tr></thead><tbody><tr><td>Mo</td><td>Kraft Unterkörper + Schlittentechnik</td><td>Kraft für die Stationen</td></tr><tr><td>Di</td><td>Schwellenlauf</td><td>Ein Tempo, das du halten kannst</td></tr><tr><td>Mi</td><td>Engine: SkiErg, Rudern, Bike</td><td>Aerobe Kapazität</td></tr><tr><td>Do</td><td>Oberkörper + Wall Balls + Farmers Carry</td><td>Kraft für die Stationen</td></tr><tr><td>Fr</td><td>Lockerer Lauf</td><td>Erholung und Basis</td></tr><tr><td>Sa</td><td>HYROX-Tempoeinheit: Laufen + Stationen</td><td>Rennrhythmus</td></tr><tr><td>So</td><td>Ruhetag</td><td>Erholung</td></tr></tbody></table>
+    <p class="lp-note">Beispielwoche. Sie zeigt die Verteilung der Woche, nicht die genauen Einheiten in der App.</p>
+  </div>
+</section>
+
+<section id="coaches">
+  <div class="wrap">
+    <div class="shead"><p class="eyebrow">STR2G</p><h2 class="display"><span>Deine <span class="gold">Coaches.</span></span></h2></div>
+    <p class="lp-p"><b>Láďa Suchánek</b> · HYROX Performance Coach L1, CrossFit L1, OPEX CCP, Precision Nutrition L1, Lauftrainer. Leitet die STR2G HYROX Clubs in Prag, Brno und Ostrava. Berlin in 1:11:12.</p>
+    <p class="lp-p"><b>Ria Suchánek Hrušovská, MSc.</b> · HYROX Performance Coach, Mentalcoach (Newton University), CrossFit L2. Schreibt die Programme, coacht und startet zusammen mit Láďa.</p>
+    <p class="lp-p">Wir sind HYROX in Berlin, Hamburg, Barcelona und Maastricht gelaufen. Wir schreiben Pläne, nach denen wir selbst trainieren würden.</p>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <div class="shead"><p class="eyebrow">FAQ</p><h2 class="display"><span>Häufige <span class="gold">Fragen.</span></span></h2></div>
+    <div class="faq"><details><summary>Ist es wirklich für das erste Rennen?</summary><p>Ja. Es ist für jedes Level gebaut. Wenn du schon konsequent trainierst und mehr Umfang willst, nimm 12-Wochen HYROX Race Prep.</p></details><details><summary>Wann soll ich anfangen?</summary><p>Zähl 12 Wochen von deinem Rennen zurück. Der Plan ist so gebaut, dass der Renntag auf den Samstag in Woche 12 fällt.</p></details><details><summary>Was, wenn mir die Renngewichte zu schwer sind?</summary><p>Skaliere die Gewichte im Training. Der Plan baut die Kraft über 12 Wochen auf, und die Rennsimulationen zeigen dir, wo du stehst.</p></details><details><summary>Ist das ein Abo?</summary><p>Nein. Eine Zahlung von 1.900 CZK für alle 12 Wochen.</p></details><details><summary>In welcher Sprache sind die Programme?</summary><p>Pläne, Videos und Support sind auf Englisch. Du brauchst eine Übersetzung? Schreib uns, dann finden wir eine Lösung.</p></details></div>
+  </div>
+</section>
+
+<section id="related">
+  <div class="wrap">
+    <div class="shead"><p class="eyebrow">Programme</p><h2 class="display"><span>Weitere <span class="gold">Programme.</span></span></h2></div>
+    <div class="grid"><article class="card"><div class="kind">Rennvorbereitung · 12 Wochen</div><h4>12-Wochen HYROX Race Prep</h4><div class="price"><b>2.100 CZK</b><span>einmalig</span><em class="fx">≈ 87 €</em></div><p class="for">Dein Rennen ist in etwa 12 Wochen.</p><div class="actions"><a class="btn btn-ghost" href="/de/programme/12-wochen-hyrox-race-prep/">Zum Programm</a><a class="btn btn-gold" href="https://train.strivee.app/payment/0dvaQ3aahjzyCoWmPgMz" target="_blank" rel="noopener" data-program="12-Week HYROX Race Prep" data-value="2100">Kaufen</a></div></article><article class="card"><div class="kind">Monatsprogramm · Grundlage</div><h4>HYROX Basic</h4><div class="price"><b>750 CZK</b><span>/ Monat</span><em class="fx">≈ 31 €</em></div><p class="for">Du bist neu bei HYROX oder bist dein erstes Rennen nur mit allgemeiner Fitness gelaufen.</p><div class="actions"><a class="btn btn-ghost" href="/de/programme/hyrox-basic/">Zum Programm</a><a class="btn btn-gold" href="https://train.strivee.app/payment/gFN1JqRA8MF3l3uICbyS" target="_blank" rel="noopener" data-program="HYROX Basic" data-value="750">Starten</a></div></article><article class="card"><div class="kind">Spezialblock · 12 Wochen</div><h4>Running for HYROX 2.0</h4><div class="price"><b>1.000 CZK</b><span>einmalig</span><em class="fx">≈ 41 €</em></div><p class="for">Du verlierst Plätze beim Laufen, nicht an den Stationen.</p><div class="actions"><a class="btn btn-ghost" href="/de/programme/laufen-fuer-hyrox/">Zum Programm</a><a class="btn btn-gold" href="https://train.strivee.app/payment/l4LKqbJX8ezlAEDBm6Dg" target="_blank" rel="noopener" data-program="Running for HYROX 2.0" data-value="1000">Kaufen</a></div></article></div>
+    <p class="lp-note">Die Zahlung läuft sicher über Strivee in Tschechischen Kronen (CZK). Deine Bank rechnet um, die €-Beträge sind daher ungefähr. <a href="/de/hyrox-trainingsplan/#pick">Alle Programme vergleichen →</a></p>
+  </div>
+</section>
+
+<section class="final">
+  <img class="bgimg" src="/img/lada-finish-help.webp" alt="" loading="lazy">
+  <div class="wrap">
+    <h2 class="display">Der Wettkampf<br><span class="gold">wartet nicht.</span></h2>
+    <p class="lead">Plan kaufen, Strivee laden und morgen früh weißt du genau, was ansteht.</p>
+    <div class="cta-row">
+      <a class="btn btn-gold" href="https://train.strivee.app/payment/PAAjJouaTHNtDEpVeWq2" target="_blank" rel="noopener" data-program="12-Week HYROX Advanced" data-value="1900">Kaufen</a>
+      <a class="btn btn-ghost" href="/de/hyrox-trainingsplan/#pick">Alle Programme vergleichen</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <nav class="prog-nav guides" aria-label="Programme"><a href="/de/programme/hyrox-basic/">HYROX Basic</a><a href="/de/programme/hyrox-competitor/">HYROX Competitor</a><a href="/de/programme/hyrox-pro-athlete/">HYROX Pro Athlete</a><a href="/de/programme/12-wochen-hyrox-race-prep/">12-Wochen HYROX Race Prep</a><a href="/de/programme/12-wochen-hyrox-advanced/" aria-current="page">12-Wochen HYROX Advanced</a><a href="/de/programme/8-wochen-hyrox-singles/">8-Wochen HYROX Singles</a><a href="/de/programme/8-wochen-hyrox-doubles/">8-Wochen HYROX Doubles</a><a href="/de/programme/laufen-fuer-hyrox/">Running for HYROX 2.0</a><a href="/de/programme/hyrox-taper/">2-Wochen HYROX Taper 2.0</a></nav>
+    <nav class="guides" aria-label="Guides"><a href="/de/hyrox-trainingsplan/">HYROX Trainingsplan</a><a href="/de/hyrox-online-coaching/">HYROX Online-Coaching</a><a href="/de/#programs">Programme</a></nav>
+    <nav class="net" aria-label="STR2G"><p class="net-h">STR2G</p><ul><li><a href="https://hyrox-prague.eu/de/" target="_blank" rel="noopener"><b>HYROX Prague</b></a></li><li><a href="https://hyroxtrainingclub.cz/de/" target="_blank" rel="noopener"><b>HYROX Training Club</b></a></li><li><a href="https://formfactorygames.cz/de/" target="_blank" rel="noopener"><b>Form Factory Games</b></a></li><li><a href="https://www.ladislavsuchanek.cz/de/" target="_blank" rel="noopener"><b>Ladislav Suchánek</b></a></li><li><a href="https://riahrusovska.cz/en/" target="_blank" rel="noopener"><b>Ria Suchánek Hrušovská</b></a></li></ul></nav>
+    <div style="display:flex;align-items:center;gap:12px"><img loading="lazy" src="/favicon.svg?v=2" alt="" width="26" height="26" style="border:1px solid var(--line);border-radius:6px"><span>© 2026 STR2G · Stronger Together · Strivee</span></div>
+    <div class="links">
+      <a href="https://instagram.com/22segge_coach" target="_blank" rel="noopener">@22segge_coach</a>
+      <a href="https://instagram.com/riahrusovskaofficial" target="_blank" rel="noopener">@riahrusovskaofficial</a>
+      <a href="/privacy/">Datenschutz</a>
+      <a href="#" onclick="str2gConsentReset();return false;">Cookies</a>
+    </div>
+  </div>
+</footer>
+<!--STR2G_NEWSLETTER-->
+<!--
+  STR2G – vyskakovací okno pro odběr newsletteru (jméno + e-mail)
+  - Otevře se po 25 s, po projetí 55 % stránky, nebo když myš na počítači odjede k zavírání záložky (nejdřív po 8 s).
+  - Nikdy neskočí přes cookie lištu: počká, až ji člověk vyřeší.
+  - Po zavření se 14 dní neukáže. Po přihlášení už nikdy.
+  - Kontakty se ukládají do Netlify Forms (formulář "newsletter"). Když vyplníš MAILERLITE_URL, posílají se i do MailerLite.
+  - Test: přidej ?nl=1 na konec adresy a okno se otevře hned.
+  - Texty pro všechny jazyky jsou v TXT níže. Tenhle soubor se kopíruje do všech stránek přes i18n/build.py.
+-->
+<form name="newsletter" data-netlify="true" netlify-honeypot="bot-field" hidden>
+  <input type="text" name="name"><input type="email" name="email"><input type="text" name="lang"><input type="text" name="page"><input type="text" name="bot-field">
+</form>
+<style>
+#nl{position:fixed;inset:0;z-index:99990;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.72);opacity:0;transition:opacity .25s}
+#nl.on{opacity:1}
+#nl .nl-box{position:relative;display:grid;grid-template-columns:minmax(0,300px) minmax(0,420px);background:#0F0F0E;border:1px solid #262521;color:#fff;max-height:calc(100vh - 40px);overflow:auto;transform:translateY(16px);transition:transform .25s}
+#nl.on .nl-box{transform:none}
+#nl .nl-img{background:#050505 url(/img/lada-ria-race-day.webp) center 30%/cover;min-height:100%}
+#nl .nl-body{padding:34px 32px 28px}
+#nl .nl-eb{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#C9A950;margin:0 0 14px}
+#nl h2{font-family:"Barlow Condensed","Arial Narrow",Impact,sans-serif;font-weight:900;font-style:italic;text-transform:uppercase;font-size:44px;line-height:.9;margin:0 0 14px;text-wrap:balance}
+#nl p.nl-t{color:#C9C6BE;font-size:15.5px;line-height:1.5;margin:0 0 20px}
+#nl label{display:block;font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#9A978F;margin:0 0 6px}
+#nl input{display:block;width:100%;background:#050505;border:1px solid #3a3833;color:#fff;font:16px/1.3 "Archivo","Helvetica Neue",Arial,sans-serif;padding:13px 14px;margin:0 0 14px;border-radius:0;-webkit-appearance:none;appearance:none}
+#nl input:focus{outline:none;border-color:#C9A950}
+#nl .nl-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+#nl button.nl-go{width:100%;background:#C9A950;color:#050505;border:1.5px solid #C9A950;font-family:"Barlow Condensed","Arial Narrow",Impact,sans-serif;font-weight:800;font-style:italic;text-transform:uppercase;font-size:21px;letter-spacing:.02em;padding:13px 20px 12px;cursor:pointer;margin-top:4px}
+#nl button.nl-go:hover{background:#fff;border-color:#fff}
+#nl button.nl-go[disabled]{opacity:.6;cursor:wait}
+#nl .nl-legal{font-size:12px;line-height:1.45;color:#7d7a73;margin:14px 0 0}
+#nl .nl-legal a{color:#9A978F}
+#nl .nl-legal a:hover{color:#fff}
+#nl .nl-err{color:#ff8a7a;font-size:13.5px;margin:10px 0 0;min-height:0}
+#nl .nl-x{position:absolute;top:8px;right:8px;width:40px;height:40px;background:transparent;border:0;color:#9A978F;font-size:26px;line-height:1;cursor:pointer;z-index:2}
+#nl .nl-x:hover{color:#fff}
+#nl button:focus-visible,#nl input:focus-visible{outline:2px solid #C9A950;outline-offset:2px}
+@media (max-width:720px){
+  #nl{align-items:flex-end;padding:0}
+  #nl .nl-box{grid-template-columns:1fr;width:100%;max-height:92vh;border-left:0;border-right:0;border-bottom:0;transform:translateY(100%)}
+  #nl .nl-img{display:none}
+  #nl .nl-body{padding:28px max(20px,env(safe-area-inset-left,0px)) calc(22px + env(safe-area-inset-bottom,0px))}
+  #nl h2{font-size:38px;padding-right:30px}
+}
+@media (prefers-reduced-motion:reduce){#nl,#nl .nl-box{transition:none}}
+</style>
+<script>
+(function () {
+  var CFG = {
+    // MailerLite formulář „STR2G web“. Prázdné = ukládá se jen do Netlify.
+    MAILERLITE_URL: 'https://assets.mailerlite.com/jsonp/2721571/forms/201638923122771811/subscribe',
+    DELAY_MS: 25000,
+    SCROLL_RATIO: 0.55,
+    SNOOZE_DAYS: 14,
+    IMAGE: '/img/lada-ria-race-day.webp'
+  };
+  var TXT = {
+    en: { eb: 'STR2G Newsletter', h: 'Train smarter for HYROX.', t: 'Practical tips straight from our coaching. Running, stations, pacing, race strategy. Plus new programs and discounts before anyone else.', n: 'First name', e: 'Email', b: 'Sign me up', l: 'No spam. Unsubscribe anytime with one click. We only use your email for the STR2G newsletter.', okh: "You're in.", okt: 'Thanks. Your first email is on the way soon.', err: 'Something went wrong. Try again in a minute.', p: 'Privacy policy', x: 'Close' },
+    cs: { eb: 'STR2G Newsletter', h: 'Trénuj na HYROX chytřeji.', t: 'Praktické tipy přímo z naší trenérské praxe. Běh, stanice, tempo, taktika na závod. A nové programy a slevy uvidíš jako první.', n: 'Křestní jméno', e: 'E-mail', b: 'Chci odebírat', l: 'Žádný spam. Odhlásit se můžeš kdykoliv jedním klikem. E-mail použijeme jen pro STR2G newsletter.', okh: 'Jsi tam.', okt: 'Díky. První e-mail ti brzy dorazí.', err: 'Něco se pokazilo. Zkus to za chvíli znovu.', p: 'Ochrana osobních údajů', x: 'Zavřít' },
+    sk: { eb: 'STR2G Newsletter', h: 'Trénuj na HYROX múdrejšie.', t: 'Praktické tipy priamo z našej trénerskej praxe. Beh, stanice, tempo, taktika na pretek. A nové programy a zľavy uvidíš ako prvý.', n: 'Krstné meno', e: 'E-mail', b: 'Chcem odoberať', l: 'Žiadny spam. Odhlásiť sa môžeš kedykoľvek jedným klikom. E-mail použijeme len pre STR2G newsletter.', okh: 'Si tam.', okt: 'Vďaka. Prvý e-mail ti čoskoro príde.', err: 'Niečo sa pokazilo. Skús to o chvíľu znova.', p: 'Ochrana osobných údajov', x: 'Zavrieť' },
+    de: { eb: 'STR2G Newsletter', h: 'Trainier smarter für HYROX.', t: 'Praxistipps direkt aus unserem Coaching. Laufen, Stationen, Pacing, Rennstrategie. Dazu neue Programme und Rabatte vor allen anderen.', n: 'Vorname', e: 'E-Mail', b: 'Jetzt anmelden', l: 'Kein Spam. Abmeldung jederzeit mit einem Klick. Deine E-Mail nutzen wir nur für den STR2G Newsletter.', okh: 'Du bist dabei.', okt: 'Danke. Deine erste E-Mail kommt bald.', err: 'Etwas ist schiefgelaufen. Versuch es gleich nochmal.', p: 'Datenschutz', x: 'Schließen' },
+    pl: { eb: 'STR2G Newsletter', h: 'Trenuj HYROX mądrzej.', t: 'Praktyczne wskazówki prosto z naszej pracy trenerskiej. Bieganie, stacje, tempo, taktyka na zawody. Do tego nowe programy i zniżki jako pierwszy.', n: 'Imię', e: 'E-mail', b: 'Zapisuję się', l: 'Zero spamu. Wypiszesz się w każdej chwili jednym kliknięciem. Twój e-mail wykorzystamy tylko do newslettera STR2G.', okh: 'Jesteś z nami.', okt: 'Dzięki. Pierwszy e-mail wkrótce do Ciebie dotrze.', err: 'Coś poszło nie tak. Spróbuj ponownie za chwilę.', p: 'Polityka prywatności', x: 'Zamknij' },
+    fr: { eb: 'Newsletter STR2G', h: 'Entraîne-toi plus malin pour HYROX.', t: 'Des conseils concrets tirés de notre coaching. Course, stations, allure, stratégie de course. Et les nouveaux programmes et promos avant tout le monde.', n: 'Prénom', e: 'E-mail', b: 'Je m’inscris', l: 'Pas de spam. Désinscription en un clic à tout moment. Ton e-mail sert uniquement à la newsletter STR2G.', okh: 'C’est fait.', okt: 'Merci. Ton premier e-mail arrive bientôt.', err: 'Un problème est survenu. Réessaie dans une minute.', p: 'Confidentialité', x: 'Fermer' },
+    es: { eb: 'Newsletter STR2G', h: 'Entrena HYROX con cabeza.', t: 'Consejos prácticos sacados de nuestro coaching. Carrera, estaciones, ritmo y estrategia de competición. Y los nuevos programas y descuentos antes que nadie.', n: 'Nombre', e: 'Email', b: 'Quiero apuntarme', l: 'Cero spam. Date de baja cuando quieras con un clic. Solo usamos tu email para la newsletter de STR2G.', okh: 'Ya estás dentro.', okt: 'Gracias. Tu primer email llegará pronto.', err: 'Algo ha fallado. Inténtalo de nuevo en un minuto.', p: 'Privacidad', x: 'Cerrar' },
+    it: { eb: 'Newsletter STR2G', h: 'Allenati per HYROX con più testa.', t: 'Consigli pratici direttamente dal nostro coaching. Corsa, stazioni, ritmo, strategia di gara. E i nuovi programmi e gli sconti prima di tutti.', n: 'Nome', e: 'Email', b: 'Mi iscrivo', l: 'Niente spam. Ti disiscrivi quando vuoi con un clic. Usiamo la tua email solo per la newsletter STR2G.', okh: 'Ci sei.', okt: 'Grazie. La tua prima email arriva presto.', err: 'Qualcosa è andato storto. Riprova tra un minuto.', p: 'Privacy', x: 'Chiudi' },
+    nl: { eb: 'STR2G Nieuwsbrief', h: 'Train slimmer voor HYROX.', t: 'Praktische tips rechtstreeks uit onze coaching. Lopen, stations, pacing, racestrategie. Plus nieuwe programma’s en kortingen als eerste.', n: 'Voornaam', e: 'E-mail', b: 'Schrijf me in', l: 'Geen spam. Uitschrijven kan altijd met één klik. We gebruiken je e-mail alleen voor de STR2G nieuwsbrief.', okh: 'Je bent erbij.', okt: 'Bedankt. Je eerste e-mail komt eraan.', err: 'Er ging iets mis. Probeer het zo opnieuw.', p: 'Privacybeleid', x: 'Sluiten' }
+  };
+
+  var K_DONE = 'str2g_nl_done', K_SNOOZE = 'str2g_nl_snooze';
+  function get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+
+  var force = /[?&]nl=1\b/.test(location.search);
+  if (!force) {
+    if (get(K_DONE)) return;
+    var s = parseInt(get(K_SNOOZE) || '0', 10);
+    if (s && Date.now() - s < CFG.SNOOZE_DAYS * 864e5) return;
+  }
+
+  var lang = (document.documentElement.lang || 'en').slice(0, 2).toLowerCase();
+  var t = TXT[lang] || TXT.en;
+  var PRIV = (lang === 'cs' || lang === 'sk') ? '/cs/ochrana-osobnich-udaju/' : '/privacy/';
+  var shown = false, pending = false, root, lastFocus;
+
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+  function build() {
+    root = document.createElement('div');
+    root.id = 'nl';
+    root.setAttribute('role', 'dialog');
+    root.setAttribute('aria-modal', 'true');
+    root.setAttribute('aria-labelledby', 'nl-h');
+    root.innerHTML =
+      '<div class="nl-box">' +
+        '<div class="nl-img" style="background-image:url(' + CFG.IMAGE + ')" aria-hidden="true"></div>' +
+        '<div class="nl-body">' +
+          '<button type="button" class="nl-x" aria-label="' + esc(t.x) + '">&times;</button>' +
+          '<p class="nl-eb">' + esc(t.eb) + '</p>' +
+          '<h2 id="nl-h">' + esc(t.h) + '</h2>' +
+          '<p class="nl-t">' + esc(t.t) + '</p>' +
+          '<form novalidate>' +
+            '<label for="nl-n">' + esc(t.n) + '</label><input id="nl-n" name="name" type="text" autocomplete="given-name" required>' +
+            '<label for="nl-e">' + esc(t.e) + '</label><input id="nl-e" name="email" type="email" autocomplete="email" inputmode="email" required>' +
+            '<div class="nl-hp" aria-hidden="true"><input name="bot-field" tabindex="-1" autocomplete="off"></div>' +
+            '<button type="submit" class="nl-go">' + esc(t.b) + '</button>' +
+            '<p class="nl-err" role="alert"></p>' +
+            '<p class="nl-legal">' + esc(t.l) + ' <a href="' + PRIV + '" target="_blank" rel="noopener">' + esc(t.p) + '</a></p>' +
+          '</form>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(root);
+    root.querySelector('.nl-x').onclick = close;
+    root.addEventListener('click', function (e) { if (e.target === root) close(); });
+    document.addEventListener('keydown', onKey);
+    root.querySelector('form').addEventListener('submit', submit);
+  }
+
+  function onKey(e) {
+    if (!root) return;
+    if (e.key === 'Escape') { close(); return; }
+    if (e.key === 'Tab') {
+      var f = root.querySelectorAll('button, input:not([tabindex="-1"])');
+      var first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+  }
+
+  function open() {
+    if (shown) return;
+    if (document.getElementById('str2g-consent')) { pending = true; return; }
+    shown = true;
+    cleanup();
+    lastFocus = document.activeElement;
+    build();
+    requestAnimationFrame(function () { requestAnimationFrame(function () { root.classList.add('on'); }); });
+    if (window.matchMedia('(min-width:721px)').matches) setTimeout(function () { var n = root && root.querySelector('#nl-n'); if (n) n.focus(); }, 260);
+    else { var x = root.querySelector('.nl-x'); x.focus({ preventScroll: true }); }
+  }
+
+  function close() {
+    if (!root) return;
+    if (!get(K_DONE)) set(K_SNOOZE, String(Date.now()));
+    root.classList.remove('on');
+    document.removeEventListener('keydown', onKey);
+    var r = root; root = null;
+    setTimeout(function () { r.remove(); }, 260);
+    if (lastFocus && lastFocus.focus) try { lastFocus.focus({ preventScroll: true }); } catch (e) {}
+  }
+
+  function enc(o) { return Object.keys(o).map(function (k) { return encodeURIComponent(k) + '=' + encodeURIComponent(o[k]); }).join('&'); }
+
+  function submit(e) {
+    e.preventDefault();
+    var f = e.target, btn = f.querySelector('.nl-go'), err = f.querySelector('.nl-err');
+    var name = f.name.value.trim(), email = f.email.value.trim();
+    err.textContent = '';
+    if (!name) { f.name.focus(); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { f.email.focus(); return; }
+    if (f['bot-field'].value) return;
+    btn.disabled = true;
+    var data = { 'form-name': 'newsletter', name: name, email: email, lang: lang, page: location.pathname };
+    var jobs = [fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: enc(data) })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); })];
+    if (CFG.MAILERLITE_URL) {
+      jobs.push(fetch(CFG.MAILERLITE_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: enc({ 'fields[email]': email, 'fields[name]': name, 'ml-submit': '1', 'anticsrf': 'true' }) }).catch(function () {}));
+    }
+    Promise.all(jobs).then(function () {
+      set(K_DONE, '1');
+      if (window.str2gLead) window.str2gLead('newsletter');
+      var body = root.querySelector('.nl-body');
+      body.innerHTML = '<button type="button" class="nl-x" aria-label="' + esc(t.x) + '">&times;</button>' +
+        '<p class="nl-eb">' + esc(t.eb) + '</p><h2 id="nl-h">' + esc(t.okh) + '</h2><p class="nl-t" style="margin:0">' + esc(t.okt) + '</p>';
+      body.querySelector('.nl-x').onclick = close;
+      body.querySelector('.nl-x').focus();
+    }).catch(function () {
+      btn.disabled = false;
+      err.textContent = t.err;
+    });
+  }
+
+  // Spouštěče
+  var timer;
+  function onScroll() {
+    var h = document.documentElement.scrollHeight - innerHeight;
+    if (h > 0 && scrollY / h >= CFG.SCROLL_RATIO) open();
+  }
+  function onLeave(e) { if (e.clientY <= 0 && !e.relatedTarget) open(); }
+  function cleanup() {
+    clearTimeout(timer);
+    removeEventListener('scroll', onScroll);
+    document.removeEventListener('mouseout', onLeave);
+  }
+
+  // Až zmizí cookie lišta, otevři odložené okno
+  new MutationObserver(function () {
+    if (pending && !document.getElementById('str2g-consent')) { pending = false; setTimeout(open, 1200); }
+  }).observe(document.body, { childList: true });
+
+  function start() {
+    if (force) { setTimeout(open, 600); return; }
+    timer = setTimeout(open, CFG.DELAY_MS);
+    addEventListener('scroll', onScroll, { passive: true });
+    if (window.matchMedia('(hover:hover) and (pointer:fine)').matches) {
+      setTimeout(function () { document.addEventListener('mouseout', onLeave); }, 8000);
+    }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
+})();
+</script>
+<!--/STR2G_NEWSLETTER-->
+</body>
+</html>
