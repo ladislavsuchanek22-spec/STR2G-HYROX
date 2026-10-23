@@ -32,7 +32,7 @@ PROGRAMS = {
 # Pořadí karet na stránce "plan"
 PLAN_PICKS = ["basic", "advanced", "raceprep", "singles", "running", "taper", "coaching"]
 # Advanced má zatím obsah jen v EN a CS; ostatní jazyky ho na stránce "plan" vynechají
-PICK_LANGS_ADVANCED = ("en", "cs")
+PICK_LANGS_ADVANCED = ["en", "cs"]  # další jazyky přidá konec souboru, když mají i18n/programs_<lang>.py
 
 
 def price(lang, czk):
@@ -823,3 +823,15 @@ T["nl"] = dict(
          ("In welke valuta betaal ik?", "Je betaalt via Strivee in Tsjechische kronen (CZK). Je bank rekent om, dus de bedragen in € zijn een indicatie.")],
   ),
 )
+
+
+# Program 12-Week Advanced a "Všech 10 programů" pro jazyky s vlastními stránkami programů
+def _apply_program_langs():
+    from programs_content import PLAN_EXTRA
+    for _l, _p in PLAN_EXTRA.items():
+        T[_l]["names"]["advanced"] = _p["name_advanced"]
+        T[_l]["picks"]["advanced"] = _p["pick_advanced"]
+        T[_l]["ui"]["all_programs"] = _p["all_programs"]
+        if _l not in PICK_LANGS_ADVANCED:
+            PICK_LANGS_ADVANCED.append(_l)
+_apply_program_langs()

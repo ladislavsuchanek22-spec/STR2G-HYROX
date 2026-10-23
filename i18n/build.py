@@ -14,6 +14,7 @@ LANGS = {"cs": "cs_CZ", "sk": "sk_SK", "de": "de_DE", "pl": "pl_PL", "fr": "fr_F
 # Other STR2G websites: English URL in the source -> per-language path
 XLINKS = {u: {"cs": "/", "sk": "/", "de": "/de/", "pl": "/pl/", "fr": "/en/", "es": "/en/", "it": "/en/", "nl": "/en/"} for u in (
     "https://hyrox-prague.eu/en/", "https://hyroxtrainingclub.cz/en/", "https://formfactorygames.cz/en/")}
+XLINKS["https://www.ladislavsuchanek.cz/en/"] = {"cs": "/", "sk": "/", "de": "/de/", "pl": "/pl/", "fr": "/en/", "es": "/en/", "it": "/en/", "nl": "/en/"}
 XLINKS["https://riahrusovska.cz/en/"] = {l: ("/" if l in ("cs", "sk") else "/en/") for l in ("cs", "sk", "de", "pl", "fr", "es", "it", "nl")}
 ATTRS = ("alt", "aria-label", "content", "title")
 
@@ -68,6 +69,8 @@ def translate_text(html, t, missing):
 
 for lang, locale in LANGS.items():
     t = json.loads((ROOT / "i18n" / f"{lang}.json").read_text(encoding="utf-8"))
+    from programs_content import HOME_EXTRA
+    t.update(HOME_EXTRA.get(lang, {}))
     missing = set()
     page_src = src.replace('<a href="/hyrox-training-plan/">HYROX training plan</a>', f'<a href="{SLUGS["plan"][lang]}">{PT[lang]["ui"]["plan_link"]}</a>', 1)
     page_src = page_src.replace('<a href="/online-hyrox-coach/">Online HYROX coach</a>', f'<a href="{SLUGS["coach"][lang]}">{PT[lang]["ui"]["coach_link"]}</a>', 1)

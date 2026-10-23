@@ -612,3 +612,21 @@ PT["cs"] = dict(
     ),
   ),
 )
+
+
+# =============================================================== další jazyky
+# Každý jazyk má vlastní soubor i18n/programs_<lang>.py se SLUGS, PT_LANG, PLAN a HOME_STRINGS.
+import importlib as _il
+EXTRA_LANGS = ["sk", "de", "pl", "fr", "es", "it", "nl"]
+PLAN_EXTRA, HOME_EXTRA = {}, {}
+for _l in EXTRA_LANGS:
+    try:
+        _m = _il.import_module(f"programs_{_l}")
+    except ModuleNotFoundError:
+        continue
+    PT[_l] = _m.PT_LANG
+    for _pid, _u in _m.SLUGS.items():
+        PSLUGS[_pid][_l] = _u
+    PLAN_EXTRA[_l] = _m.PLAN
+    HOME_EXTRA[_l] = _m.HOME_STRINGS
+    PROG_LANGS.append(_l)

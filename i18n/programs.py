@@ -12,7 +12,7 @@ from programs_content import PT, PSLUGS, PDATA, PROG_LANGS, PROG_ORDER
 import pages
 
 BASE = "https://str2g.com"
-LANG_LABEL = {"en": "EN", "cs": "CZ"}
+LANG_LABEL = {"en": "EN", "cs": "CZ", "sk": "SK", "de": "DE", "pl": "PL", "fr": "FR", "es": "ES", "it": "IT", "nl": "NL"}
 
 PROG_CSS = """
 .lp-hero h1{font-size:clamp(52px,7.6vw,112px);hyphens:manual;overflow-wrap:normal}
@@ -292,7 +292,7 @@ def page(lang, pid, parts):
     <div class="links">
       <a href="https://instagram.com/22segge_coach" target="_blank" rel="noopener">@22segge_coach</a>
       <a href="https://instagram.com/riahrusovskaofficial" target="_blank" rel="noopener">@riahrusovskaofficial</a>
-      <a href="{"/cs/ochrana-osobnich-udaju/" if lang == "cs" else "/privacy/"}">{pages.PRIV_LBL[lang]}</a>
+      <a href="{"/cs/ochrana-osobnich-udaju/" if lang in ("cs", "sk") else "/privacy/"}">{pages.PRIV_LBL[lang]}</a>
       <a href="#" onclick="str2gConsentReset();return false;">Cookies</a>
     </div>
   </div>
