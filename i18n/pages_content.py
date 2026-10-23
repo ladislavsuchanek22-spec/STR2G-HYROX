@@ -21,7 +21,8 @@ PROGRAMS = {
     "basic":      ("gFN1JqRA8MF3l3uICbyS", 750, True,  "HYROX Basic"),
     "competitor": ("qbr9Mj9XTUdnrsc5F7kZ", 960, True,  "HYROX Competitor"),
     "pro":        ("D6kVnKDHN2Y3sKO0sPGI", 1350, True, "HYROX Pro Athlete"),
-    "raceprep":   ("0dvaQ3aahjzyCoWmPgMz", 1900, False, "12-Week HYROX Race Prep"),
+    "raceprep":   ("0dvaQ3aahjzyCoWmPgMz", 2100, False, "12-Week HYROX Race Prep"),
+    "advanced":   ("PAAjJouaTHNtDEpVeWq2", 1900, False, "12-Week HYROX Advanced"),
     "singles":    ("tsC3Khz8zSQMLLIs9Fnp", 1500, False, "8-Week HYROX Singles"),
     "doubles":    ("QFgjJOqEU6Y1x58k0SBH", 1700, False, "8-Week HYROX Doubles"),
     "running":    ("l4LKqbJX8ezlAEDBm6Dg", 1000, False, "Running for HYROX 2.0"),
@@ -29,7 +30,9 @@ PROGRAMS = {
     "coaching":   ("Ckjr2cZAiemzMVVr8F1D", 3500, True, "HYROX Individual Program 1:1"),
 }
 # Pořadí karet na stránce "plan"
-PLAN_PICKS = ["basic", "raceprep", "singles", "running", "taper", "coaching"]
+PLAN_PICKS = ["basic", "advanced", "raceprep", "singles", "running", "taper", "coaching"]
+# Advanced má zatím obsah jen v EN a CS; ostatní jazyky ho na stránce "plan" vynechají
+PICK_LANGS_ADVANCED = ("en", "cs")
 
 
 def price(lang, czk):
@@ -59,11 +62,11 @@ T["en"] = dict(
           pay_note="Payment runs securely through Strivee in Czech koruna (CZK). Your bank converts it, so the £ / € amounts are approximate.",
           faq_h=("Common", "questions."), cta=("Race day", "won't wait."),
           cta_lead="Pick a plan, download Strivee and tomorrow morning you'll know exactly what's on.",
-          cta_btn="See all programmes", all_programs="All 9 programmes",
+          cta_btn="See all programmes", all_programs="All 10 programmes",
           plan_link="HYROX training plan", coach_link="Online HYROX coach"),
-  names={"basic": "HYROX Basic", "raceprep": "12-Week HYROX Race Prep", "singles": "8-Week HYROX Singles",
+  names={"basic": "HYROX Basic", "advanced": "12-Week HYROX Advanced", "raceprep": "12-Week HYROX Race Prep", "singles": "8-Week HYROX Singles",
          "running": "Running for HYROX 2.0", "taper": "2-Week HYROX Taper 2.0", "coaching": "HYROX 1:1 Coaching"},
-  picks={"basic": "New to HYROX or no race date yet", "raceprep": "Your race is about 12 weeks away",
+  picks={"basic": "New to HYROX or no race date yet", "advanced": "Your first race is about 12 weeks away", "raceprep": "Your race is about 12 weeks away",
          "singles": "Your race is 8 weeks away", "running": "You lose time on the runs",
          "taper": "Your race is in 2 weeks", "coaching": "You want a plan built only for you"},
   plan=dict(
@@ -143,11 +146,11 @@ T["cs"] = dict(
           pay_note="Platba proběhne bezpečně přes Strivee.",
           faq_h=("Časté", "otázky."), cta=("Závod", "nepočká."),
           cta_lead="Vyber plán, stáhni Strivee a zítra ráno přesně víš, co tě čeká.",
-          cta_btn="Všechny programy", all_programs="Všech 9 programů",
+          cta_btn="Všechny programy", all_programs="Všech 10 programů",
           plan_link="HYROX tréninkový plán", coach_link="Online HYROX trenér"),
-  names={"basic": "HYROX Basic", "raceprep": "12týdenní HYROX Race Prep", "singles": "8týdenní HYROX Singles",
+  names={"basic": "HYROX Basic", "advanced": "12týdenní HYROX Advanced", "raceprep": "12týdenní HYROX Race Prep", "singles": "8týdenní HYROX Singles",
          "running": "Running for HYROX 2.0", "taper": "2týdenní HYROX Taper 2.0", "coaching": "HYROX 1:1 koučink"},
-  picks={"basic": "S HYROXem začínáš nebo nemáš termín závodu", "raceprep": "Závod máš zhruba za 12 týdnů",
+  picks={"basic": "S HYROXem začínáš nebo nemáš termín závodu", "advanced": "První závod máš zhruba za 12 týdnů", "raceprep": "Závod máš zhruba za 12 týdnů",
          "singles": "Závod máš za 8 týdnů", "running": "Ztrácíš čas na běhu",
          "taper": "Závod je za 2 týdny", "coaching": "Chceš plán jen pro sebe"},
   plan=dict(

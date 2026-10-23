@@ -9,7 +9,13 @@ import re
 from html import escape
 from pathlib import Path
 
-from pages_content import T, SLUGS, HOME, LOCALE, COUNTRY, PROGRAMS, PLAN_PICKS, price
+from pages_content import T, SLUGS, HOME, LOCALE, COUNTRY, PROGRAMS, PLAN_PICKS, PICK_LANGS_ADVANCED, price
+
+
+def prog_url(lang, pid):
+    """Vlastní stránka programu na str2g.com (zatím EN a CS), jinak None."""
+    from programs_content import PSLUGS, PROG_LANGS
+    return PSLUGS[pid][lang] if pid in PSLUGS and lang in PROG_LANGS else None
 
 BASE = "https://str2g.com"
 LANG_LABEL = {"en": "EN", "cs": "CZ", "sk": "SK", "de": "DE", "pl": "PL", "fr": "FR", "es": "ES", "it": "IT", "nl": "NL"}
@@ -86,15 +92,17 @@ def price_html(lang, pid):
     return f'<div class="price"><b>{main}</b><span>{period}</span>{fx_html}</div>'
 
 
-def card(lang, pid, kind):
+def card(lang, pid, kind, details=None):
     sid, czk, monthly, pname = PROGRAMS[pid]
     u = T[lang]["ui"]
     btn = u["start_btn"] if monthly else u["buy_btn"]
     name = T[lang]["names"].get(pid, pname)
+    details = details or prog_url(lang, pid)
     return (f'<article class="card"><div class="kind">{escape(kind)}</div><h4>{escape(name)}</h4>{price_html(lang, pid)}'
             f'<div class="actions"><a class="btn btn-gold" href="https://train.strivee.app/payment/{sid}" target="_blank" rel="noopener" '
             f'data-program="{escape(pname)}" data-value="{czk}">{btn}</a>'
-            f'<a class="btn btn-ghost" href="https://train.strivee.app/program/{sid}" target="_blank" rel="noopener">{u["details"]}</a></div></article>')
+            + (f'<a class="btn btn-ghost" href="{details}">{u["details"]}</a></div></article>' if details else
+               f'<a class="btn btn-ghost" href="https://train.strivee.app/program/{sid}" target="_blank" rel="noopener">{u["details"]}</a></div></article>'))
 
 
 def faq_html(lang, faq):
@@ -123,7 +131,8 @@ def schema(lang, kind, url, d):
         {"@type": "ListItem", "position": 2, "name": u["plan_link"] if kind == "plan" else u["coach_link"], "item": url}]}
     area = [{"@type": "Country", "name": c} for c in COUNTRY[lang]]
     if kind == "plan":
-        offers = {"@type": "AggregateOffer", "priceCurrency": "CZK", "lowPrice": "550", "highPrice": "3500", "offerCount": "9",
+        offers = {"@type": "AggregateOffer", "priceCurrency": "CZK", "lowPrice": "550", "highPrice": "3500",
+                  "offerCount": "10" if lang in PICK_LANGS_ADVANCED else "9",
                   "url": BASE + HOME[lang] + "#programs"}
         stype = u["plan_link"]
     else:
@@ -215,7 +224,7 @@ def page(lang, kind, parts):
     if kind == "plan":
         rows = "".join(f"<tr><td>{a}</td><td>{escape(b)}</td><td>{escape(c)}</td></tr>" for a, b, c in d["week"])
         phases = "".join(f'<div class="phase"><small>{escape(w)}</small><h3>{escape(n)}</h3><p>{escape(t)}</p></div>' for w, n, t in d["phases"])
-        cards = "".join(card(lang, p, T[lang]["picks"][p]) for p in PLAN_PICKS)
+        cards = "".join(card(lang, p, T[lang]["picks"][p], SLUGS["coach"][lang] if p == "coaching" else None) for p in PLAN_PICKS if p != "advanced" or lang in PICK_LANGS_ADVANCED)
         body = f'''
 <section id="approach">
   <div class="wrap">
@@ -293,6 +302,10 @@ def page(lang, kind, parts):
 </section>
 '''
     net = "".join(f'<li><a href="{h}" target="_blank" rel="noopener"><b>{escape(t)}</b></a></li>' for h, t in NET[lang])
+    progs = ""
+    if prog_url(lang, "basic"):
+        import programs
+        progs = programs.footer_programs(lang) + "\n    "
     tail = f'''
 {faq_html(lang, d["faq"])}
 
@@ -310,7 +323,7 @@ def page(lang, kind, parts):
 
 <footer>
   <div class="wrap">
-    <nav class="guides" aria-label="Guides"><a href="{SLUGS["plan"][lang]}"{" aria-current=\"page\"" if kind == "plan" else ""}>{escape(u["plan_link"])}</a><a href="{SLUGS["coach"][lang]}"{" aria-current=\"page\"" if kind == "coach" else ""}>{escape(u["coach_link"])}</a><a href="{home}#programs">{u["programs"]}</a></nav>
+    {progs}<nav class="guides" aria-label="Guides"><a href="{SLUGS["plan"][lang]}"{" aria-current=\"page\"" if kind == "plan" else ""}>{escape(u["plan_link"])}</a><a href="{SLUGS["coach"][lang]}"{" aria-current=\"page\"" if kind == "coach" else ""}>{escape(u["coach_link"])}</a><a href="{home}#programs">{u["programs"]}</a></nav>
     <nav class="net" aria-label="STR2G"><p class="net-h">STR2G</p><ul>{net}</ul></nav>
     <div style="display:flex;align-items:center;gap:12px"><img loading="lazy" src="/favicon.svg?v=2" alt="" width="26" height="26" style="border:1px solid var(--line);border-radius:6px"><span>© 2026 STR2G · Stronger Together · Strivee</span></div>
     <div class="links">

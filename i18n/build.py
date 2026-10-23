@@ -71,6 +71,21 @@ for lang, locale in LANGS.items():
     missing = set()
     page_src = src.replace('<a href="/hyrox-training-plan/">HYROX training plan</a>', f'<a href="{SLUGS["plan"][lang]}">{PT[lang]["ui"]["plan_link"]}</a>', 1)
     page_src = page_src.replace('<a href="/online-hyrox-coach/">Online HYROX coach</a>', f'<a href="{SLUGS["coach"][lang]}">{PT[lang]["ui"]["coach_link"]}</a>', 1)
+    # Odkazy "Details" na vlastní stránky programů: CS má svoje stránky, ostatní jazyky zatím vedou na Strivee
+    from programs_content import PSLUGS, PROG_LANGS
+    from pages_content import PROGRAMS
+    page_src = page_src.replace('<a class="btn btn-ghost" href="/online-hyrox-coach/">Details</a>',
+                                f'<a class="btn btn-ghost" href="{SLUGS["coach"][lang]}">Details</a>', 1)
+    for _pid, _sl in PSLUGS.items():
+        if lang in PROG_LANGS:
+            _new = f'href="{_sl[lang]}"'
+        else:
+            _new = f'href="https://train.strivee.app/program/{PROGRAMS[_pid][0]}" target="_blank" rel="noopener"'
+        page_src = page_src.replace(f'href="{_sl["en"]}"', _new)
+    # 12-Week Advanced má zatím texty jen v EN a CS
+    if lang not in PROG_LANGS:
+        page_src = re.sub(r"[ \t]*<!--ADV-->.*?<!--/ADV-->\n?", "", page_src, flags=re.S)
+        page_src = page_src.replace('<div class="grid two" id="race-grid">', '<div class="grid" id="race-grid">', 1)
     out = translate_text(page_src, t, missing)
     def _fx(m, lang=lang):
         approx = price(lang, int(m.group(1)))[1]
@@ -103,11 +118,12 @@ pages.build(ROOT)
 
 # ---- zásady ochrany osobních údajů
 import privacy
-_tr, _st, _fonts, _ver, _icons = pages.extract(src.replace(TRACK_MARK, TRACK, 1))
+_tr_parts = pages.extract(src.replace(TRACK_MARK, TRACK, 1))
+_tr, _st, _fonts, _ver, _icons = _tr_parts
 privacy.build(ROOT, TRACK, _fonts, _icons)
 ALL = ["en", "cs", "sk", "de", "pl", "fr", "es", "it", "nl"]
 HOMES = {l: (f"{BASE}/" if l == "en" else f"{BASE}/{l}/") for l in ALL}
-LASTMOD = "2026-10-17"
+LASTMOD = "2026-10-23"
 def _entry(loc, alts):
     links = "".join(f'\n    <xhtml:link rel="alternate" hreflang="{l}" href="{u}"/>' for l, u in alts.items())
     links += f'\n    <xhtml:link rel="alternate" hreflang="x-default" href="{alts["en"]}"/>'
@@ -115,6 +131,15 @@ def _entry(loc, alts):
 entries = []
 for group in (HOMES, {l: BASE + SLUGS["plan"][l] for l in ALL}, {l: BASE + SLUGS["coach"][l] for l in ALL}):
     for l in ALL:
+        entries.append(_entry(group[l], group))
+
+# ---- samostatné stránky programů (zatím EN + CS)
+import programs
+from programs_content import PSLUGS as _PS, PROG_LANGS as _PL, PROG_ORDER as _PO
+programs.build(ROOT, _tr_parts)
+for _pid in _PO:
+    group = {l: BASE + _PS[_pid][l] for l in _PL}
+    for l in _PL:
         entries.append(_entry(group[l], group))
 (ROOT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n' + "\n".join(entries) + "\n</urlset>\n", encoding="utf-8")
 print(f"sitemap.xml: {len(entries)} URLs")

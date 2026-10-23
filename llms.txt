@@ -3,15 +3,18 @@
 > STR2G (Stronger Together) sells structured online HYROX training programs and 1:1 online HYROX coaching by coaches Ladislav Suchánek and Ria Suchánek Hrušovská (Prague, Czech Republic). Programs run in the Strivee app; plans, videos and support are in English (translation by arrangement). Website in 9 languages.
 
 ## Programs (prices in CZK)
-- HYROX Basic – monthly plan, foundation, beginners: 750 / month
-- HYROX Competitor – monthly plan for regular racers: 960 / month
-- HYROX Pro Athlete – monthly plan, advanced: 1,350 / month
-- 12-Week HYROX Race Prep: 1,900 one-time
-- 8-Week HYROX Singles: 1,500 one-time
-- 8-Week HYROX Doubles: 1,700 one-time
-- Running for HYROX 2.0 (12-week running block): 1,000 one-time
-- 2-Week HYROX Taper 2.0: 550 one-time
-- HYROX Individual Program 1:1 (online coaching): 3,500 / month
+- [HYROX Basic](https://str2g.com/programs/hyrox-basic/) – monthly plan, foundation, beginners: 750 / month
+- [HYROX Competitor](https://str2g.com/programs/hyrox-competitor/) – monthly plan for regular racers: 960 / month
+- [HYROX Pro Athlete](https://str2g.com/programs/hyrox-pro-athlete/) – top monthly tier: 1,350 / month
+- [12-Week HYROX Race Prep](https://str2g.com/programs/12-week-hyrox-race-prep/): 2,100 one-time
+- [12-Week HYROX Advanced](https://str2g.com/programs/12-week-hyrox-advanced/) – 12-week build for all levels, good for a first race: 1,900 one-time
+- [8-Week HYROX Singles](https://str2g.com/programs/8-week-hyrox-singles/): 1,500 one-time
+- [8-Week HYROX Doubles](https://str2g.com/programs/8-week-hyrox-doubles/): 1,700 one-time per athlete
+- [Running for HYROX 2.0](https://str2g.com/programs/running-for-hyrox/) (12-week running block): 1,000 one-time
+- [2-Week HYROX Taper 2.0](https://str2g.com/programs/hyrox-taper/): 550 one-time
+- [HYROX Individual Program 1:1](https://str2g.com/online-hyrox-coach/) (online coaching): 3,500 / month
+
+Each program also has a Czech page under https://str2g.com/cs/programy/.
 
 ## Main pages
 - [Home / all programs](https://str2g.com/) – also [cs](https://str2g.com/cs/), [sk](https://str2g.com/sk/), [de](https://str2g.com/de/), [pl](https://str2g.com/pl/), [fr](https://str2g.com/fr/), [es](https://str2g.com/es/), [it](https://str2g.com/it/), [nl](https://str2g.com/nl/)
