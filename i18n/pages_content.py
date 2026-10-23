@@ -18,8 +18,8 @@ COUNTRY = {"en": ["United Kingdom", "Ireland"], "cs": ["Česká republika"], "sk
 
 # Programy na Strivee: id -> (strivee id, CZK, měsíční?)
 PROGRAMS = {
-    "basic":      ("gFN1JqRA8MF3l3uICbyS", 750, True,  "HYROX Basic"),
-    "competitor": ("qbr9Mj9XTUdnrsc5F7kZ", 960, True,  "HYROX Competitor"),
+    "basic":      ("0i7RPLukkMgXOLeInwKe", 750, True,  "HYROX Basic"),
+    "competitor": ("O1mbnAnKs03B8RGEtMxv", 960, True,  "HYROX Competitor"),
     "pro":        ("D6kVnKDHN2Y3sKO0sPGI", 1350, True, "HYROX Pro Athlete"),
     "raceprep":   ("0dvaQ3aahjzyCoWmPgMz", 2100, False, "12-Week HYROX Race Prep"),
     "advanced":   ("PAAjJouaTHNtDEpVeWq2", 1900, False, "12-Week HYROX Advanced"),
