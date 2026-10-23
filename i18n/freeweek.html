@@ -1,0 +1,186 @@
+<!--STR2G_FREEWEEK-->
+<!--
+  STR2G – ukázkový týden zdarma (PDF) u každého programu
+  - Ke každé kartě programu přidá tlačítko. Po kliknutí okno: jméno, e-mail, povinný souhlas se zpracováním, volitelný odběr newsletteru.
+  - Kontakty se ukládají do Netlify Forms (formulář "free-week": jméno, e-mail, program, jazyk, souhlasy, čas).
+  - Do MailerLite se pošlou jen ti, kdo zaškrtnou odběr newsletteru (marketingový souhlas musí být dobrovolný).
+  - Po odeslání se ukáže tlačítko ke stažení PDF. Soubory jsou v /free-week/<program>.pdf – stačí je přepsat skutečnými.
+  - Texty pro všechny jazyky jsou v TXT níže. Kopíruje se do všech jazykových verzí přes i18n/build.py.
+-->
+<form name="free-week" data-netlify="true" netlify-honeypot="bot-field" hidden>
+  <input type="text" name="name"><input type="email" name="email"><input type="text" name="program"><input type="text" name="lang"><input type="text" name="consent"><input type="text" name="newsletter"><input type="text" name="consent_text"><input type="text" name="time"><input type="text" name="bot-field">
+</form>
+<style>
+.fw-open{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:2px;background:transparent;border:1px dashed #3a3833;color:#C9A950;font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;padding:11px 12px;cursor:pointer;transition:border-color .15s,color .15s,background .15s}
+.fw-open:hover{border-color:#C9A950;color:#fff;background:rgba(201,169,80,.08)}
+.fw-open svg{width:14px;height:14px;flex:none}
+#fw .fw-dl svg{width:18px;height:18px;flex:none}
+#fw{position:fixed;inset:0;z-index:99995;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.72);opacity:0;transition:opacity .25s}
+#fw.on{opacity:1}
+#fw .fw-box{position:relative;width:100%;max-width:480px;background:#0F0F0E;border:1px solid #262521;color:#fff;max-height:calc(100vh - 40px);overflow:auto;padding:34px 32px 28px;transform:translateY(16px);transition:transform .25s}
+#fw.on .fw-box{transform:none}
+#fw .fw-eb{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#C9A950;margin:0 0 12px}
+#fw h2{font-family:"Barlow Condensed","Arial Narrow",Impact,sans-serif;font-weight:900;font-style:italic;text-transform:uppercase;font-size:40px;line-height:.9;margin:0 0 12px;text-wrap:balance}
+#fw p.fw-t{color:#C9C6BE;font-size:15.5px;line-height:1.5;margin:0 0 20px}
+#fw label.fw-l{display:block;font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#9A978F;margin:0 0 6px}
+#fw input[type=text],#fw input[type=email]{display:block;width:100%;background:#050505;border:1px solid #3a3833;color:#fff;font:16px/1.3 "Archivo","Helvetica Neue",Arial,sans-serif;padding:13px 14px;margin:0 0 14px;border-radius:0;-webkit-appearance:none;appearance:none}
+#fw input:focus{outline:none;border-color:#C9A950}
+#fw .fw-ck{display:grid;grid-template-columns:20px 1fr;gap:10px;align-items:start;font-size:13.5px;line-height:1.45;color:#C9C6BE;margin:0 0 12px;cursor:pointer}
+#fw .fw-ck input{width:18px;height:18px;margin:1px 0 0;accent-color:#C9A950;cursor:pointer}
+#fw .fw-ck a{color:#C9A950}
+#fw .fw-ck .req{color:#C9A950}
+#fw .fw-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+#fw .fw-go,#fw .fw-dl{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;background:#C9A950;color:#050505;border:1.5px solid #C9A950;font-family:"Barlow Condensed","Arial Narrow",Impact,sans-serif;font-weight:800;font-style:italic;text-transform:uppercase;font-size:21px;letter-spacing:.02em;padding:13px 20px 12px;cursor:pointer;margin-top:6px;text-decoration:none}
+#fw .fw-go:hover,#fw .fw-dl:hover{background:#fff;border-color:#fff}
+#fw .fw-go[disabled]{opacity:.6;cursor:wait}
+#fw .fw-err{color:#ff8a7a;font-size:13.5px;margin:10px 0 0}
+#fw .fw-note{font-size:12px;line-height:1.45;color:#7d7a73;margin:14px 0 0}
+#fw .fw-x{position:absolute;top:8px;right:8px;width:40px;height:40px;background:transparent;border:0;color:#9A978F;font-size:26px;line-height:1;cursor:pointer}
+#fw .fw-x:hover{color:#fff}
+#fw button:focus-visible,#fw input:focus-visible,#fw a:focus-visible,.fw-open:focus-visible{outline:2px solid #C9A950;outline-offset:2px}
+@media (max-width:720px){
+  #fw{align-items:flex-end;padding:0}
+  #fw .fw-box{max-width:none;max-height:92vh;border-left:0;border-right:0;border-bottom:0;padding:30px 20px 24px;transform:translateY(100%)}
+  #fw h2{font-size:34px}
+}
+@media (prefers-reduced-motion:reduce){#fw,#fw .fw-box{transition:none}}
+</style>
+<script>
+(function () {
+  var CFG = {
+    // Jen pro ty, kdo zaškrtnou odběr newsletteru
+    MAILERLITE_URL: 'https://assets.mailerlite.com/jsonp/2721571/forms/201638923122771811/subscribe',
+    PDF_DIR: '/free-week/'
+  };
+  // id karty na webu -> název programu a soubor PDF
+  var PROGRAMS = {
+    basic: ['HYROX Basic', 'hyrox-basic.pdf'],
+    competitor: ['HYROX Competitor', 'hyrox-competitor.pdf'],
+    pro: ['HYROX Pro Athlete', 'hyrox-pro-athlete.pdf'],
+    advanced: ['12-Week HYROX Advanced', '12-week-hyrox-advanced.pdf'],
+    raceprep: ['12-Week HYROX Race Prep', '12-week-hyrox-race-prep.pdf'],
+    singles: ['8-Week HYROX Singles', '8-week-hyrox-singles.pdf'],
+    doubles: ['8-Week HYROX Doubles', '8-week-hyrox-doubles.pdf'],
+    running: ['Running for HYROX 2.0', 'running-for-hyrox.pdf'],
+    taper: ['2-Week HYROX Taper 2.0', 'hyrox-taper.pdf']
+  };
+  var TXT = {
+    en: { btn: 'Free sample week', eb: 'Free sample week', h: 'See a real week of {p}', t: 'Get one full week of the program as a PDF. Exactly the sessions, paces and notes you get in the app, so you know what you are signing up for.', n: 'First name', e: 'Email', c1: 'I agree that STR2G processes my name and email to send me the sample week.', c2: 'Also send me the STR2G newsletter: HYROX tips, new programs and offers. Unsubscribe anytime.', p: 'Privacy policy', b: 'Get the free week', err: 'Something went wrong. Please try again.', errc: 'Please tick the consent to get the PDF.', okh: 'Your week is ready', okt: 'Download it below. Train it, then decide if the full program is for you.', dl: 'Download PDF', x: 'Close' },
+    cs: { btn: 'Ukázkový týden zdarma', eb: 'Ukázkový týden zdarma', h: 'Podívej se na skutečný týden {p}', t: 'Pošleme ti jeden celý týden programu v PDF. Přesně ty tréninky, tempa a poznámky, které dostaneš v aplikaci. Ať víš, do čeho jdeš.', n: 'Křestní jméno', e: 'E-mail', c1: 'Souhlasím, že STR2G zpracuje mé jméno a e-mail, aby mi poslal ukázkový týden.', c2: 'Chci odebírat i STR2G newsletter: tipy na HYROX, nové programy a nabídky. Odhlásit se můžu kdykoli.', p: 'Ochrana osobních údajů', b: 'Chci týden zdarma', err: 'Něco se pokazilo. Zkus to prosím znovu.', errc: 'Pro stažení PDF zaškrtni souhlas.', okh: 'Tvůj týden je připravený', okt: 'Stáhni si ho níže. Odtrénuj ho a pak se rozhodni, jestli je celý program pro tebe.', dl: 'Stáhnout PDF', x: 'Zavřít' },
+    sk: { btn: 'Ukážkový týždeň zdarma', eb: 'Ukážkový týždeň zdarma', h: 'Pozri si skutočný týždeň {p}', t: 'Pošleme ti jeden celý týždeň programu v PDF. Presne tie tréningy, tempá a poznámky, ktoré dostaneš v aplikácii. Nech vieš, do čoho ideš.', n: 'Krstné meno', e: 'E-mail', c1: 'Súhlasím, že STR2G spracuje moje meno a e-mail, aby mi poslal ukážkový týždeň.', c2: 'Chcem odoberať aj STR2G newsletter: tipy na HYROX, nové programy a ponuky. Odhlásiť sa môžem kedykoľvek.', p: 'Ochrana osobných údajov', b: 'Chcem týždeň zdarma', err: 'Niečo sa pokazilo. Skús to prosím znova.', errc: 'Na stiahnutie PDF zaškrtni súhlas.', okh: 'Tvoj týždeň je pripravený', okt: 'Stiahni si ho nižšie. Odtrénuj ho a potom sa rozhodni, či je celý program pre teba.', dl: 'Stiahnuť PDF', x: 'Zavrieť' },
+    de: { btn: 'Gratis-Probewoche', eb: 'Gratis-Probewoche', h: 'Eine echte Woche {p}', t: 'Du bekommst eine komplette Programmwoche als PDF. Genau die Einheiten, Paces und Hinweise aus der App, damit du weißt, worauf du dich einlässt.', n: 'Vorname', e: 'E-Mail', c1: 'Ich bin einverstanden, dass STR2G meinen Namen und meine E-Mail verarbeitet, um mir die Probewoche zu senden.', c2: 'Schickt mir auch den STR2G-Newsletter: HYROX-Tipps, neue Programme und Angebote. Abmeldung jederzeit.', p: 'Datenschutz', b: 'Probewoche holen', err: 'Etwas ist schiefgelaufen. Bitte versuch es noch einmal.', errc: 'Bitte bestätige die Einwilligung, um das PDF zu erhalten.', okh: 'Deine Woche ist bereit', okt: 'Lade sie unten herunter. Trainier sie und entscheide dann, ob das ganze Programm zu dir passt.', dl: 'PDF herunterladen', x: 'Schließen' },
+    pl: { btn: 'Darmowy tydzień próbny', eb: 'Darmowy tydzień próbny', h: 'Zobacz prawdziwy tydzień {p}', t: 'Wyślemy Ci jeden pełny tydzień programu w PDF. Dokładnie te treningi, tempa i uwagi, które dostajesz w aplikacji. Żebyś wiedział, w co wchodzisz.', n: 'Imię', e: 'E-mail', c1: 'Zgadzam się, aby STR2G przetwarzał moje imię i e-mail w celu wysłania tygodnia próbnego.', c2: 'Wysyłajcie mi też newsletter STR2G: porady HYROX, nowe programy i oferty. Mogę zrezygnować w każdej chwili.', p: 'Polityka prywatności', b: 'Odbieram tydzień', err: 'Coś poszło nie tak. Spróbuj ponownie.', errc: 'Zaznacz zgodę, aby pobrać PDF.', okh: 'Twój tydzień jest gotowy', okt: 'Pobierz go poniżej. Przetrenuj go i zdecyduj, czy cały program jest dla Ciebie.', dl: 'Pobierz PDF', x: 'Zamknij' },
+    fr: { btn: 'Semaine d’essai gratuite', eb: 'Semaine d’essai gratuite', h: 'Découvre une vraie semaine de {p}', t: 'Reçois une semaine complète du programme en PDF. Les mêmes séances, allures et consignes que dans l’appli, pour savoir exactement à quoi t’attendre.', n: 'Prénom', e: 'E-mail', c1: 'J’accepte que STR2G traite mon prénom et mon e-mail pour m’envoyer la semaine d’essai.', c2: 'Envoyez-moi aussi la newsletter STR2G : conseils HYROX, nouveaux programmes et offres. Désinscription à tout moment.', p: 'Politique de confidentialité', b: 'Recevoir la semaine', err: 'Une erreur s’est produite. Réessaie, s’il te plaît.', errc: 'Coche le consentement pour obtenir le PDF.', okh: 'Ta semaine est prête', okt: 'Télécharge-la ci-dessous. Entraîne-toi avec, puis décide si le programme complet est fait pour toi.', dl: 'Télécharger le PDF', x: 'Fermer' },
+    es: { btn: 'Semana de prueba gratis', eb: 'Semana de prueba gratis', h: 'Mira una semana real de {p}', t: 'Te enviamos una semana completa del programa en PDF. Las mismas sesiones, ritmos y notas que tienes en la app, para que sepas exactamente lo que te espera.', n: 'Nombre', e: 'Email', c1: 'Acepto que STR2G trate mi nombre y email para enviarme la semana de prueba.', c2: 'Envíame también la newsletter de STR2G: consejos de HYROX, nuevos programas y ofertas. Puedo darme de baja cuando quiera.', p: 'Política de privacidad', b: 'Quiero la semana gratis', err: 'Algo ha fallado. Inténtalo de nuevo.', errc: 'Marca el consentimiento para obtener el PDF.', okh: 'Tu semana está lista', okt: 'Descárgala abajo. Entrénala y luego decide si el programa completo es para ti.', dl: 'Descargar PDF', x: 'Cerrar' },
+    it: { btn: 'Settimana di prova gratis', eb: 'Settimana di prova gratis', h: 'Guarda una vera settimana di {p}', t: 'Ricevi una settimana completa del programma in PDF. Le stesse sessioni, ritmi e note che trovi nell’app, così sai esattamente cosa ti aspetta.', n: 'Nome', e: 'Email', c1: 'Acconsento che STR2G tratti il mio nome e la mia email per inviarmi la settimana di prova.', c2: 'Inviatemi anche la newsletter STR2G: consigli HYROX, nuovi programmi e offerte. Posso disiscrivermi quando voglio.', p: 'Privacy policy', b: 'Voglio la settimana gratis', err: 'Qualcosa è andato storto. Riprova.', errc: 'Spunta il consenso per ricevere il PDF.', okh: 'La tua settimana è pronta', okt: 'Scaricala qui sotto. Allenati con quella, poi decidi se il programma completo fa per te.', dl: 'Scarica il PDF', x: 'Chiudi' },
+    nl: { btn: 'Gratis proefweek', eb: 'Gratis proefweek', h: 'Bekijk een echte week {p}', t: 'Je krijgt één volledige week van het programma als PDF. Precies de trainingen, tempo’s en notities uit de app, zodat je weet waar je aan begint.', n: 'Voornaam', e: 'E-mail', c1: 'Ik ga ermee akkoord dat STR2G mijn naam en e-mail verwerkt om mij de proefweek te sturen.', c2: 'Stuur me ook de STR2G-nieuwsbrief: HYROX-tips, nieuwe programma’s en aanbiedingen. Altijd af te melden.', p: 'Privacybeleid', b: 'Stuur mijn gratis week', err: 'Er ging iets mis. Probeer het opnieuw.', errc: 'Vink de toestemming aan om de PDF te krijgen.', okh: 'Je week staat klaar', okt: 'Download hem hieronder. Train ermee en beslis daarna of het volledige programma bij je past.', dl: 'PDF downloaden', x: 'Sluiten' }
+  };
+
+  var lang = (document.documentElement.lang || 'en').slice(0, 2).toLowerCase();
+  var t = TXT[lang] || TXT.en;
+  var PRIV = (lang === 'cs' || lang === 'sk') ? '/cs/ochrana-osobnich-udaju/' : '/privacy/';
+  var ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M4 19h16"/></svg>';
+  var root, lastFocus, current;
+
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function enc(o) { return Object.keys(o).map(function (k) { return encodeURIComponent(k) + '=' + encodeURIComponent(o[k]); }).join('&'); }
+
+  function addButtons() {
+    Object.keys(PROGRAMS).forEach(function (id) {
+      var card = document.getElementById(id);
+      if (!card || card.querySelector('.fw-open')) return;
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'fw-open';
+      b.setAttribute('data-fw', id);
+      b.innerHTML = ICON + '<span>' + esc(t.btn) + '</span>';
+      b.addEventListener('click', function () { open(id); });
+      var actions = card.querySelector('.actions');
+      if (actions) actions.insertAdjacentElement('afterend', b); else card.appendChild(b);
+    });
+  }
+
+  function open(id) {
+    current = id;
+    var name = PROGRAMS[id][0];
+    lastFocus = document.activeElement;
+    if (root) root.remove();
+    root = document.createElement('div');
+    root.id = 'fw';
+    root.setAttribute('role', 'dialog');
+    root.setAttribute('aria-modal', 'true');
+    root.setAttribute('aria-labelledby', 'fw-h');
+    root.innerHTML =
+      '<div class="fw-box">' +
+        '<button type="button" class="fw-x" aria-label="' + esc(t.x) + '">&times;</button>' +
+        '<p class="fw-eb">' + esc(t.eb) + '</p>' +
+        '<h2 id="fw-h">' + esc(t.h.replace('{p}', name)) + '</h2>' +
+        '<p class="fw-t">' + esc(t.t) + '</p>' +
+        '<form novalidate>' +
+          '<label class="fw-l" for="fw-n">' + esc(t.n) + '</label><input id="fw-n" name="name" type="text" autocomplete="given-name" required>' +
+          '<label class="fw-l" for="fw-e">' + esc(t.e) + '</label><input id="fw-e" name="email" type="email" autocomplete="email" inputmode="email" required>' +
+          '<label class="fw-ck" for="fw-c1"><input id="fw-c1" name="consent" type="checkbox" required><span>' + esc(t.c1) + ' <span class="req">*</span> <a href="' + PRIV + '" target="_blank" rel="noopener">' + esc(t.p) + '</a></span></label>' +
+          '<label class="fw-ck" for="fw-c2"><input id="fw-c2" name="newsletter" type="checkbox"><span>' + esc(t.c2) + '</span></label>' +
+          '<div class="fw-hp" aria-hidden="true"><input name="bot-field" tabindex="-1" autocomplete="off"></div>' +
+          '<button type="submit" class="fw-go">' + esc(t.b) + '</button>' +
+          '<p class="fw-err" role="alert"></p>' +
+        '</form>' +
+      '</div>';
+    document.body.appendChild(root);
+    root.querySelector('.fw-x').onclick = close;
+    root.addEventListener('click', function (e) { if (e.target === root) close(); });
+    root.querySelector('form').addEventListener('submit', submit);
+    document.addEventListener('keydown', onKey);
+    requestAnimationFrame(function () { root.classList.add('on'); });
+    setTimeout(function () { var n = root.querySelector('#fw-n'); if (n) n.focus(); }, 60);
+  }
+
+  function close() {
+    if (!root) return;
+    document.removeEventListener('keydown', onKey);
+    root.classList.remove('on');
+    var r = root; root = null;
+    setTimeout(function () { r.remove(); }, 250);
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  function onKey(e) { if (e.key === 'Escape') close(); }
+
+  function submit(e) {
+    e.preventDefault();
+    var f = e.target, btn = f.querySelector('.fw-go'), err = f.querySelector('.fw-err');
+    var name = f.name.value.trim(), email = f.email.value.trim(), nl = f.newsletter.checked;
+    err.textContent = '';
+    if (!name) { f.name.focus(); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { f.email.focus(); return; }
+    if (!f.consent.checked) { err.textContent = t.errc; f.consent.focus(); return; }
+    if (f['bot-field'].value) return;
+    btn.disabled = true;
+    var prog = PROGRAMS[current];
+    var data = { 'form-name': 'free-week', name: name, email: email, program: prog[0], lang: lang,
+      consent: 'yes', newsletter: nl ? 'yes' : 'no', consent_text: t.c1 + (nl ? ' | ' + t.c2 : ''), time: new Date().toISOString() };
+    var jobs = [fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: enc(data) })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); })];
+    if (nl && CFG.MAILERLITE_URL) {
+      jobs.push(fetch(CFG.MAILERLITE_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: enc({ 'fields[email]': email, 'fields[name]': name, 'ml-submit': '1', 'anticsrf': 'true' }) }).catch(function () {}));
+    }
+    Promise.all(jobs).then(function () {
+      if (nl) { try { localStorage.setItem('str2g_nl_done', '1'); } catch (x) {} }
+      if (window.str2gLead) window.str2gLead('free-week-' + current);
+      var box = root.querySelector('.fw-box');
+      box.innerHTML = '<button type="button" class="fw-x" aria-label="' + esc(t.x) + '">&times;</button>' +
+        '<p class="fw-eb">' + esc(prog[0]) + '</p><h2 id="fw-h">' + esc(t.okh) + '</h2><p class="fw-t">' + esc(t.okt) + '</p>' +
+        '<a class="fw-dl" href="' + CFG.PDF_DIR + prog[1] + '" download target="_blank" rel="noopener">' + ICON + '<span>' + esc(t.dl) + '</span></a>';
+      box.querySelector('.fw-x').onclick = close;
+      box.querySelector('.fw-dl').focus();
+    }).catch(function () {
+      btn.disabled = false;
+      err.textContent = t.err;
+    });
+  }
+
+  window.str2gFreeWeek = open;
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', addButtons); else addButtons();
+})();
+</script>
+<!--/STR2G_FREEWEEK-->
