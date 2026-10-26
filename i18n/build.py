@@ -149,6 +149,10 @@ for _pid in _PO:
     group = {l: BASE + _PS[_pid][l] for l in _PL}
     for l in _PL:
         entries.append(_entry(group[l], group))
+# ---- anglické průvodce (i18n/guides.py), koncepty (draft) se negenerují
+import guides
+for _u in guides.build(ROOT, _tr_parts):
+    entries.append(_entry(_u, {"en": _u}))
 (ROOT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n' + "\n".join(entries) + "\n</urlset>\n", encoding="utf-8")
 print(f"sitemap.xml: {len(entries)} URLs")
 
