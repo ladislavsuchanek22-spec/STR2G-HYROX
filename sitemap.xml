@@ -1512,4 +1512,22 @@
     <xhtml:link rel="alternate" hreflang="nl" href="https://str2g.com/nl/programmas/hyrox-taper/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://str2g.com/programs/hyrox-taper/"/>
   </url>
+  <url>
+    <loc>https://str2g.com/guides/hyrox-taper/</loc>
+    <lastmod>2026-10-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://str2g.com/guides/hyrox-taper/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://str2g.com/guides/hyrox-taper/"/>
+  </url>
+  <url>
+    <loc>https://str2g.com/guides/hyrox-compromised-running/</loc>
+    <lastmod>2026-10-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://str2g.com/guides/hyrox-compromised-running/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://str2g.com/guides/hyrox-compromised-running/"/>
+  </url>
+  <url>
+    <loc>https://str2g.com/guides/hyrox-sled-pull-technique/</loc>
+    <lastmod>2026-10-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://str2g.com/guides/hyrox-sled-pull-technique/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://str2g.com/guides/hyrox-sled-pull-technique/"/>
+  </url>
 </urlset>

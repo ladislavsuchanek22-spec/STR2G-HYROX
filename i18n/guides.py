@@ -10,7 +10,7 @@ import programs
 
 GUIDES = {
     "hyrox-taper": dict(
-        draft=True,
+        draft=False,
         slug="/guides/hyrox-taper/",
         title="HYROX Taper: How to Taper for a HYROX Race (2-Week Plan) | STR2G",
         desc="How to taper for HYROX: what to cut, what to keep, a 2-week taper outline and race week checklist. From HYROX coaches who race themselves.",
@@ -49,7 +49,7 @@ GUIDES = {
         ],
     ),
     "compromised-running": dict(
-        draft=True,
+        draft=False,
         slug="/guides/hyrox-compromised-running/",
         title="Compromised Running for HYROX: Workouts to Run Fast on Tired Legs | STR2G",
         desc="Compromised running is running right after a station. Why it decides your HYROX time, how to pace it and 5 workouts to train it.",
@@ -81,7 +81,7 @@ GUIDES = {
         ],
     ),
     "sled-pull": dict(
-        draft=True,
+        draft=False,
         slug="/guides/hyrox-sled-pull-technique/",
         title="HYROX Sled Pull Technique: How to Pull Faster and Save Your Legs | STR2G",
         desc="How to improve your HYROX sled pull: technique, rope handling, weights for every division and workouts to get faster. From HYROX coaches.",
@@ -209,7 +209,8 @@ def page(g, parts):
 
 <footer>
   <div class="wrap">
-    {progs}<nav class="net" aria-label="STR2G"><p class="net-h">STR2G</p><ul>{net}</ul></nav>
+    {progs}<nav class="guides" aria-label="Guides"><a href="/hyrox-training-plan/">HYROX training plan</a><a href="/online-hyrox-coach/">Online HYROX coach</a>{nav("en")}</nav>
+    <nav class="net" aria-label="STR2G"><p class="net-h">STR2G</p><ul>{net}</ul></nav>
     <div class="links">
       <a href="https://instagram.com/22segge_coach" target="_blank" rel="noopener">@22segge_coach</a>
       <a href="https://instagram.com/riahrusovskaofficial" target="_blank" rel="noopener">@riahrusovskaofficial</a>
@@ -222,6 +223,16 @@ def page(g, parts):
 </html>
 '''
     return html
+
+
+NAV_LABELS = {"hyrox-taper": "HYROX taper", "compromised-running": "Compromised running", "sled-pull": "Sled pull technique"}
+
+
+def nav(lang="en"):
+    """Odkazy na zveřejněné průvodce (jen EN) do patičky."""
+    if lang != "en":
+        return ""
+    return "".join(f'<a href="{g["slug"]}">{escape(NAV_LABELS.get(k, g["slug"]))}</a>' for k, g in GUIDES.items() if not g.get("draft"))
 
 
 def build(root, parts):

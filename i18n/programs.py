@@ -286,7 +286,7 @@ def page(lang, pid, parts):
 <footer>
   <div class="wrap">
     {footer_programs(lang, pid)}
-    <nav class="guides" aria-label="Guides"><a href="{u["plan_url"]}">{escape(u["plan_link"])}</a><a href="{u["coaching_url"]}">{escape(u["coach_link"])}</a><a href="{home}#programs">{u["programs"]}</a></nav>
+    <nav class="guides" aria-label="Guides"><a href="{u["plan_url"]}">{escape(u["plan_link"])}</a><a href="{u["coaching_url"]}">{escape(u["coach_link"])}</a><a href="{home}#programs">{u["programs"]}</a>{__import__("guides").nav(lang)}</nav>
     <nav class="net" aria-label="STR2G"><p class="net-h">STR2G</p><ul>{net}</ul></nav>
     <div style="display:flex;align-items:center;gap:12px"><img loading="lazy" src="/favicon.svg?v=2" alt="" width="26" height="26" style="border:1px solid var(--line);border-radius:6px"><span>© 2026 STR2G · Stronger Together · Strivee</span></div>
     <div class="links">
