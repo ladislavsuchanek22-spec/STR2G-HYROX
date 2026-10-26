@@ -21,10 +21,10 @@ BASE = "https://str2g.com"
 LANG_LABEL = {"en": "EN", "cs": "CZ", "sk": "SK", "de": "DE", "pl": "PL", "fr": "FR", "es": "ES", "it": "IT", "nl": "NL"}
 ORDER = ["en", "cs", "sk", "de", "pl", "fr", "es", "it", "nl"]
 NET = {  # weby STR2G v patičce podle jazyka
-    "en": [("https://hyrox-prague.eu/en/", "HYROX Prague"), ("https://hyroxtrainingclub.cz/en/", "HYROX Training Club"),
+    "en": [("https://hyrox-prague.eu/", "HYROX Prague"), ("https://hyroxtrainingclub.cz/en/", "HYROX Training Club"),
            ("https://formfactorygames.cz/en/", "Form Factory Games"), ("https://www.ladislavsuchanek.cz/en/", "Ladislav Suchánek"), ("RIA", "Ria Suchánek Hrušovská"), ("ST", "Stronger Together")],
 }
-NET["cs"] = [("https://hyrox-prague.eu/", "HYROX Prague"), ("https://hyroxtrainingclub.cz/", "HYROX Training Club"),
+NET["cs"] = [("https://hyrox-prague.eu/cs/", "HYROX Prague"), ("https://hyroxtrainingclub.cz/", "HYROX Training Club"),
              ("https://formfactorygames.cz/", "Form Factory Games"), ("https://www.ladislavsuchanek.cz/", "Ladislav Suchánek"), ("RIA", "Ria Suchánek Hrušovská"), ("ST", "Stronger Together")]
 NET["sk"] = NET["cs"]
 NET["de"] = [("https://hyrox-prague.eu/de/", "HYROX Prague"), ("https://hyroxtrainingclub.cz/de/", "HYROX Training Club"),

@@ -13,8 +13,9 @@ BASE = "https://str2g.com"
 LANGS = {"cs": "cs_CZ", "sk": "sk_SK", "de": "de_DE", "pl": "pl_PL", "fr": "fr_FR", "es": "es_ES", "it": "it_IT", "nl": "nl_NL"}
 # Other STR2G websites: English URL in the source -> per-language path
 XLINKS = {u: {"cs": "/", "sk": "/", "de": "/de/", "pl": "/pl/", "fr": "/en/", "es": "/en/", "it": "/en/", "nl": "/en/"} for u in (
-    "https://hyrox-prague.eu/en/", "https://hyroxtrainingclub.cz/en/", "https://formfactorygames.cz/en/")}
+    "https://hyroxtrainingclub.cz/en/", "https://formfactorygames.cz/en/")}
 XLINKS["https://www.ladislavsuchanek.cz/en/"] = {"cs": "/", "sk": "/", "de": "/de/", "pl": "/pl/", "fr": "/en/", "es": "/en/", "it": "/en/", "nl": "/en/"}
+XLINKS["https://hyrox-prague.eu/"] = {"cs": "/cs/", "sk": "/cs/", "de": "/de/", "pl": "/pl/", "fr": "/", "es": "/", "it": "/", "nl": "/"}
 XLINKS["https://riahrusovska.cz/en/"] = {l: ("/" if l in ("cs", "sk") else "/en/") for l in ("cs", "sk", "de", "pl", "fr", "es", "it", "nl")}
 XLINKS["https://strongertogether.cz/en/"] = {l: ("/" if l in ("cs", "sk") else "/en/") for l in ("cs", "sk", "de", "pl", "fr", "es", "it", "nl")}
 ATTRS = ("alt", "aria-label", "content", "title")
@@ -110,7 +111,7 @@ for lang, locale in LANGS.items():
     out = re.sub(r'(src|content)="img/', r'\1="../img/', out)
     # links to the other STR2G websites -> same language
     for en_url, path in XLINKS.items():
-        out = out.replace(f'href="{en_url}"', f'href="{en_url.rsplit("/en/", 1)[0]}{path[lang]}"')
+        out = out.replace(f'href="{en_url}"', f'href="{(en_url.rsplit("/en/", 1)[0] if "/en/" in en_url else en_url.rstrip("/"))}{path[lang]}"')
     out = out.replace("'→ Our pick: '", json.dumps(t.get("__hint", "→ Our pick: "), ensure_ascii=False).replace('"', "'"))
     d = ROOT / lang
     d.mkdir(exist_ok=True)
