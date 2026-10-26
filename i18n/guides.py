@@ -117,6 +117,123 @@ GUIDES = {
             ("Should I wear gloves for the sled pull?", "Many athletes do. Gloves are allowed in HYROX (grips are not). Test them in training first."),
         ],
     ),
+    "doubles": dict(
+        draft=True,
+        slug="/guides/hyrox-doubles-training/",
+        title="HYROX Doubles Training: Rules, Splitting Stations & Partner Workouts | STR2G",
+        desc="How HYROX Doubles works, how to split the stations with your partner and 4 partner workouts to train together. From coaches who race Mixed Doubles.",
+        eyebrow="HYROX guide",
+        h1=("HYROX Doubles", "Two athletes, one race plan."),
+        lead="Doubles is the best way into HYROX and one of the most fun ways to race it. You both run the full 8 km, but you split the work on the stations. The teams that do well are not always the fittest. They are the ones with a plan.",
+        sections=[
+            ("How Doubles works", """<ul class="lp-list">
+<li><b>You both run everything.</b> All 8 × 1 km, side by side.</li>
+<li><b>You split the stations.</b> Any way you like, as long as the full distance or rep count is done before you leave.</li>
+<li><b>You stay together.</b> Enter and leave each station together. Getting more than 5 seconds apart earns a penalty, and repeated penalties mean disqualification.</li>
+<li><b>Divisions:</b> Women, Men, Mixed and Doubles Pro.</li>
+<li><b>Weights:</b> the same as the matching singles division (Women Open, Men Open, Pro).</li>
+</ul>
+<p class="lp-p">Always check the current HYROX rulebook for your race before you start.</p>"""),
+            ("How to split the stations", """<ul class="lp-list">
+<li><b>SkiErg and row:</b> short pieces, e.g. 250 m each, and switch. Swaps on a machine are quick, so short hard efforts win.</li>
+<li><b>Sleds:</b> switch every length (12.5 m). The stronger partner can do more, but not so much that they die on the next run.</li>
+<li><b>Burpee broad jumps:</b> short sections so you both keep the same rhythm.</li>
+<li><b>Farmers carry and lunges:</b> switch at lines or markers on the course.</li>
+<li><b>Wall balls:</b> sets of 10–15. Short sets and fast hand-overs beat long sets with long breaks at the end of a race.</li>
+</ul>"""),
+            ("4 partner workouts", """<ol class="lp-steps">
+<li><b>Race-pace run together:</b> 4 × 1 km at your shared race pace, 90 s rest. The slower partner sets the pace.</li>
+<li><b>You go, I go:</b> 10 rounds of 15 wall balls each, one works while the other rests.</li>
+<li><b>Mini simulation:</b> 4 × (1 km run + one station, split), practising your hand-overs.</li>
+<li><b>Sled relay:</b> 8 × 12.5 m push and pull, switching every length.</li>
+</ol>
+<p class="lp-p">Our <a href="/programs/8-week-hyrox-doubles/">8-Week HYROX Doubles</a> program gives both partners a full plan with running, strength and partner sessions.</p>"""),
+        ],
+        picks=["doubles", "basic", "running"],
+        faq=[
+            ("Do both partners run the full distance in HYROX Doubles?", "Yes. Both partners run all 8 × 1 km together. Only the station work is split."),
+            ("How should we split the stations in HYROX Doubles?", "There is no 50/50 rule. Use short pieces on SkiErg and row, switch every length on the sleds and do wall balls in sets of 10–15."),
+            ("What weights are used in HYROX Doubles?", "The same as the matching singles division: Women Doubles use Women Open weights, Men and Mixed use Men Open weights, Doubles Pro uses Pro weights."),
+        ],
+    ),
+    "running": dict(
+        draft=True,
+        slug="/guides/how-to-run-faster-in-hyrox/",
+        title="How to Run Faster in HYROX: Running Training for Hybrid Racing | STR2G",
+        desc="Running is half of your HYROX time. How to build your running for HYROX: easy base, threshold work, compromised runs and pacing the 8 × 1 km.",
+        eyebrow="HYROX guide",
+        h1=("Run faster in HYROX", "Half the race is running."),
+        lead="Eight kilometres doesn't sound like much. But in HYROX you run it in eight pieces, after every station, on tired legs. Running is roughly half of your race time, and it's where most athletes have the biggest room to improve.",
+        sections=[
+            ("Why running decides HYROX", """<p class="lp-p">Stations feel hard, but they are short. You spend more time running than on any single station, and every kilometre after the first is run on tired legs. Losing 20 seconds on every run adds up to more than 2.5 minutes. Most athletes can find that time in running faster than in getting stronger.</p>"""),
+            ("The building blocks", """<ul class="lp-list">
+<li><b>Easy base:</b> most of your running should be easy, at a pace where you could hold a conversation. It builds the engine without wrecking your legs for strength days.</li>
+<li><b>Threshold work:</b> once a week, longer intervals at a comfortably hard pace, e.g. 3–5 × 1 km or 2–3 × 10 min.</li>
+<li><b>Compromised running:</b> runs straight after a station. See our <a href="/guides/hyrox-compromised-running/">compromised running guide</a>.</li>
+<li><b>Strength:</b> squats, lunges and calf work twice a week keep your legs running after sleds and lunges.</li>
+</ul>"""),
+            ("Pacing the 8 × 1 km", """<ul class="lp-list">
+<li>Run the first two kilometres slower than you want to. Everyone goes out too fast.</li>
+<li>Aim for even splits. A big drop-off in runs 6–8 means you went too hard early.</li>
+<li>Use the Roxzone: jog, don't walk. It counts towards your time.</li>
+</ul>"""),
+            ("A simple running week", """<table class="lp-table"><thead><tr><th>Day</th><th>Session</th></tr></thead><tbody>
+<tr><td>Mon</td><td>Easy run 30–45 min</td></tr>
+<tr><td>Wed</td><td>Threshold: 4 × 1 km, 90 s rest</td></tr>
+<tr><td>Fri</td><td>Compromised: 4 × (station + 1 km)</td></tr>
+<tr><td>Sun</td><td>Long easy run 45–70 min</td></tr>
+</tbody></table>
+<p class="lp-p">Combine it with 2 strength sessions. Our <a href="/programs/running-for-hyrox/">Running for HYROX</a> program builds this up week by week.</p>"""),
+        ],
+        picks=["running", "basic", "singles"],
+        faq=[
+            ("How much of a HYROX race is running?", "You run 8 × 1 km. For most athletes running takes roughly half of the total race time."),
+            ("How many times a week should I run for HYROX?", "Three to four runs a week works for most athletes: mostly easy running, one threshold session and one compromised session."),
+            ("How do I pace the runs in HYROX?", "Start the first two runs slower than you feel like and aim for even splits. Fading badly in the last three runs means you started too fast."),
+        ],
+    ),
+    "wall-balls": dict(
+        draft=True,
+        slug="/guides/hyrox-wall-balls/",
+        title="HYROX Wall Balls: Standards, Technique & How to Pace 100 Reps | STR2G",
+        desc="HYROX wall balls: ball weights and target heights for every division, the movement standard, technique that saves your legs and how to split 100 reps.",
+        eyebrow="HYROX guide",
+        h1=("Wall balls", "The last 100 reps."),
+        lead="Wall balls are the final station. 100 reps after 7 km of running and seven stations. This is where races are won and lost, and where most no-reps happen.",
+        sections=[
+            ("Weights and target heights", """<table class="lp-table"><thead><tr><th>Division</th><th>Ball</th><th>Target</th></tr></thead><tbody>
+<tr><td>Women Open</td><td>4 kg</td><td>2.70 m</td></tr>
+<tr><td>Women Pro</td><td>6 kg</td><td>2.70 m</td></tr>
+<tr><td>Men Open</td><td>6 kg</td><td>3.00 m</td></tr>
+<tr><td>Men Pro</td><td>9 kg</td><td>3.00 m</td></tr>
+</tbody></table>
+<p class="lp-p">Every rep starts standing. Squat until your hip crease is below your knees, then throw the ball with both hands into the target zone. Shallow squats and misses don't count. Source: <a href="https://hyroxdach.com/wp-content/uploads/2025/06/25_26-Singles-Rulebook_en_R1.pdf" target="_blank" rel="noopener">HYROX Singles Rulebook 2025/26</a>.</p>"""),
+            ("Technique that saves you", """<ul class="lp-list">
+<li><b>Ball at your chin, elbows under it.</b> When the ball drops to your waist, every throw costs more.</li>
+<li><b>Throw with your legs.</b> Drive up from the squat. The arms only finish the throw.</li>
+<li><b>Catch straight into the squat.</b> One fluid movement, no standing with the ball.</li>
+<li><b>Stand an arm's length from the wall.</b> Too close and the ball hits your face, too far and you miss low.</li>
+<li><b>Breathe with the rhythm.</b> Exhale on the throw, inhale on the catch.</li>
+</ul>"""),
+            ("How to split 100 reps", """<ul class="lp-list">
+<li><b>Strong:</b> 25-25-20-15-15 with short breaks.</li>
+<li><b>Solid:</b> 5 × 20, 10–15 s breaks.</li>
+<li><b>First race:</b> 10 × 10, breathe between sets, never more than 15 s.</li>
+</ul>
+<p class="lp-p">Start your breaks before you have to. Short planned breaks are faster than long forced ones.</p>"""),
+            ("Workouts", """<ol class="lp-steps">
+<li><b>Under fatigue:</b> 1 km run + 100 m lunges + 50 wall balls, 2 rounds.</li>
+<li><b>EMOM:</b> 10 minutes, 15 wall balls every minute at race weight.</li>
+<li><b>Strength:</b> front squats and thrusters twice a week.</li>
+</ol>"""),
+        ],
+        picks=["basic", "competitor", "singles"],
+        faq=[
+            ("How many wall balls are in HYROX?", "100 reps in every division. It is the last station."),
+            ("What is the wall ball weight in HYROX?", "4 kg for Women Open, 6 kg for Women Pro and Men Open, 9 kg for Men Pro. Women throw to 2.70 m, men to 3.00 m."),
+            ("How should I split 100 wall balls?", "Plan sets before the race: 5 × 20 or 10 × 10 with short breaks works for most athletes. Rest before you are forced to."),
+        ],
+    ),
 }
 
 
@@ -225,7 +342,7 @@ def page(g, parts):
     return html
 
 
-NAV_LABELS = {"hyrox-taper": "HYROX taper", "compromised-running": "Compromised running", "sled-pull": "Sled pull technique"}
+NAV_LABELS = {"hyrox-taper": "HYROX taper", "compromised-running": "Compromised running", "sled-pull": "Sled pull technique", "doubles": "HYROX Doubles", "running": "Run faster in HYROX", "wall-balls": "Wall balls"}
 
 
 def nav(lang="en"):

@@ -29,6 +29,10 @@ _html = _re.sub(r"<!--STR2G_NEWSLETTER-->.*?<!--/STR2G_NEWSLETTER-->", lambda m:
 # Ukázkový týden zdarma: i18n/freeweek.html je zdroj, stejně jako newsletter
 _fw = (ROOT / "i18n" / "freeweek.html").read_text(encoding="utf-8").rstrip("\n")
 _html = _re.sub(r"<!--STR2G_FREEWEEK-->.*?<!--/STR2G_FREEWEEK-->", lambda m: _fw, _html, count=1, flags=_re.S)
+# Odkazy na zveřejněné průvodce (i18n/guides.py) do patičky homepage
+import sys as _sys; _sys.path.insert(0, str(ROOT / "i18n"))
+import guides as _guides
+_html = _re.sub(r"<!--STR2G_GUIDES-->.*?<!--/STR2G_GUIDES-->", lambda m: "<!--STR2G_GUIDES-->" + _guides.nav("en") + "<!--/STR2G_GUIDES-->", _html, count=1, flags=_re.S)
 _idx.write_text(_html, encoding="utf-8")
 
 src = (ROOT / "index.html").read_text(encoding="utf-8")
