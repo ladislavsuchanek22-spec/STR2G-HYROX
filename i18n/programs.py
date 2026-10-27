@@ -95,6 +95,11 @@ SHIPPING = {"@type": "OfferShippingDetails",
                                     ("CZ", "SK", "DE", "AT", "PL", "FR", "ES", "IT", "NL", "BE", "GB", "IE", "US")],
             "deliveryTime": {"@type": "ShippingDeliveryTime", "handlingTime": _DAY0, "transitTime": _DAY0}}
 
+RETURNS = {"@type": "MerchantReturnPolicy",
+           "applicableCountry": ["CZ", "SK", "DE", "AT", "PL", "FR", "ES", "IT", "NL", "BE", "GB", "IE", "US"],
+           "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted",
+           "merchantReturnLink": BASE + "/refund-policy/"}
+
 
 def schema(lang, pid, url, p, faq):
     sid, czk, monthly, pname = PROGRAMS[pid]
@@ -102,7 +107,7 @@ def schema(lang, pid, url, p, faq):
     home = BASE + HOME[lang]
     offer = {"@type": "Offer", "price": str(czk), "priceCurrency": "CZK", "availability": "https://schema.org/InStock",
              "url": f"https://train.strivee.app/payment/{sid}", "seller": {"@id": BASE + "/#org"},
-             "shippingDetails": SHIPPING}
+             "shippingDetails": SHIPPING, "hasMerchantReturnPolicy": RETURNS}
     if monthly:
         offer["priceSpecification"] = {"@type": "UnitPriceSpecification", "price": str(czk), "priceCurrency": "CZK", "billingDuration": "P1M"}
     graph = [
@@ -303,6 +308,7 @@ def page(lang, pid, parts):
       <a href="https://instagram.com/22segge_coach" target="_blank" rel="noopener">@22segge_coach</a>
       <a href="https://instagram.com/riahrusovskaofficial" target="_blank" rel="noopener">@riahrusovskaofficial</a>
       <a href="{"/cs/ochrana-osobnich-udaju/" if lang in ("cs", "sk") else "/privacy/"}">{pages.PRIV_LBL[lang]}</a>
+      <a href="{"/cs/vraceni-penez/" if lang in ("cs", "sk") else "/refund-policy/"}">{"Vrácení peněz" if lang in ("cs", "sk") else "Refund policy"}</a>
       <a href="#" onclick="str2gConsentReset();return false;">Cookies</a>
     </div>
   </div>

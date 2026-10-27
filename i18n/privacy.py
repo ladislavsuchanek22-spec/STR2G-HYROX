@@ -162,7 +162,53 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-family:var(--mo
 """
 
 
+# ---------- Vrácení peněz (refund policy): /refund-policy/ (EN) a /cs/vraceni-penez/ (CS)
+REFUND_UPDATED = {"en": "27 October 2026", "cs": "27. 10. 2026"}
+REFUND_PATHS = {"en": "/refund-policy/", "cs": "/cs/vraceni-penez/"}
+REFUND = {
+"cs": {
+"title": "Vrácení peněz | STR2G",
+"h1": "Vrácení peněz",
+"updated": "Platné od",
+"back": "Zpět na STR2G",
+"body": f"""
+<p class="lead">STR2G programy jsou digitální obsah. Po zaplacení je máš hned k dispozici v aplikaci Strivee. Proto peníze za zakoupené programy nevracíme.</p>
+<h2>Jednorázové programy</h2>
+<p>Programy placené jednorázově (8týdenní Singles a Doubles, Taper, Running for HYROX, Race Prep, Advanced) nevracíme, jakmile je program zakoupený a zpřístupněný.</p>
+<h2>Měsíční předplatné</h2>
+<p>Měsíční předplatné (HYROX Basic, HYROX Competitor, HYROX Pro Athlete, individuální program 1:1) můžeš kdykoliv zrušit. Zrušením se zastaví další platby. Už zaplacené období nevracíme, ani jeho část, i když předplatné ukončíš v jeho průběhu.</p>
+<h2>Digitální obsah a odstoupení od smlouvy</h2>
+<p>Nákupem souhlasíš s tím, že ti program zpřístupníme hned, a bereš na vědomí, že tím ztrácíš právo odstoupit od smlouvy do 14 dnů.</p>
+<h2>Kontakt</h2>
+<p>Pokud máš s nákupem nebo přístupem problém, napiš na <a href="mailto:{EMAIL}">{EMAIL}</a>. Vyřešíme to.</p>
+""",
+},
+"en": {
+"title": "Refund policy | STR2G",
+"h1": "Refund policy",
+"updated": "Effective from",
+"back": "Back to STR2G",
+"body": f"""
+<p class="lead">STR2G programs are digital content. You get access in the Strivee app right after payment, so we don't offer refunds on purchased programs.</p>
+<h2>One-time programs</h2>
+<p>Programs paid once (8-Week Singles and Doubles, Taper, Running for HYROX, Race Prep, Advanced) are non-refundable once purchased and unlocked.</p>
+<h2>Monthly subscriptions</h2>
+<p>You can cancel a monthly subscription (HYROX Basic, HYROX Competitor, HYROX Pro Athlete, individuální program 1:1) at any time. Cancelling stops future payments. Periods already paid are not refunded, in full or in part, even if you cancel mid-period.</p>
+<h2>Digital content and withdrawal</h2>
+<p>By purchasing, you agree that we give you access immediately and acknowledge that you lose your 14-day right of withdrawal.</p>
+<h2>Contact</h2>
+<p>If something is wrong with your purchase or access, email <a href="mailto:{EMAIL}">{EMAIL}</a> and we'll sort it out.</p>
+""",
+},
+}
+
+
 def build(root, tracking, fonts, icons):
+    _build_doc(root, tracking, fonts, icons, CONTENT, PATHS, UPDATED)
+    _build_doc(root, tracking, fonts, icons, REFUND, REFUND_PATHS, REFUND_UPDATED)
+
+
+def _build_doc(root, tracking, fonts, icons, CONTENT, PATHS, UPDATED):
     for lang, c in CONTENT.items():
         home = "/cs/" if lang == "cs" else "/"
         other = "en" if lang == "cs" else "cs"
