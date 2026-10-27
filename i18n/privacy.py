@@ -193,7 +193,7 @@ REFUND = {
 <h2>One-time programs</h2>
 <p>Programs paid once (8-Week Singles and Doubles, Taper, Running for HYROX, Race Prep, Advanced) are non-refundable once purchased and unlocked.</p>
 <h2>Monthly subscriptions</h2>
-<p>You can cancel a monthly subscription (HYROX Basic, HYROX Competitor, HYROX Pro Athlete, individuální program 1:1) at any time. Cancelling stops future payments. Periods already paid are not refunded, in full or in part, even if you cancel mid-period.</p>
+<p>You can cancel a monthly subscription (HYROX Basic, HYROX Competitor, HYROX Pro Athlete, Individual Program 1:1) at any time. Cancelling stops future payments. Periods already paid are not refunded, in full or in part, even if you cancel mid-period.</p>
 <h2>Digital content and withdrawal</h2>
 <p>By purchasing, you agree that we give you access immediately and acknowledge that you lose your 14-day right of withdrawal.</p>
 <h2>Contact</h2>
