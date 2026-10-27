@@ -87,12 +87,22 @@ def link_to(lang, pid):
     return f'<a href="{url_of(pid, lang)}">{escape(PT[lang]["programs"][pid]["name"])} →</a>'
 
 
+# Digitální program (aplikace Strivee): doručení zdarma a ihned, do celého světa – kvůli Google „Záznamy obchodníka“
+_DAY0 = {"@type": "QuantitativeValue", "minValue": 0, "maxValue": 0, "unitCode": "DAY"}
+SHIPPING = {"@type": "OfferShippingDetails",
+            "shippingRate": {"@type": "MonetaryAmount", "value": "0", "currency": "CZK"},
+            "shippingDestination": [{"@type": "DefinedRegion", "addressCountry": c} for c in
+                                    ("CZ", "SK", "DE", "AT", "PL", "FR", "ES", "IT", "NL", "BE", "GB", "IE", "US")],
+            "deliveryTime": {"@type": "ShippingDeliveryTime", "handlingTime": _DAY0, "transitTime": _DAY0}}
+
+
 def schema(lang, pid, url, p, faq):
     sid, czk, monthly, pname = PROGRAMS[pid]
     u = PT[lang]["ui"]
     home = BASE + HOME[lang]
     offer = {"@type": "Offer", "price": str(czk), "priceCurrency": "CZK", "availability": "https://schema.org/InStock",
-             "url": f"https://train.strivee.app/payment/{sid}", "seller": {"@id": BASE + "/#org"}}
+             "url": f"https://train.strivee.app/payment/{sid}", "seller": {"@id": BASE + "/#org"},
+             "shippingDetails": SHIPPING}
     if monthly:
         offer["priceSpecification"] = {"@type": "UnitPriceSpecification", "price": str(czk), "priceCurrency": "CZK", "billingDuration": "P1M"}
     graph = [
