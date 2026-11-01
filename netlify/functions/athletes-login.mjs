@@ -2,7 +2,7 @@
 // Always answers the same way, so nobody can find out who is a member by trying emails.
 import { findMembership, linkToken, normalizeEmail, sendLoginEmail, siteUrl, json } from "../lib/athletes.mjs";
 
-export default async (req, context) => {
+export default async (req) => {
   let email = null;
   try {
     const ct = req.headers.get("content-type") || "";
@@ -13,16 +13,25 @@ export default async (req, context) => {
   }
   if (!email) return json({ ok: false, error: "invalid_email" }, 400);
 
-  const work = (async () => {
+  const started = Date.now();
+  try {
     const membership = await findMembership(email);
-    if (!membership) return; // not a member: silently do nothing
-    const token = await linkToken(email);
-    const link = `${siteUrl(req)}/api/athletes/verify?t=${encodeURIComponent(token)}`;
-    await sendLoginEmail(email, link);
-  })().catch((err) => console.error("login:", err.message));
+    if (membership) {
+      const token = await linkToken(email);
+      const link = `${siteUrl(req)}/api/athletes/verify?t=${encodeURIComponent(token)}`;
+      await sendLoginEmail(email, link);
+      console.log("login: link sent");
+    } else {
+      console.log("login: no active membership for this email");
+    }
+  } catch (err) {
+    console.error("login failed:", err.message);
+  }
 
-  // Send the answer straight away; the Stripe lookup and email finish in the background.
-  context.waitUntil(work);
+  // Same answer and roughly the same timing for members and non-members,
+  // so nobody can find out who is a member by trying emails.
+  const wait = 1500 - (Date.now() - started);
+  if (wait > 0) await new Promise((r) => setTimeout(r, wait));
   return json({ ok: true });
 };
 
