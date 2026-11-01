@@ -16,7 +16,10 @@ export default async (req, context) => {
     return new Response(null, { status: 303, headers: { location: session.url, "cache-control": "no-store" } });
   } catch (err) {
     console.error("portal:", err.message);
-    return new Response(null, { status: 303, headers: { location: `${base}/athletes/members/?portal=error` } });
+    // Deploy previews pass the reason along to help testing; production never does.
+    const preview = context?.deploy?.context && context.deploy.context !== "production";
+    const reason = preview ? `&reason=${encodeURIComponent(err.message.slice(0, 200))}` : "";
+    return new Response(null, { status: 303, headers: { location: `${base}/athletes/members/?portal=error${reason}` } });
   }
 };
 
