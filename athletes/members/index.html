@@ -75,6 +75,26 @@
 
 <div class="notice" id="portal-error" hidden role="alert">Plan management is not available right now. Try again in a moment.</div>
 
+<!-- Profile -->
+<section class="card" aria-labelledby="profile-h" style="padding:28px;display:flex;flex-direction:column;gap:24px">
+<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px">
+<p class="eyebrow" id="profile-h">Your athlete profile</p>
+<button class="btn btn-sm" type="button" id="profile-edit-btn">Edit profile</button>
+</div>
+<div class="profile">
+<div class="avatar" id="p-avatar"><span class="initials" id="p-initials">S</span></div>
+<div class="profile-body">
+<div>
+<h2 class="d-m" id="p-name">Set up your profile</h2>
+<p class="small muted" style="margin:8px 0 0" id="p-sub">Add a photo, your race goals and links. Only you can see it.</p>
+</div>
+<p class="small" style="margin:0" id="p-bio" hidden></p>
+<div class="profile-grid" id="p-grid" hidden></div>
+<div class="chips" id="p-links" hidden></div>
+</div>
+</div>
+</section>
+
 <!-- Annual: codes -->
 <section class="codes" id="codes" hidden aria-labelledby="codes-h">
 <div style="display:flex;flex-direction:column;gap:10px">
@@ -160,10 +180,90 @@
 </div>
 </main>
 
+<!-- Profile editor -->
+<dialog class="sheet" id="profile-dialog" aria-labelledby="pd-title">
+<form id="profile-form" novalidate>
+<div class="sheet-head">
+<h2 class="d-s" id="pd-title">Edit profile</h2>
+<button type="button" class="link-btn" id="pd-close">CLOSE ✕</button>
+</div>
+<div class="sheet-body">
+
+<fieldset class="fieldset">
+<legend class="eyebrow">Photo</legend>
+<div class="f wide">
+<div class="photo-row">
+<div class="avatar" id="pd-avatar" style="width:120px;height:120px"><span class="initials" style="font-size:48px">S</span></div>
+<div style="display:flex;flex-direction:column;gap:8px;align-items:flex-start">
+<label for="pd-file" class="btn btn-sm" style="cursor:pointer;color:var(--fg);font-family:var(--display);letter-spacing:0">Choose photo</label>
+<input type="file" id="pd-file" accept="image/jpeg,image/png,image/webp,image/heic" style="position:absolute;width:1px;height:1px;opacity:0">
+<button type="button" class="link-btn" id="pd-photo-remove" hidden>Remove photo</button>
+<span class="hint">JPG, PNG or WEBP. You crop it next.</span>
+</div>
+</div>
+</div>
+<div class="f wide cropper" id="pd-cropper" hidden>
+<p class="small muted" style="margin:0">Drag to move. Use the slider (or arrow keys and + / −) to zoom.</p>
+<div class="crop-stage" id="pd-stage" tabindex="0" role="img" aria-label="Photo crop area. Arrow keys move the photo, plus and minus zoom."><canvas id="pd-canvas" width="640" height="640"></canvas></div>
+<div class="zoom"><span class="meta">−</span><input type="range" id="pd-zoom" min="1" max="4" step="0.01" value="1" aria-label="Zoom"><span class="meta">+</span></div>
+<div class="btn-row">
+<button type="button" class="btn btn-gold btn-sm" id="pd-crop-save">Use this crop</button>
+<button type="button" class="btn btn-sm" id="pd-crop-cancel">Cancel</button>
+</div>
+<span class="err" id="pd-photo-err" hidden></span>
+</div>
+</fieldset>
+
+<fieldset class="fieldset">
+<legend class="eyebrow">About you</legend>
+<div class="f"><label for="f-displayName">Name</label><input class="input" id="f-displayName" name="displayName" maxlength="60" autocomplete="name"></div>
+<div class="f"><label for="f-city">City</label><input class="input" id="f-city" name="city" maxlength="60" autocomplete="address-level2"></div>
+<div class="f"><label for="f-club">STR2G club</label>
+<select class="input" id="f-club" name="club"><option value="">—</option><option value="prague">Prague</option><option value="brno">Brno</option><option value="ostrava">Ostrava</option><option value="other">Somewhere else</option></select></div>
+<div class="f"><label for="f-instagram">Instagram</label><input class="input" id="f-instagram" name="instagram" maxlength="31" placeholder="@yourhandle" autocapitalize="off" spellcheck="false"></div>
+<div class="f wide"><label for="f-bio">About me</label><textarea class="input" id="f-bio" name="bio" maxlength="300" placeholder="How you got into HYROX, what you're working on."></textarea></div>
+</fieldset>
+
+<fieldset class="fieldset">
+<legend class="eyebrow">Race &amp; goals</legend>
+<div class="f"><label for="f-division">Division</label>
+<select class="input" id="f-division" name="division"><option value="">—</option><option value="open">Open</option><option value="pro">Pro</option><option value="doubles">Doubles</option><option value="relay">Relay</option></select></div>
+<div class="f"><label for="f-pbTime">PB time</label><input class="input" id="f-pbTime" name="pbTime" placeholder="1:24:30" inputmode="numeric"></div>
+<div class="f"><label for="f-goalTime">Goal time</label><input class="input" id="f-goalTime" name="goalTime" placeholder="1:15:00" inputmode="numeric"></div>
+<div class="f"><label for="f-nextRace">Next race</label><input class="input" id="f-nextRace" name="nextRace" maxlength="80" placeholder="HYROX Vienna"></div>
+<div class="f"><label for="f-nextRaceDate">Race date</label><input class="input" id="f-nextRaceDate" name="nextRaceDate" type="date"></div>
+<div class="f wide"><label for="f-goal">Main goal this season</label><input class="input" id="f-goal" name="goal" maxlength="200" placeholder="Sub-1:15 in Open, no walking on wall balls"></div>
+</fieldset>
+
+<fieldset class="fieldset">
+<legend class="eyebrow">Body</legend>
+<div class="f"><label for="f-weightKg">Current weight (kg)</label><input class="input" id="f-weightKg" name="weightKg" inputmode="decimal" placeholder="78.5"></div>
+<div class="f"><label for="f-goalWeightKg">Goal weight (kg)</label><input class="input" id="f-goalWeightKg" name="goalWeightKg" inputmode="decimal" placeholder="75"></div>
+<p class="hint wide" style="grid-column:1/-1;margin:0">Optional. Only you can see your weight.</p>
+</fieldset>
+
+<fieldset class="fieldset">
+<legend class="eyebrow">Links</legend>
+<div class="f wide"><label for="f-resultsUrl">HYROX results</label><input class="input" id="f-resultsUrl" name="resultsUrl" type="url" placeholder="https://results.hyrox.com/…" autocapitalize="off" spellcheck="false"><span class="hint">Open your result on results.hyrox.com and paste the link.</span></div>
+<div class="f wide"><label for="f-roxfitUrl">Roxfit profile</label><input class="input" id="f-roxfitUrl" name="roxfitUrl" type="url" placeholder="https://roxfit.com/…" autocapitalize="off" spellcheck="false"></div>
+<div class="f wide"><label for="f-otherUrl">Other profile</label><input class="input" id="f-otherUrl" name="otherUrl" type="url" placeholder="Strava, another HYROX app…" autocapitalize="off" spellcheck="false"></div>
+</fieldset>
+
+<div class="notice" id="pd-error" hidden role="alert"></div>
+<button type="button" class="link-btn" id="pd-delete" style="align-self:flex-start">Delete my profile and photo</button>
+</div>
+<div class="sheet-foot">
+<button type="button" class="btn btn-sm" id="pd-cancel">Cancel</button>
+<button type="submit" class="btn btn-gold btn-sm" id="pd-save">Save profile</button>
+</div>
+</form>
+</dialog>
+
 <footer class="footer">
 <div class="wrap meta"><span>© 2026 STR2G · Stronger together · <a href="/">str2g.com</a></span><span><a href="/privacy/">Privacy</a></span></div>
 </footer>
 
+<script src="/athletes/members/profile.js"></script>
 <script>
 (function () {
   var $ = function (id) { return document.getElementById(id); };
@@ -252,6 +352,7 @@
       text('merch-text', 'Member price on STR2G merch.' + (m.code ? ' Code: ' + m.code + '.' : '') + (m.nextDrop ? ' Next Athlete-only drop: ' + m.nextDrop + '.' : ''));
     }
     show('view-dash');
+    document.dispatchEvent(new CustomEvent('athlete:ready', { detail: d }));
   }
 
   if (params.get('login') === 'expired') $('login-expired').hidden = false;

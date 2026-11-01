@@ -1,0 +1,8 @@
+{
+  "name": "str2g-hyrox",
+  "private": true,
+  "description": "Static site; dependencies are only for Netlify functions (STR2G Athletes).",
+  "dependencies": {
+    "@netlify/blobs": "11.1.4"
+  }
+}

@@ -140,6 +140,46 @@ img{max-width:100%;display:block}
 .board li{border-top:1px solid var(--line);padding:12px 0;display:flex;justify-content:space-between;gap:12px;font-family:var(--mono);font-size:13px}
 .board li:last-child{border-bottom:1px solid var(--line)}
 .soon{font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
+/* profile */
+.profile{display:flex;flex-wrap:wrap;gap:32px;align-items:flex-start}
+.avatar{flex:0 0 auto;width:160px;height:160px;background:var(--surface);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.avatar .initials{font-family:var(--display);font-weight:900;font-style:italic;font-size:64px;color:var(--gold)}
+.profile-body{flex:999 1 420px;min-width:0;display:flex;flex-direction:column;gap:16px}
+.profile-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));border-top:1px solid var(--line);border-left:1px solid var(--line)}
+.profile-grid>div{padding:14px 16px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:6px;min-width:0}
+.profile-grid .v{font-family:var(--display);font-weight:800;font-style:italic;font-size:24px;line-height:1;text-transform:uppercase;overflow-wrap:anywhere}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;min-height:36px;padding:0 12px;border:1px solid var(--line-strong);color:var(--fg);text-decoration:none;font-family:var(--mono);font-size:12px;letter-spacing:.06em}
+.chip:hover{border-color:var(--gold);color:var(--gold)}
+
+dialog.sheet{width:min(760px,100%);max-height:100dvh;margin:auto;padding:0;background:var(--bg);color:var(--fg);border:1px solid var(--line)}
+dialog.sheet::backdrop{background:rgba(5,5,5,.85)}
+.sheet-head{position:sticky;top:0;z-index:1;background:var(--bg);border-bottom:1px solid var(--line);padding:16px 24px;display:flex;justify-content:space-between;align-items:center;gap:16px}
+.sheet-body{padding:24px;display:flex;flex-direction:column;gap:32px}
+.sheet-foot{position:sticky;bottom:0;background:var(--bg);border-top:1px solid var(--line);padding:16px 24px;display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between}
+.fieldset{border:0;margin:0;padding:0;display:grid;gap:16px 20px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.fieldset legend{padding:0;margin-bottom:16px}
+.f{display:flex;flex-direction:column;gap:8px;min-width:0}
+.f.wide{grid-column:1/-1}
+.f label{font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
+.f .hint{font-size:13px;color:var(--muted)}
+select.input{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 20px) 50%,calc(100% - 14px) 50%;background-size:6px 6px;background-repeat:no-repeat;padding-right:36px}
+textarea.input{min-height:96px;padding:12px 16px;resize:vertical;line-height:1.5}
+.input[aria-invalid="true"]{border-color:#E5484D}
+.err{color:#E5484D;font-size:13px}
+
+.photo-row{display:flex;flex-wrap:wrap;gap:20px;align-items:center}
+.cropper{display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+.crop-stage{position:relative;width:min(320px,100%);aspect-ratio:1/1;background:var(--surface);border:1px solid var(--line);overflow:hidden;touch-action:none;cursor:grab}
+.crop-stage:active{cursor:grabbing}
+.crop-stage canvas{width:100%;height:100%;display:block}
+.crop-stage::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 2px var(--gold);pointer-events:none}
+.zoom{display:flex;align-items:center;gap:12px;width:min(320px,100%)}
+.zoom input{flex:1;accent-color:var(--gold)}
+.btn-sm{min-height:44px;font-size:16px;padding:8px 16px}
+.link-btn{background:none;border:0;padding:0;min-height:44px;color:var(--muted);font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-decoration:underline;cursor:pointer}
+.link-btn:hover{color:var(--fg)}
 [hidden]{display:none!important}
 @media (max-width:600px){.btn{font-size:18px;padding:10px 18px}.upsell form,.upsell .btn{width:100%}.section{padding:80px 0}.hero{padding:64px 0 56px}.stat{border-right:0;border-bottom:1px solid var(--line)}.facts{flex-direction:column}.facts>div+div{border-left:0;border-top:1px solid var(--line)}}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.bar i{transition:none}}
