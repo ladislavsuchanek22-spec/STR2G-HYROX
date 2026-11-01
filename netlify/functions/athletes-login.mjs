@@ -2,7 +2,7 @@
 // Always answers the same way, so nobody can find out who is a member by trying emails.
 import { findMembership, linkToken, normalizeEmail, sendLoginEmail, siteUrl, json } from "../lib/athletes.mjs";
 
-export default async (req) => {
+export default async (req, context) => {
   let email = null;
   try {
     const ct = req.headers.get("content-type") || "";
@@ -14,6 +14,7 @@ export default async (req) => {
   if (!email) return json({ ok: false, error: "invalid_email" }, 400);
 
   const started = Date.now();
+  let debug = "";
   try {
     const membership = await findMembership(email);
     if (membership) {
@@ -21,18 +22,23 @@ export default async (req) => {
       const link = `${siteUrl(req)}/api/athletes/verify?t=${encodeURIComponent(token)}`;
       await sendLoginEmail(email, link);
       console.log("login: link sent");
+      debug = "sent";
     } else {
       console.log("login: no active membership for this email");
+      debug = "no_membership";
     }
   } catch (err) {
     console.error("login failed:", err.message);
+    debug = "error: " + err.message;
   }
 
   // Same answer and roughly the same timing for members and non-members,
   // so nobody can find out who is a member by trying emails.
   const wait = 1500 - (Date.now() - started);
   if (wait > 0) await new Promise((r) => setTimeout(r, wait));
-  return json({ ok: true });
+  // Deploy previews show the outcome to help testing; production never does.
+  const preview = context?.deploy?.context && context.deploy.context !== "production";
+  return json(preview ? { ok: true, debug } : { ok: true });
 };
 
 export const config = {
