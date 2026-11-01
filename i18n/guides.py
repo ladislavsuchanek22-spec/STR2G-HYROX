@@ -118,7 +118,7 @@ GUIDES = {
         ],
     ),
     "doubles": dict(
-        draft=True,
+        draft=False,
         slug="/guides/hyrox-doubles-training/",
         title="HYROX Doubles Training: Rules, Splitting Stations & Partner Workouts | STR2G",
         desc="How HYROX Doubles works, how to split the stations with your partner and 4 partner workouts to train together. From coaches who race Mixed Doubles.",
