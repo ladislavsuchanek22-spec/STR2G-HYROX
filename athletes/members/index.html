@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Members area · STR2G Athletes</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#050505">
+<link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700&family=Barlow+Condensed:ital,wght@1,800;1,900&family=JetBrains+Mono:wght@400;700&display=swap">
+<link rel="stylesheet" href="/athletes/athletes.css">
+</head>
+<body>
+
+<header class="nav">
+<nav class="wrap" aria-label="Members">
+<a class="brand" href="/athletes/"><b>STR<span class="gold" style="font:inherit;letter-spacing:0">2</span>G</b><span>ATHLETES</span></a>
+<div class="nav-links" id="nav-member" hidden>
+<span class="muted" id="nav-email"></span>
+<form method="post" action="/api/athletes/portal" style="margin:0"><button type="submit" class="strong">MANAGE PLAN</button></form>
+<form method="post" action="/api/athletes/logout" style="margin:0"><button type="submit">LOG OUT</button></form>
+</div>
+</nav>
+</header>
+
+<main>
+
+<!-- Loading -->
+<div class="wrap" id="view-loading" style="padding:120px 24px"><p class="meta">Loading…</p></div>
+
+<!-- Logged out -->
+<section class="login" id="view-login" hidden>
+<p class="eyebrow">Members area</p>
+<h1 class="d-l">Welcome <span class="gold">back.</span></h1>
+<p class="muted" style="margin:0">Enter the email you paid with. We'll send you a login link. No password.</p>
+<div class="notice" id="login-expired" hidden>That login link has expired or was already replaced. Ask for a new one below.</div>
+<form class="field" id="login-form" novalidate>
+<label for="email" class="meta">Email</label>
+<input class="input" id="email" name="email" type="email" autocomplete="email" required placeholder="you@email.com">
+<button class="btn btn-gold" type="submit" id="login-btn">Send login link →</button>
+</form>
+<div class="notice ok" id="login-sent" hidden role="status">If this email has an active STR2G Athletes membership, the login link is on its way. Check your inbox and spam. It works for 20 minutes.</div>
+<div class="notice" id="login-error" hidden role="alert"></div>
+<p class="small muted" style="margin:0">Not a member yet? <a href="/athletes/">Join STR2G Athletes</a></p>
+</section>
+
+<!-- Logged in but no active membership -->
+<section class="login" id="view-expired" hidden>
+<p class="eyebrow">Members area</p>
+<h1 class="d-l">No active <span class="gold">membership.</span></h1>
+<p class="muted" style="margin:0">We couldn't find an active STR2G Athletes membership for <strong id="expired-email" style="color:var(--fg)"></strong>. Used a different email when paying? Log out and try that one.</p>
+<div class="btn-row">
+<a class="btn btn-gold" href="/athletes/#plans">See plans →</a>
+<form method="post" action="/api/athletes/logout" style="margin:0"><button class="btn" type="submit">Log out</button></form>
+</div>
+</section>
+
+<!-- Dashboard -->
+<div class="wrap" id="view-dash" hidden>
+<div class="dash">
+
+<div class="dash-head">
+<div style="display:flex;flex-direction:column;gap:16px">
+<p class="eyebrow" id="plan-label"></p>
+<h1 class="d-xl" style="font-size:clamp(48px,7vw,96px)"><span id="hello">Hey.</span> <span class="gold">Let's work.</span></h1>
+</div>
+<div class="facts">
+<div><span class="num" id="plan-price"></span><span class="meta">Your plan</span></div>
+<div><span class="num" id="plan-date"></span><span class="meta" id="plan-date-label">Renews</span></div>
+</div>
+</div>
+
+<div class="notice" id="portal-error" hidden role="alert">Plan management is not available right now. Try again in a moment.</div>
+
+<!-- Profile -->
+<section class="card" aria-labelledby="profile-h" style="padding:28px;display:flex;flex-direction:column;gap:24px">
+<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px">
+<p class="eyebrow" id="profile-h">Your athlete profile</p>
+<button class="btn btn-sm" type="button" id="profile-edit-btn">Edit profile</button>
+</div>
+<div class="profile">
+<div class="avatar" id="p-avatar"><span class="initials" id="p-initials">S</span></div>
+<div class="profile-body">
+<div>
+<h2 class="d-m" id="p-name">Set up your profile</h2>
+<p class="small muted" style="margin:8px 0 0" id="p-sub">Add a photo, your race goals and links. Only you can see it.</p>
+</div>
+<p class="small" style="margin:0" id="p-bio" hidden></p>
+<div class="profile-grid" id="p-grid" hidden></div>
+<div class="chips" id="p-links" hidden></div>
+</div>
+</div>
+</section>
+
+<!-- Annual: codes -->
+<section class="codes" id="codes" hidden aria-labelledby="codes-h">
+<div style="display:flex;flex-direction:column;gap:10px">
+<p class="eyebrow">Annual member · Your codes</p>
+<h2 class="d-l" id="codes-h" style="font-size:48px">−15 % <span class="gold">is yours.</span></h2>
+</div>
+<div class="code-grid">
+<div class="code">
+<span class="meta">Personal training with Láďa</span>
+<span class="code-value" id="code-training"></span>
+<button class="copy" type="button" data-copy="code-training">COPY CODE</button>
+<span class="small muted">1 300 Kč → 1 105 Kč per session. Enter the code at checkout.</span>
+<a class="btn btn-gold" href="https://buy.stripe.com/aFaeVf6T6gOI2iR7WPgUM02">Book training →</a>
+</div>
+<div class="code">
+<span class="meta">Programs in Strivee</span>
+<span class="code-value" id="code-programs"></span>
+<button class="copy" type="button" data-copy="code-programs" id="copy-programs">COPY CODE</button>
+<span class="small muted">8-Week Singles, 8-Week Doubles, 2-Week Taper, Running for HYROX.</span>
+<a class="btn" href="/#programs">See programs →</a>
+</div>
+</div>
+</section>
+
+<!-- Monthly: upsell -->
+<section class="upsell" id="upsell" hidden>
+<div>
+<p class="eyebrow" style="color:var(--muted)">Locked · Annual only</p>
+<h2 class="d-m">Get −15 % on coaching <span class="gold">and programs.</span></h2>
+<p class="small muted" style="margin:0">Switch to annual for €100 a year. Two months free plus your discount codes.</p>
+</div>
+<form method="post" action="/api/athletes/portal" style="margin:0"><button class="btn btn-gold" type="submit">Switch to annual →</button></form>
+</section>
+
+<!-- This week -->
+<section style="display:flex;flex-direction:column;gap:24px">
+<p class="eyebrow">01 · This week</p>
+<div class="week">
+<article class="card" style="padding:28px;display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px" class="meta"><span>Workout of the week <span id="wod-label"></span></span><span id="wod-duration"></span></div>
+<h3 class="d-m" id="wod-title">Next workout drops Monday</h3>
+<p class="small muted" style="margin:0" id="wod-goal"></p>
+<ul class="wod-parts" id="wod-parts" hidden></ul>
+<div class="meta gold" id="wod-note" hidden></div>
+</article>
+<div>
+<article class="pillar">
+<span class="meta">Monthly topic</span>
+<div class="video" id="topic-video"><span class="soon">Video coming soon</span></div>
+<h3 class="d-s" id="topic-title" hidden></h3>
+</article>
+<article class="pillar">
+<span class="meta">Next live Q&amp;A</span>
+<h3 class="d-s" id="qa-when">Date coming soon</h3>
+<a id="qa-link" hidden target="_blank" rel="noopener">Join the call →</a>
+</article>
+</div>
+</div>
+</section>
+
+<section class="plans">
+<article class="card" style="padding:28px;display:flex;flex-direction:column;gap:16px">
+<p class="eyebrow">02 · Monthly challenge</p>
+<h3 class="d-m" id="ch-title" style="font-size:36px">Coming soon</h3>
+<ol class="board" id="ch-board" hidden></ol>
+<a id="ch-link" hidden target="_blank" rel="noopener">Log your result →</a>
+</article>
+<article class="card" style="padding:28px;display:flex;flex-direction:column;gap:16px">
+<p class="eyebrow">03 · Team</p>
+<h3 class="d-m" style="font-size:36px">Members community</h3>
+<p class="small muted" style="margin:0" id="com-text">Results, questions and race plans. The invite link lands here soon.</p>
+<a class="btn" id="com-link" hidden target="_blank" rel="noopener" style="margin-top:auto">Join the group →</a>
+</article>
+<article class="card" style="padding:28px;display:flex;flex-direction:column;gap:16px">
+<p class="eyebrow">04 · Gear</p>
+<h3 class="d-m" style="font-size:36px">Athlete store</h3>
+<p class="small muted" style="margin:0" id="merch-text">Member price on STR2G merch. The store opens soon.</p>
+<a class="btn" id="merch-link" hidden target="_blank" rel="noopener" style="margin-top:auto">Shop →</a>
+</article>
+</section>
+
+</div>
+</div>
+</main>
+
+<!-- Profile editor -->
+<dialog class="sheet" id="profile-dialog" aria-labelledby="pd-title">
+<form id="profile-form" novalidate>
+<div class="sheet-head">
+<h2 class="d-s" id="pd-title">Edit profile</h2>
+<button type="button" class="link-btn" id="pd-close">CLOSE ✕</button>
+</div>
+<div class="sheet-body">
+
+<fieldset class="fieldset">
+<legend class="eyebrow">Photo</legend>
+<div class="f wide">
+<div class="photo-row">
+<div class="avatar" id="pd-avatar" style="width:120px;height:120px"><span class="initials" style="font-size:48px">S</span></div>
+<div style="display:flex;flex-direction:column;gap:8px;align-items:flex-start">
+<label for="pd-file" class="btn btn-sm" style="cursor:pointer;color:var(--fg);font-family:var(--display);letter-spacing:0">Choose photo</label>
+<input type="file" id="pd-file" accept="image/jpeg,image/png,image/webp,image/heic" style="position:absolute;width:1px;height:1px;opacity:0">
+<button type="button" class="link-btn" id="pd-photo-remove" hidden>Remove photo</button>
+<span class="hint">JPG, PNG or WEBP. You crop it next.</span>
+</div>
+</div>
+</div>
+<div class="f wide cropper" id="pd-cropper" hidden>
+<p class="small muted" style="margin:0">Drag to move. Use the slider (or arrow keys and + / −) to zoom.</p>
+<div class="crop-stage" id="pd-stage" tabindex="0" role="img" aria-label="Photo crop area. Arrow keys move the photo, plus and minus zoom."><canvas id="pd-canvas" width="640" height="640"></canvas></div>
+<div class="zoom"><span class="meta">−</span><input type="range" id="pd-zoom" min="1" max="4" step="0.01" value="1" aria-label="Zoom"><span class="meta">+</span></div>
+<div class="btn-row">
+<button type="button" class="btn btn-gold btn-sm" id="pd-crop-save">Use this crop</button>
+<button type="button" class="btn btn-sm" id="pd-crop-cancel">Cancel</button>
+</div>
+<span class="err" id="pd-photo-err" hidden></span>
+</div>
+</fieldset>
+
+<fieldset class="fieldset">
+<legend class="eyebrow">About you</legend>
+<div class="f"><label for="f-displayName">Name</label><input class="input" id="f-displayName" name="displayName" maxlength="60" autocomplete="name"></div>
+<div class="f"><label for="f-city">City</label><input class="input" id="f-city" name="city" maxlength="60" autocomplete="address-level2"></div>
+<div class="f"><label for="f-club">STR2G club</label>
+<select class="input" id="f-club" name="club"><option value="">—</option><option value="prague">Prague</option><option value="brno">Brno</option><option value="ostrava">Ostrava</option><option value="other">Somewhere else</option></select></div>
+<div class="f"><label for="f-instagram">Instagram</label><input class="input" id="f-instagram" name="instagram" maxlength="31" placeholder="@yourhandle" autocapitalize="off" spellcheck="false"></div>
+<div class="f wide"><label for="f-bio">About me</label><textarea class="input" id="f-bio" name="bio" maxlength="300" placeholder="How you got into HYROX, what you're working on."></textarea></div>
+</fieldset>
+
+<fieldset class="fieldset">
+<legend class="eyebrow">Race &amp; goals</legend>
+<div class="f"><label for="f-division">Division</label>
+<select class="input" id="f-division" name="division"><option value="">—</option><option value="open">Open</option><option value="pro">Pro</option><option value="doubles">Doubles</option><option value="relay">Relay</option></select></div>
+<div class="f"><label for="f-pbTime">PB time</label><input class="input" id="f-pbTime" name="pbTime" placeholder="1:24:30" inputmode="numeric"></div>
+<div class="f"><label for="f-goalTime">Goal time</label><input class="input" id="f-goalTime" name="goalTime" placeholder="1:15:00" inputmode="numeric"></div>
+<div class="f"><label for="f-nextRace">Next race</label><input class="input" id="f-nextRace" name="nextRace" maxlength="80" placeholder="HYROX Vienna"></div>
+<div class="f"><label for="f-nextRaceDate">Race date</label><input class="input" id="f-nextRaceDate" name="nextRaceDate" type="date"></div>
+<div class="f wide"><label for="f-goal">Main goal this season</label><input class="input" id="f-goal" name="goal" maxlength="200" placeholder="Sub-1:15 in Open, no walking on wall balls"></div>
+</fieldset>
+
+<fieldset class="fieldset">
+<legend class="eyebrow">Body</legend>
+<div class="f"><label for="f-weightKg">Current weight (kg)</label><input class="input" id="f-weightKg" name="weightKg" inputmode="decimal" placeholder="78.5"></div>
+<div class="f"><label for="f-goalWeightKg">Goal weight (kg)</label><input class="input" id="f-goalWeightKg" name="goalWeightKg" inputmode="decimal" placeholder="75"></div>
+<p class="hint wide" style="grid-column:1/-1;margin:0">Optional. Only you can see your weight.</p>
+</fieldset>
+
+<fieldset class="fieldset">
+<legend class="eyebrow">Links</legend>
+<div class="f wide"><label for="f-resultsUrl">HYROX results</label><input class="input" id="f-resultsUrl" name="resultsUrl" type="url" placeholder="https://results.hyrox.com/…" autocapitalize="off" spellcheck="false"><span class="hint">Open your result on results.hyrox.com and paste the link.</span></div>
+<div class="f wide"><label for="f-roxfitUrl">Roxfit profile</label><input class="input" id="f-roxfitUrl" name="roxfitUrl" type="url" placeholder="https://roxfit.com/…" autocapitalize="off" spellcheck="false"></div>
+<div class="f wide"><label for="f-otherUrl">Other profile</label><input class="input" id="f-otherUrl" name="otherUrl" type="url" placeholder="Strava, another HYROX app…" autocapitalize="off" spellcheck="false"></div>
+</fieldset>
+
+<div class="notice" id="pd-error" hidden role="alert"></div>
+<button type="button" class="link-btn" id="pd-delete" style="align-self:flex-start">Delete my profile and photo</button>
+</div>
+<div class="sheet-foot">
+<button type="button" class="btn btn-sm" id="pd-cancel">Cancel</button>
+<button type="submit" class="btn btn-gold btn-sm" id="pd-save">Save profile</button>
+</div>
+</form>
+</dialog>
+
+<footer class="footer">
+<div class="wrap meta"><span>© 2026 STR2G · Stronger together · <a href="/">str2g.com</a></span><span><a href="/privacy/">Privacy</a></span></div>
+</footer>
+
+<script src="/athletes/members/profile.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var params = new URLSearchParams(location.search);
+
+  function show(id) {
+    ['view-loading', 'view-login', 'view-expired', 'view-dash'].forEach(function (v) { $(v).hidden = v !== id; });
+  }
+  function text(id, value) { $(id).textContent = value; }
+  function fmtDate(iso) {
+    try { return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).toUpperCase(); }
+    catch (e) { return ''; }
+  }
+  function safeUrl(u) {
+    try { var x = new URL(u, location.href); return x.protocol === 'https:' ? x.href : null; } catch (e) { return null; }
+  }
+  function setLink(id, url) {
+    var u = url && safeUrl(url);
+    if (!u) return false;
+    $(id).href = u; $(id).hidden = false; return true;
+  }
+
+  function render(d) {
+    $('nav-member').hidden = false;
+    text('nav-email', d.email.toUpperCase());
+    if (!d.plan) { text('expired-email', d.email); show('view-expired'); return; }
+
+    var annual = d.plan === 'annual';
+    text('plan-label', (annual ? 'Annual member' : 'Monthly member') + ' · STR2G Athlete');
+    text('plan-price', annual ? '€100 / YR' : '€10 / MO');
+    if (d.renews) { text('plan-date', fmtDate(d.renews)); }
+    text('plan-date-label', d.cancelAtPeriodEnd ? 'Ends' : 'Renews');
+    if (d.name) text('hello', 'Hey ' + d.name.split(' ')[0] + '.');
+
+    $('codes').hidden = !annual || !d.codes;
+    $('upsell').hidden = annual;
+    if (annual && d.codes) {
+      text('code-training', d.codes.training);
+      if (d.codes.programs) { text('code-programs', d.codes.programs); }
+      else { text('code-programs', 'COMING SOON'); $('copy-programs').hidden = true; }
+    }
+
+    var c = d.content || {};
+    var w = c.workout || {};
+    if (w.title) {
+      text('wod-title', w.title);
+      text('wod-label', w.label ? '· ' + w.label : '');
+      text('wod-duration', w.duration || '');
+      text('wod-goal', w.goal || '');
+      if (w.parts && w.parts.length) {
+        var ul = $('wod-parts'); ul.textContent = '';
+        w.parts.forEach(function (p) { var li = document.createElement('li'); li.textContent = p; ul.appendChild(li); });
+        ul.hidden = false;
+      }
+      if (w.note) { text('wod-note', 'Coach note: ' + w.note); $('wod-note').hidden = false; }
+    }
+    var t = c.topic || {};
+    if (t.title) { text('topic-title', t.title); $('topic-title').hidden = false; }
+    var vid = t.videoUrl && safeUrl(t.videoUrl);
+    if (vid) {
+      var f = document.createElement('iframe');
+      f.src = vid; f.title = t.title || 'Monthly topic video'; f.loading = 'lazy';
+      f.allow = 'accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen';
+      $('topic-video').textContent = ''; $('topic-video').appendChild(f);
+    }
+    var qa = c.qa || {};
+    if (qa.when) text('qa-when', qa.when);
+    setLink('qa-link', qa.url);
+    var ch = c.challenge || {};
+    if (ch.title) text('ch-title', ch.title);
+    if (ch.leaderboard && ch.leaderboard.length) {
+      var ol = $('ch-board'); ol.textContent = '';
+      ch.leaderboard.slice(0, 10).forEach(function (r, i) {
+        var li = document.createElement('li');
+        var a = document.createElement('span'); a.textContent = String(i + 1).padStart(2, '0') + ' · ' + r.name;
+        var b = document.createElement('span'); b.textContent = r.result; if (i === 0) b.className = 'gold';
+        li.appendChild(a); li.appendChild(b); ol.appendChild(li);
+      });
+      ol.hidden = false;
+    }
+    setLink('ch-link', ch.submitUrl);
+    var com = c.community || {};
+    if (setLink('com-link', com.url)) text('com-text', 'Results, questions and race plans.' + (com.nextMeetup ? ' Next race day meet-up: ' + com.nextMeetup + '.' : ''));
+    var m = c.merch || {};
+    if (setLink('merch-link', m.storeUrl)) {
+      text('merch-text', 'Member price on STR2G merch.' + (m.code ? ' Code: ' + m.code + '.' : '') + (m.nextDrop ? ' Next Athlete-only drop: ' + m.nextDrop + '.' : ''));
+    }
+    show('view-dash');
+    document.dispatchEvent(new CustomEvent('athlete:ready', { detail: d }));
+  }
+
+  if (params.get('login') === 'expired') $('login-expired').hidden = false;
+  if (params.get('portal') === 'error') $('portal-error').hidden = false;
+  if (params.has('login') || params.has('portal')) history.replaceState(null, '', location.pathname);
+
+  fetch('/api/athletes/me', { credentials: 'same-origin', headers: { accept: 'application/json' } })
+    .then(function (r) {
+      if (r.status === 401) return null;
+      if (!r.ok) throw new Error('status ' + r.status);
+      return r.json();
+    })
+    .then(function (d) { if (d && d.loggedIn) render(d); else show('view-login'); })
+    .catch(function () { show('view-login'); });
+
+  $('login-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var email = $('email').value.trim();
+    $('login-error').hidden = true; $('login-sent').hidden = true;
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      text('login-error', 'Enter a valid email address.'); $('login-error').hidden = false; $('email').focus(); return;
+    }
+    var btn = $('login-btn'); btn.disabled = true; btn.textContent = 'Sending…';
+    fetch('/api/athletes/login', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ email: email }) })
+      .then(function (r) {
+        if (r.status === 429) throw new Error('Too many attempts. Wait a minute and try again.');
+        if (!r.ok) throw new Error('Something went wrong. Try again.');
+        $('login-sent').hidden = false;
+      })
+      .catch(function (err) { text('login-error', err.message); $('login-error').hidden = false; })
+      .finally(function () { btn.disabled = false; btn.textContent = 'Send login link →'; });
+  });
+
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-copy]');
+    if (!b) return;
+    var value = $(b.getAttribute('data-copy')).textContent;
+    navigator.clipboard.writeText(value).then(function () {
+      b.textContent = 'COPIED'; setTimeout(function () { b.textContent = 'COPY CODE'; }, 1500);
+    });
+  });
+})();
+</script>
+</body>
+</html>
