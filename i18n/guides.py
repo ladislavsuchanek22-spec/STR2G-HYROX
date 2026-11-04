@@ -326,7 +326,7 @@ def page(g, parts):
 
 <footer>
   <div class="wrap">
-    {progs}<nav class="guides" aria-label="Guides"><a href="/hyrox-training-plan/">HYROX training plan</a><a href="/online-hyrox-coach/">Online HYROX coach</a>{nav("en")}</nav>
+    {progs}<nav class="guides" aria-label="Guides"><a href="/hyrox-training-plan/">HYROX training plan</a><a href="/online-hyrox-coach/">Online HYROX coach</a><a href="/programs/">HYROX training programs</a>{nav("en")}</nav>
     <nav class="net" aria-label="STR2G"><p class="net-h">STR2G</p><ul>{net}</ul></nav>
     <div class="links">
       <a href="https://instagram.com/22segge_coach" target="_blank" rel="noopener">@22segge_coach</a>
