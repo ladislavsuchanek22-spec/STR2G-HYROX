@@ -1513,6 +1513,20 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://str2g.com/programs/hyrox-taper/"/>
   </url>
   <url>
+    <loc>https://str2g.com/programs/</loc>
+    <lastmod>2026-10-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://str2g.com/programs/"/>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://str2g.com/cs/programy/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://str2g.com/programs/"/>
+  </url>
+  <url>
+    <loc>https://str2g.com/cs/programy/</loc>
+    <lastmod>2026-10-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://str2g.com/programs/"/>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://str2g.com/cs/programy/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://str2g.com/programs/"/>
+  </url>
+  <url>
     <loc>https://str2g.com/guides/hyrox-taper/</loc>
     <lastmod>2026-10-23</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://str2g.com/guides/hyrox-taper/"/>

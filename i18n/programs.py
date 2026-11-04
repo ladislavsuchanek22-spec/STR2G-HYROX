@@ -118,7 +118,7 @@ def schema(lang, pid, url, p, faq):
          "image": f"{BASE}/img/{PDATA[pid]['img']}.jpg", "offers": offer},
         {"@type": "BreadcrumbList", "itemListElement": [
             {"@type": "ListItem", "position": 1, "name": "STR2G HYROX", "item": home},
-            {"@type": "ListItem", "position": 2, "name": u["crumb_programs"], "item": home + "#programs"},
+            {"@type": "ListItem", "position": 2, "name": u["crumb_programs"], "item": BASE + __import__("hub").HUB.get(lang, HOME[lang] + "#programs")},
             {"@type": "ListItem", "position": 3, "name": p["name"], "item": url}]},
         {"@type": "FAQPage", "@id": url + "#faq", "mainEntity": [
             {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in faq]},
@@ -207,7 +207,7 @@ def page(lang, pid, parts):
 <header class="hero lp-hero" id="top">
   <img class="hero-img" src="/img/{img}.webp" alt="" fetchpriority="high">
   <div class="wrap">
-    <nav class="crumbs" aria-label="Breadcrumb"><a href="{home}">STR2G HYROX</a><span aria-hidden="true">/</span><a href="{home}#programs">{escape(u["crumb_programs"])}</a><span aria-hidden="true">/</span><span>{escape(p["name"])}</span></nav>
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="{home}">STR2G HYROX</a><span aria-hidden="true">/</span><a href="{__import__("hub").HUB.get(lang, home + "#programs")}">{escape(u["crumb_programs"])}</a><span aria-hidden="true">/</span><span>{escape(p["name"])}</span></nav>
     <p class="eyebrow">{escape(p["kind"])}</p>
     <h1 class="display">{escape(p["h1"][0])}<br><span class="gold">{escape(p["h1"][1])}</span></h1>
     <p class="lead">{escape(p["lead"])}</p>
@@ -215,7 +215,7 @@ def page(lang, pid, parts):
       {price_html(lang, pid)}
       <div class="cta-row" style="margin-top:0">
         {buy_btn(lang, pid)}
-        <a class="btn btn-ghost" href="{u["plan_url"]}#pick">{escape(u["compare"])}</a>
+        <a class="btn btn-ghost" href="{(__import__("hub").HUB[lang] + "#compare") if lang in __import__("hub").HUB else u["plan_url"] + "#pick"}">{escape(u["compare"])}</a>
       </div>
     </div>
     {facts_html}
@@ -282,7 +282,7 @@ def page(lang, pid, parts):
   <div class="wrap">
     <div class="shead"><p class="eyebrow">{escape(u["programs"])}</p><h2 class="display"><span>{two(u["related_h"])}</span></h2></div>
     <div class="grid">{related}</div>
-    <p class="lp-note">{escape(u["pay_note"])} <a href="{u["plan_url"]}#pick">{escape(u["compare"])} →</a></p>
+    <p class="lp-note">{escape(u["pay_note"])} <a href="{(__import__("hub").HUB[lang] + "#compare") if lang in __import__("hub").HUB else u["plan_url"] + "#pick"}">{escape(u["compare"])} →</a></p>
   </div>
 </section>
 
@@ -293,7 +293,7 @@ def page(lang, pid, parts):
     <p class="lead">{escape(u["cta_lead"])}</p>
     <div class="cta-row">
       {buy_btn(lang, pid)}
-      <a class="btn btn-ghost" href="{u["plan_url"]}#pick">{escape(u["compare"])}</a>
+      <a class="btn btn-ghost" href="{(__import__("hub").HUB[lang] + "#compare") if lang in __import__("hub").HUB else u["plan_url"] + "#pick"}">{escape(u["compare"])}</a>
     </div>
   </div>
 </section>

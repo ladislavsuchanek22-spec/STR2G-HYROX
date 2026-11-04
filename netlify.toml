@@ -23,13 +23,4 @@
   status = 301
   force = true
 
-# Rozcestníky programů nemají vlastní stránku -> přehled programů
-[[redirects]]
-  from = "/programs/"
-  to = "/hyrox-training-plan/#pick"
-  status = 301
-
-[[redirects]]
-  from = "/cs/programy/"
-  to = "/cs/hyrox-treninkovy-plan/#pick"
-  status = 301
+# /programs/ a /cs/programy/ jsou od 4. 11. vlastní stránky (rozcestník, i18n/hub.py)

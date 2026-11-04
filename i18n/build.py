@@ -153,6 +153,11 @@ for _pid in _PO:
     group = {l: BASE + _PS[_pid][l] for l in _PL}
     for l in _PL:
         entries.append(_entry(group[l], group))
+# ---- rozcestník programů /programs/ a /cs/programy/ (cíl: „HYROX training programs“)
+import hub
+_hub = hub.build(ROOT, _tr_parts)
+for l in _hub:
+    entries.append(_entry(_hub[l], _hub))
 # ---- anglické průvodce (i18n/guides.py), koncepty (draft) se negenerují
 import guides
 for _u in guides.build(ROOT, _tr_parts):
