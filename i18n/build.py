@@ -18,6 +18,7 @@ XLINKS["https://www.ladislavsuchanek.cz/en/"] = {"cs": "/", "sk": "/", "de": "/d
 XLINKS["https://hyrox-prague.eu/"] = {"cs": "/cs/", "sk": "/cs/", "de": "/de/", "pl": "/pl/", "fr": "/", "es": "/", "it": "/", "nl": "/"}
 XLINKS["https://riahrusovska.cz/en/"] = {l: ("/" if l in ("cs", "sk") else "/en/") for l in ("cs", "sk", "de", "pl", "fr", "es", "it", "nl")}
 XLINKS["https://strongertogether.cz/en/"] = {l: ("/" if l in ("cs", "sk") else "/en/") for l in ("cs", "sk", "de", "pl", "fr", "es", "it", "nl")}
+XLINKS["https://xenomczech.cz/en/"] = {l: ("/" if l in ("cs", "sk") else "/en/") for l in ("cs", "sk", "de", "pl", "fr", "es", "it", "nl")}
 ATTRS = ("alt", "aria-label", "content", "title")
 
 # Newsletter okno: i18n/newsletter.html je zdroj, do index.html se vždy přepíše aktuální verze
