@@ -94,7 +94,7 @@ GUIDES = {
 <tr><td>Men Open / Women Pro</td><td>103 kg</td><td>50 m</td></tr>
 <tr><td>Men Pro</td><td>153 kg</td><td>50 m</td></tr>
 </tbody></table>
-<p class="lp-p">You pull the sled towards you, then walk back and repeat. Source: <a href="https://hyroxdach.com/wp-content/uploads/2025/06/25_26-Singles-Rulebook_en_R1.pdf" target="_blank" rel="noopener">HYROX Singles Rulebook 2025/26</a>. Always check the current rulebook before your race.</p>"""),
+<p class="lp-p">You stay standing in the athlete box, pull the whole sled past the line, then run to the other end and pull it back. Missing a length is an incomplete station and a DQ. Source: <a href="https://hyrox.com/rulebook/" target="_blank" rel="noopener">HYROX Singles Rulebook 2026/27</a>. Always check the current rulebook before your race.</p>"""),
             ("Technique", """<ul class="lp-list">
 <li><b>Sit back and drive with the legs.</b> Low hips, lean back, and push through your heels. Your arms just transfer the force.</li>
 <li><b>Hand over hand, short and fast.</b> Long pulls look strong but kill your grip.</li>
@@ -129,7 +129,7 @@ GUIDES = {
             ("How Doubles works", """<ul class="lp-list">
 <li><b>You both run everything.</b> All 8 × 1 km, side by side.</li>
 <li><b>You split the stations.</b> Any way you like, as long as the full distance or rep count is done before you leave.</li>
-<li><b>You stay together.</b> Enter and leave each station together. Getting more than 5 seconds apart earns a penalty, and repeated penalties mean disqualification.</li>
+<li><b>You stay together.</b> You run every kilometre together and enter and leave each station together. If one of you runs ahead, it's a 1-minute penalty, and more than three of those puts you out of competition.</li>
 <li><b>Divisions:</b> Women, Men, Mixed and Doubles Pro.</li>
 <li><b>Weights:</b> the same as the matching singles division (Women Open, Men Open, Pro).</li>
 </ul>
@@ -207,7 +207,7 @@ GUIDES = {
 <tr><td>Men Open</td><td>6 kg</td><td>3.00 m</td></tr>
 <tr><td>Men Pro</td><td>9 kg</td><td>3.00 m</td></tr>
 </tbody></table>
-<p class="lp-p">Every rep starts standing. Squat until your hip crease is below your knees, then throw the ball with both hands into the target zone. Shallow squats and misses don't count. Source: <a href="https://hyroxdach.com/wp-content/uploads/2025/06/25_26-Singles-Rulebook_en_R1.pdf" target="_blank" rel="noopener">HYROX Singles Rulebook 2025/26</a>.</p>"""),
+<p class="lp-p">Every rep starts standing. Squat until your hip crease is below your knees, then throw the ball with both hands into the target zone. Shallow squats and misses don't count. There are no warnings here, it's a rep or a no-rep, and leaving before 100 valid reps is an incomplete station and a DQ. Source: <a href="https://hyrox.com/rulebook/" target="_blank" rel="noopener">HYROX Singles Rulebook 2026/27</a>.</p>"""),
             ("Technique that saves you", """<ul class="lp-list">
 <li><b>Ball at your chin, elbows under it.</b> When the ball drops to your waist, every throw costs more.</li>
 <li><b>Throw with your legs.</b> Drive up from the squat. The arms only finish the throw.</li>
