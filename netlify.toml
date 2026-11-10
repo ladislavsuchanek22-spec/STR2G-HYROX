@@ -24,3 +24,14 @@
   force = true
 
 # /programs/ a /cs/programy/ jsou od 4. 11. vlastní stránky (rozcestník, i18n/hub.py)
+
+# Bezpečnostní hlavičky pro celý web
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Strict-Transport-Security = "max-age=31536000"
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    Content-Security-Policy = "frame-ancestors 'self'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests"
