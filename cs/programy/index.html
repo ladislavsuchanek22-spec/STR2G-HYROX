@@ -100,6 +100,15 @@
     if (granted() && window.fbq) {
       window.fbq('track', 'InitiateCheckout', { content_name: p.name, value: p.value, currency: 'CZK' });
     }
+    // Anonymous first-party count (no cookies, no IDs) – also for visitors without consent.
+    try {
+      var q = location.search, r = document.referrer || '';
+      var src = /[?&]fbclid=|[?&]utm_source=(facebook|instagram|ig|meta|fb)\b/i.test(q) || /instagram\.|facebook\.|fb\.me/i.test(r) ? 'meta'
+        : /[?&](gclid|gbraid|wbraid)=|[?&]utm_source=google\b/i.test(q) || /google\./i.test(r) ? 'google'
+        : r && r.indexOf(location.host) === -1 ? 'other' : 'direct';
+      var body = JSON.stringify({ p: p.name, l: (document.documentElement.lang || '').slice(0, 2), src: src, c: granted() ? 1 : 0 });
+      if (navigator.sendBeacon) navigator.sendBeacon('/api/checkout-click', new Blob([body], { type: 'text/plain' }));
+    } catch (err) {}
 
     // Cmd/Ctrl/Shift/middle click: leave it to the browser, this page stays open.
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
@@ -715,6 +724,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
     // MailerLite formulář „STR2G web“. Prázdné = ukládá se jen do Netlify.
     MAILERLITE_URL: 'https://assets.mailerlite.com/jsonp/2721571/forms/201638923122771811/subscribe',
     DELAY_MS: 25000,
+    DELAY_MS_MOBILE: 45000,   // phones: the sheet covers most of the screen, so show it later
     SCROLL_RATIO: 0.55,
     SNOOZE_DAYS: 14,
     IMAGE: '/img/lada-ria-race-day.webp'
@@ -796,6 +806,8 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
     // Kdo právě vyplňuje Program finder, toho popup neruší (finder má vlastní e-mail)
     var fd = document.getElementById('finder'); if (fd && fd.dataset.busy) return;
     if (document.getElementById('str2g-consent')) { pending = true; return; }
+    // Never cover a visible Start/Buy button: try again in 15 s
+    if (!force && buyVisible()) { clearTimeout(timer); timer = setTimeout(open, 15000); return; }
     shown = true;
     cleanup();
     lastFocus = document.activeElement;
@@ -853,6 +865,14 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
     var h = document.documentElement.scrollHeight - innerHeight;
     if (h > 0 && scrollY / h >= CFG.SCROLL_RATIO) open();
   }
+  function buyVisible() {
+    var as = document.querySelectorAll('a[href*="train.strivee.app/payment"]');
+    for (var i = 0; i < as.length; i++) {
+      var r = as[i].getBoundingClientRect();
+      if (r.width && r.bottom > 0 && r.top < innerHeight) return true;
+    }
+    return false;
+  }
   function onLeave(e) { if (e.clientY <= 0 && !e.relatedTarget) open(); }
   function cleanup() {
     clearTimeout(timer);
@@ -867,8 +887,9 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
 
   function start() {
     if (force) { setTimeout(open, 600); return; }
-    timer = setTimeout(open, CFG.DELAY_MS);
-    addEventListener('scroll', onScroll, { passive: true });
+    var mobile = window.matchMedia('(max-width:720px)').matches;
+    timer = setTimeout(open, mobile ? CFG.DELAY_MS_MOBILE : CFG.DELAY_MS);
+    if (!mobile) addEventListener('scroll', onScroll, { passive: true });
     if (window.matchMedia('(hover:hover) and (pointer:fine)').matches) {
       setTimeout(function () { document.addEventListener('mouseout', onLeave); }, 8000);
     }
