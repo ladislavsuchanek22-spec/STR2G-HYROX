@@ -97,10 +97,15 @@
       window.fbq('track', 'InitiateCheckout', { content_name: p.name, value: p.value, currency: 'CZK' });
     }
 
-    var newTab = a.target === '_blank' || e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1;
-    if (!newTab) {
+    // Cmd/Ctrl/Shift/middle click: leave it to the browser, this page stays open.
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
+    // Instagram/Facebook in-app browsers open target=_blank in the SAME window,
+    // which kills the Meta/Google requests above before they leave. There (and for
+    // same-tab links) wait a moment so the events get sent, then go to Strivee.
+    var inApp = /FBAN|FBAV|FB_IAB|FBIOS|Instagram/i.test(navigator.userAgent || '');
+    if (a.target !== '_blank' || inApp) {
       e.preventDefault();
-      setTimeout(function () { window.location.href = a.href; }, 300);
+      setTimeout(function () { window.location.href = a.href; }, 400);
     }
   }, true);
 
