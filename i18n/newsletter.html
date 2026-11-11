@@ -128,6 +128,8 @@
 
   function open() {
     if (shown) return;
+    // Kdo právě vyplňuje Program finder, toho popup neruší (finder má vlastní e-mail)
+    var fd = document.getElementById('finder'); if (fd && fd.dataset.busy) return;
     if (document.getElementById('str2g-consent')) { pending = true; return; }
     shown = true;
     cleanup();

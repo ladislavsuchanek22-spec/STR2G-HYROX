@@ -301,11 +301,57 @@ section + section{border-top:1px solid var(--line)}
 @media (max-width:900px){.approach{grid-template-columns:1fr}.approach figure{min-height:0;aspect-ratio:4/5;max-height:560px}}
 @media (max-width:480px){.pillar{grid-template-columns:1fr;gap:6px}}
 
-.chooser{display:flex;flex-wrap:wrap;gap:8px}
-.chooser button{background:var(--panel);color:var(--fg);border:1px solid var(--line);font-family:var(--body);font-size:15px;font-weight:500;padding:11px 16px;cursor:pointer}
-.chooser button:hover{border-color:var(--muted)}
-.chooser button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
-.chooser-hint{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:14px;min-height:1.6em}
+/* Program finder (kvíz) */
+.finder{background:var(--panel);border:1px solid var(--line);padding:clamp(24px,4vw,44px);scroll-margin-top:100px}
+.finder [hidden]{display:none!important}
+.finder .display{font-size:clamp(30px,4.6vw,48px)}
+.f-intro{display:grid;grid-template-columns:1fr auto;gap:12px 40px;align-items:end}
+.f-intro p{margin:0;color:var(--muted)}
+.f-intro .eyebrow{margin:0}
+.f-intro .btn{grid-row:1/4;grid-column:2}
+@media (max-width:760px){.f-intro{grid-template-columns:1fr}.f-intro .btn{grid-row:auto;grid-column:auto;margin-top:12px}}
+.f-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.f-link{background:none;border:0;padding:0;color:var(--muted);font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;text-decoration:none}
+.f-link:hover{color:var(--fg)}
+.f-count{font-family:var(--mono);font-size:12px;letter-spacing:.16em;color:var(--accent)}
+.f-bar{height:3px;background:var(--line);margin-bottom:32px}
+.f-bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .35s}
+.f-q .display{margin-bottom:24px}
+.f-opts{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media (max-width:640px){.f-opts{grid-template-columns:1fr}}
+.f-opts button{display:flex;align-items:center;gap:14px;text-align:left;background:var(--bg);color:var(--fg);border:1px solid var(--line);font-family:var(--body);font-size:16px;font-weight:500;padding:17px 18px;cursor:pointer;transition:border-color .15s,background .15s}
+.f-opts button:hover{border-color:var(--accent)}
+.f-opts button i{flex:0 0 20px;height:20px;border:1.5px solid var(--muted);display:grid;place-items:center}
+.f-opts button.on{border-color:var(--accent);background:#16140e}
+.f-opts button.on i{background:var(--accent);border-color:var(--accent)}
+.f-opts button.on i::after{content:"";width:5px;height:10px;border:solid var(--on-accent);border-width:0 2.5px 2.5px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.f-in{animation:fIn .35s ease}
+@keyframes fIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.f-in{animation:none}.f-bar i{transition:none}}
+.f-res .eyebrow{margin-bottom:10px}
+.f-res .price{margin:12px 0 16px}
+.f-pitch{font-size:19px;line-height:1.5;margin:0;max-width:62ch}
+.f-note{color:#FF8A7A;margin:14px 0 0;max-width:62ch}
+.f-why{margin-top:22px;padding-top:20px;border-top:1px solid var(--line)}
+.f-why ul{list-style:none;padding:0;margin:10px 0 0;display:grid;gap:6px}
+.f-why li{padding-left:22px;position:relative}
+.f-why li::before{content:"";position:absolute;left:0;top:.8em;width:10px;height:2px;background:var(--accent)}
+.f-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.f-alt{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;border:1px solid var(--line);padding:18px 22px;margin-top:22px}
+.f-alt b{display:block;font-family:var(--display);font-weight:900;font-style:italic;text-transform:uppercase;font-size:24px;margin-top:4px}
+.f-alt .f-link{color:var(--accent)}
+.f-mail{border:1px solid var(--line);padding:24px 22px;margin-top:12px}
+.f-mail h4{font-family:var(--display);font-weight:900;font-style:italic;text-transform:uppercase;font-size:28px;margin:0 0 6px;line-height:1}
+.f-mail p{margin:0;color:var(--muted)}
+.f-mail form{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;margin-top:16px}
+@media (max-width:760px){.f-mail form{grid-template-columns:1fr}}
+.f-mail input{background:var(--bg);border:1px solid var(--line);color:var(--fg);font:16px var(--body);padding:14px 16px;border-radius:0;outline:none;min-width:0}
+.f-mail input:focus{border-color:var(--accent)}
+.f-mail input.bad{border-color:#FF8A7A}
+.f-mail .f-legal{grid-column:1/-1;font-size:13px}
+.f-mail .f-legal a{color:var(--muted)}
+.f-ok{color:var(--accent)!important;font-weight:700;margin-top:12px!important}
+.f-again{margin-top:22px}
 
 .group-label{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:60px 0 18px;padding-bottom:12px;border-bottom:1px solid var(--line)}
 .group-label h3{font-family:var(--display);font-weight:800;font-style:italic;text-transform:uppercase;font-size:34px;margin:0;line-height:1}
@@ -706,6 +752,8 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
 
   function open() {
     if (shown) return;
+    // Kdo právě vyplňuje Program finder, toho popup neruší (finder má vlastní e-mail)
+    var fd = document.getElementById('finder'); if (fd && fd.dataset.busy) return;
     if (document.getElementById('str2g-consent')) { pending = true; return; }
     shown = true;
     cleanup();

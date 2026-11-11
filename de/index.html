@@ -301,11 +301,57 @@ section + section{border-top:1px solid var(--line)}
 @media (max-width:900px){.approach{grid-template-columns:1fr}.approach figure{min-height:0;aspect-ratio:4/5;max-height:560px}}
 @media (max-width:480px){.pillar{grid-template-columns:1fr;gap:6px}}
 
-.chooser{display:flex;flex-wrap:wrap;gap:8px}
-.chooser button{background:var(--panel);color:var(--fg);border:1px solid var(--line);font-family:var(--body);font-size:15px;font-weight:500;padding:11px 16px;cursor:pointer}
-.chooser button:hover{border-color:var(--muted)}
-.chooser button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
-.chooser-hint{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:14px;min-height:1.6em}
+/* Program finder (kvíz) */
+.finder{background:var(--panel);border:1px solid var(--line);padding:clamp(24px,4vw,44px);scroll-margin-top:100px}
+.finder [hidden]{display:none!important}
+.finder .display{font-size:clamp(30px,4.6vw,48px)}
+.f-intro{display:grid;grid-template-columns:1fr auto;gap:12px 40px;align-items:end}
+.f-intro p{margin:0;color:var(--muted)}
+.f-intro .eyebrow{margin:0}
+.f-intro .btn{grid-row:1/4;grid-column:2}
+@media (max-width:760px){.f-intro{grid-template-columns:1fr}.f-intro .btn{grid-row:auto;grid-column:auto;margin-top:12px}}
+.f-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.f-link{background:none;border:0;padding:0;color:var(--muted);font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;text-decoration:none}
+.f-link:hover{color:var(--fg)}
+.f-count{font-family:var(--mono);font-size:12px;letter-spacing:.16em;color:var(--accent)}
+.f-bar{height:3px;background:var(--line);margin-bottom:32px}
+.f-bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .35s}
+.f-q .display{margin-bottom:24px}
+.f-opts{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media (max-width:640px){.f-opts{grid-template-columns:1fr}}
+.f-opts button{display:flex;align-items:center;gap:14px;text-align:left;background:var(--bg);color:var(--fg);border:1px solid var(--line);font-family:var(--body);font-size:16px;font-weight:500;padding:17px 18px;cursor:pointer;transition:border-color .15s,background .15s}
+.f-opts button:hover{border-color:var(--accent)}
+.f-opts button i{flex:0 0 20px;height:20px;border:1.5px solid var(--muted);display:grid;place-items:center}
+.f-opts button.on{border-color:var(--accent);background:#16140e}
+.f-opts button.on i{background:var(--accent);border-color:var(--accent)}
+.f-opts button.on i::after{content:"";width:5px;height:10px;border:solid var(--on-accent);border-width:0 2.5px 2.5px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.f-in{animation:fIn .35s ease}
+@keyframes fIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.f-in{animation:none}.f-bar i{transition:none}}
+.f-res .eyebrow{margin-bottom:10px}
+.f-res .price{margin:12px 0 16px}
+.f-pitch{font-size:19px;line-height:1.5;margin:0;max-width:62ch}
+.f-note{color:#FF8A7A;margin:14px 0 0;max-width:62ch}
+.f-why{margin-top:22px;padding-top:20px;border-top:1px solid var(--line)}
+.f-why ul{list-style:none;padding:0;margin:10px 0 0;display:grid;gap:6px}
+.f-why li{padding-left:22px;position:relative}
+.f-why li::before{content:"";position:absolute;left:0;top:.8em;width:10px;height:2px;background:var(--accent)}
+.f-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.f-alt{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;border:1px solid var(--line);padding:18px 22px;margin-top:22px}
+.f-alt b{display:block;font-family:var(--display);font-weight:900;font-style:italic;text-transform:uppercase;font-size:24px;margin-top:4px}
+.f-alt .f-link{color:var(--accent)}
+.f-mail{border:1px solid var(--line);padding:24px 22px;margin-top:12px}
+.f-mail h4{font-family:var(--display);font-weight:900;font-style:italic;text-transform:uppercase;font-size:28px;margin:0 0 6px;line-height:1}
+.f-mail p{margin:0;color:var(--muted)}
+.f-mail form{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;margin-top:16px}
+@media (max-width:760px){.f-mail form{grid-template-columns:1fr}}
+.f-mail input{background:var(--bg);border:1px solid var(--line);color:var(--fg);font:16px var(--body);padding:14px 16px;border-radius:0;outline:none;min-width:0}
+.f-mail input:focus{border-color:var(--accent)}
+.f-mail input.bad{border-color:#FF8A7A}
+.f-mail .f-legal{grid-column:1/-1;font-size:13px}
+.f-mail .f-legal a{color:var(--muted)}
+.f-ok{color:var(--accent)!important;font-weight:700;margin-top:12px!important}
+.f-again{margin-top:22px}
 
 .group-label{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:60px 0 18px;padding-bottom:12px;border-bottom:1px solid var(--line)}
 .group-label h3{font-family:var(--display);font-weight:800;font-style:italic;text-transform:uppercase;font-size:34px;margin:0;line-height:1}
@@ -473,7 +519,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
     <p class="lead">HYROX-Training mit Struktur. Laufen, Kraft, Stationen und Pacing in einem Plan. Für dein erstes Rennen oder deine nächste Bestzeit. Jede Einheit auf deinem Handy.</p>
     <div class="cta-row">
       <a class="btn btn-gold" href="#programs">Programm wählen</a>
-      <a class="btn btn-ghost" href="#pick">Hilf mir wählen</a>
+      <a class="btn btn-ghost" href="#finder">Hilf mir wählen</a>
     </div>
     <div class="facts">
       <div class="fact"><div class="l">Programme</div><div class="n">9</div></div>
@@ -522,19 +568,95 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
       <p>Monatsprogramme, Rennvorbereitungen, Spezialblöcke und 1:1 Coaching. Tippe an, was zu dir passt, und wir zeigen dir das richtige Programm.</p>
     </div>
 
-    <div class="chooser" role="group" aria-label="Finde dein Programm">
-      <button type="button" id="ch-start" data-target="basic">Ich bin neu bei HYROX</button>
-      <button type="button" id="ch-comp" data-target="competitor">Ich race und will schneller werden</button>
-      <button type="button" id="ch-pro" data-target="pro">Ich will das Top-Monatsprogramm</button>
-      <!--ADV--><button type="button" id="ch-first" data-target="advanced">Es ist mein erstes Rennen</button><!--/ADV-->
-      <button type="button" id="ch-12" data-target="raceprep">Mein Rennen ist in 12 Wochen</button>
-      <button type="button" id="ch-8" data-target="singles">Mein Rennen ist in 8 Wochen</button>
-      <button type="button" id="ch-dbl" data-target="doubles">Wir starten im Doubles</button>
-      <button type="button" id="ch-run" data-target="running">Das Laufen bremst mich</button>
-      <button type="button" id="ch-taper" data-target="taper">Rennen in 2 Wochen</button>
-      <button type="button" id="ch-one" data-target="coaching">Ich will einen Plan nur für mich</button>
+    <div class="finder" id="finder">
+      <div class="f-intro">
+        <p class="eyebrow">Programm-Finder</p>
+        <h3 class="display">7 Fragen. <span class="gold">60 Sekunden.</span></h3>
+        <p>Eine klare Antwort: das Programm, das zu deinem Rennen, deinem Level und deiner Woche passt.</p>
+        <button type="button" class="btn btn-gold f-start">Mein Programm finden</button>
+      </div>
+
+      <div class="f-top" hidden><button type="button" class="f-link f-back">← Zurück</button><span class="f-count"></span></div>
+      <div class="f-bar" hidden><i></i></div>
+
+      <div class="f-q" data-q="race" hidden>
+        <h3 class="display">Hast du ein Rennen gebucht?</h3>
+        <div class="f-opts"><button type="button" data-v="yes"><i></i>Ja</button><button type="button" data-v="planned"><i></i>Noch nicht, aber ich will</button><button type="button" data-v="none"><i></i>Nein, ich will einfach wie ein HYROX-Athlet trainieren</button></div>
+      </div>
+      <div class="f-q" data-q="cat" hidden>
+        <h3 class="display">In welcher Kategorie startest du?</h3>
+        <div class="f-opts"><button type="button" data-v="open"><i></i>Singles Open</button><button type="button" data-v="prodiv"><i></i>Singles Pro</button><button type="button" data-v="doubles"><i></i>Doubles</button><button type="button" data-v="relay"><i></i>Relay</button><button type="button" data-v="unsure"><i></i>Noch unsicher</button></div>
+      </div>
+      <div class="f-q" data-q="weeks" hidden>
+        <h3 class="display">Wie lange noch bis zum Rennen?</h3>
+        <div class="f-opts"><button type="button" data-v="lt3"><i></i>Weniger als 3 Wochen</button><button type="button" data-v="3to8"><i></i>3–8 Wochen</button><button type="button" data-v="8to12"><i></i>8–12 Wochen</button><button type="button" data-v="gt12"><i></i>Mehr als 12 Wochen</button><button type="button" data-v="nodate"><i></i>Noch kein Datum</button></div>
+      </div>
+      <div class="f-q" data-q="loss" hidden>
+        <h3 class="display">Wo verlierst du am meisten Zeit?</h3>
+        <div class="f-opts"><button type="button" data-v="runs"><i></i>Beim Laufen</button><button type="button" data-v="stations"><i></i>An den Stationen</button><button type="button" data-v="both"><i></i>Ehrlich gesagt beides</button><button type="button" data-v="idk"><i></i>Keine Ahnung, es ist mein erstes Rennen</button></div>
+      </div>
+      <div class="f-q" data-q="level" hidden>
+        <h3 class="display">Wo stehst du gerade?</h3>
+        <div class="f-opts"><button type="button" data-v="first"><i></i>Erstes Rennen steht an</button><button type="button" data-v="some"><i></i>Ich habe 1–3 Rennen hinter mir</button><button type="button" data-v="pro"><i></i>Ich jage Pro- oder Elite-Zeiten</button></div>
+      </div>
+      <div class="f-q" data-q="days" hidden>
+        <h3 class="display">Wie viele Tage pro Woche kannst du trainieren?</h3>
+        <div class="f-opts"><button type="button" data-v="3"><i></i>3</button><button type="button" data-v="45"><i></i>4–5</button><button type="button" data-v="6"><i></i>6</button></div>
+      </div>
+      <div class="f-q" data-q="need" hidden>
+        <h3 class="display">Was brauchst du mehr?</h3>
+        <div class="f-opts"><button type="button" data-v="plan"><i></i>Einen soliden Plan, die Arbeit mache ich</button><button type="button" data-v="coach"><i></i>Einen Coach, der alles an mich anpasst</button></div>
+      </div>
+
+      <div class="f-res" hidden aria-live="polite">
+        <p class="eyebrow">Dein Programm</p>
+        <h3 class="display f-name"></h3>
+        <div class="price f-price"></div>
+        <p class="f-pitch"></p>
+        <p class="f-note" hidden></p>
+        <div class="f-why"><p class="eyebrow">Warum es zu dir passt</p><ul></ul></div>
+        <div class="f-actions"><a class="btn btn-gold f-buy" target="_blank" rel="noopener">Starten</a><a class="btn btn-ghost f-details" href="#programs">Details</a></div>
+        <div class="f-alt"><div><span class="eyebrow f-alt-l"></span><b class="f-alt-n"></b></div><a class="f-link f-alt-go" href="#programs">Details →</a></div>
+        <div class="f-mail">
+          <h4>Schick mir mein Ergebnis + Renntipps</h4>
+          <p>Dein Ergebnis per E-Mail, dazu praktische HYROX-Tipps direkt aus unserem Coaching.</p>
+          <form novalidate>
+            <input type="text" name="name" autocomplete="given-name">
+            <input type="email" name="email" autocomplete="email" required>
+            <button type="submit" class="btn btn-gold">Senden</button>
+            <input type="text" name="bot-field" hidden tabindex="-1" autocomplete="off">
+            <p class="f-legal">Kein Spam. Abmeldung jederzeit mit einem Klick. <a class="f-priv" href="/privacy/">Datenschutz</a></p>
+          </form>
+          <p class="f-ok" hidden>Erledigt. Schau in dein Postfach.</p>
+        </div>
+        <button type="button" class="f-link f-again">↺ Neu starten</button>
+      </div>
+
+      <div class="f-str" hidden>
+        <span data-k="ph-name">Vorname</span><span data-k="ph-email">E-Mail</span>
+        <span data-k="p-basic">Erst die Basis. Laufen, Kraft und Stationen in einem Plan, den du wirklich durchziehst.</span>
+        <span data-k="p-competitor">Du bist schon Rennen gelaufen. Jetzt willst du schneller werden. Mehr Laufen, mehr Kapazität, schärfere Übergänge.</span>
+        <span data-k="p-pro">Die Basics hast du hinter dir. Laufendes, rennspezifisches Training für Athleten, die Fortschritt in Sekunden messen.</span>
+        <span data-k="p-advanced">Dein erstes Rennen verdient eine echte Vorbereitung. Zwölf Wochen von „Schaffe ich das?“ bis zum echten Racen.</span>
+        <span data-k="p-raceprep">Zwölf Wochen sind ideal. Erst eine solide Basis, dann rennspezifische Intensität, und am Renntag bist du in Topform.</span>
+        <span data-k="p-singles">Laufen, Stationen, Übergänge und Pacing in einem Plan. Acht Wochen, strukturiert, nicht zufällig hart.</span>
+        <span data-k="p-doubles">Doubles ist ein eigenes Rennen. Aufteilung, Übergänge und Pacing im Team entscheiden mehr als Fitness allein.</span>
+        <span data-k="p-running">8 km Laufen sind die Hälfte deines Rennens. Bring erst den Motor in Ordnung, dann werden auch die Stationen leichter.</span>
+        <span data-k="p-taper">Zu spät, um Fitness aufzubauen. Nicht zu spät, um sie zu ruinieren. Zwei Wochen, um frisch, scharf und bereit für dein Tempo anzukommen.</span>
+        <span data-k="p-coaching">Du brauchst keine weitere Vorlage. Du brauchst jemanden, der deine Zahlen im Blick hat und den Plan anpasst, wenn das Leben dazwischenkommt.</span>
+        <span data-k="n-days">Unsere Programme basieren auf 6 Trainingstagen pro Woche. Mit 3 Tagen brauchst du einen Plan, der um deine Woche gebaut ist. Genau das macht 1:1.</span>
+        <span data-k="n-relay">Relay-Abschnitte sind kurz und schnell. Trainier wie ein Einzelstarter, volle Läufe plus Stationen, und du bist das stärkste Glied im Team.</span>
+        <span data-k="a-after">Nach dem Rennen</span><span data-k="a-ready">Lieber ein fertiger Plan?</span><span data-k="a-runweak">Laufen ist das schwache Glied?</span><span data-k="a-personal">Willst du es zu 100 % persönlich?</span><span data-k="a-race">Rennen gebucht? Nimm</span><span data-k="a-runs">Bremst dich das Laufen?</span><span data-k="a-more">Bereit für mehr?</span>
+        <span data-k="w-race-yes">Rennen gebucht</span><span data-k="w-race-planned">Rennen geplant</span><span data-k="w-race-none">Training ohne Renntermin</span>
+        <span data-k="w-cat-open">Singles Open</span><span data-k="w-cat-prodiv">Singles Pro</span><span data-k="w-cat-doubles">Du startest im Doubles</span><span data-k="w-cat-relay">Du startest im Relay</span>
+        <span data-k="w-weeks-lt3">Weniger als 3 Wochen bis zum Rennen</span><span data-k="w-weeks-3to8">3–8 Wochen bis zum Rennen</span><span data-k="w-weeks-8to12">8–12 Wochen bis zum Rennen</span><span data-k="w-weeks-gt12">Mehr als 12 Wochen bis zum Rennen</span>
+        <span data-k="w-loss-runs">Du verlierst am meisten Zeit beim Laufen</span><span data-k="w-loss-stations">Du verlierst am meisten Zeit an den Stationen</span><span data-k="w-loss-both">Du verlierst Zeit beim Laufen und an den Stationen</span>
+        <span data-k="w-level-first">Erstes Rennen steht an</span><span data-k="w-level-some">1–3 Rennen absolviert</span><span data-k="w-level-pro">Du jagst Pro- oder Elite-Zeiten</span>
+        <span data-k="w-days-3">3 Trainingstage pro Woche</span><span data-k="w-days-45">4–5 Trainingstage pro Woche</span><span data-k="w-days-6">6 Trainingstage pro Woche</span>
+        <span data-k="w-need-coach">Du willst einen Coach, der den Plan anpasst</span>
+      </div>
     </div>
-    <p class="chooser-hint" id="chooser-hint" aria-live="polite"></p>
+    <form name="program-finder" data-netlify="true" netlify-honeypot="bot-field" hidden><input type="text" name="name"><input type="email" name="email"><input type="text" name="result"><input type="text" name="answers"><input type="text" name="lang"><input type="text" name="bot-field"></form>
 
     <div class="group-label"><h3>Monatsprogramme</h3><p>Abo · Verwaltung in Strivee</p></div>
     <div class="grid">
@@ -795,22 +917,116 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
 </footer>
 
 <script>
+/* Program finder: texty jsou v HTML (překládá je i18n/build.py), tady je jen logika. */
 (function(){
   document.querySelectorAll('.lang a').forEach(function(a){a.addEventListener('click',function(){try{localStorage.setItem('str2g-lang',a.getAttribute('hreflang'))}catch(e){}})});
-  var names={basic:'HYROX Basic',competitor:'HYROX Competitor',pro:'HYROX Pro Athlete',raceprep:'12-Week HYROX Race Prep',advanced:'12-Week HYROX Advanced',singles:'8-Week HYROX Singles',doubles:'8-Week HYROX Doubles',running:'Running for HYROX 2.0',taper:'2-Week HYROX Taper 2.0',coaching:'HYROX Individual Program 1:1'};
-  var hint=document.getElementById('chooser-hint');
-  document.querySelectorAll('.chooser button').forEach(function(b){
-    b.addEventListener('click',function(){
-      document.querySelectorAll('.chooser button').forEach(function(x){x.setAttribute('aria-pressed','false')});
-      b.setAttribute('aria-pressed','true');
-      document.querySelectorAll('.hit').forEach(function(c){c.classList.remove('hit')});
-      var t=document.getElementById(b.dataset.target);
-      t.classList.add('hit');
-      hint.textContent='→ Unsere Empfehlung: '+names[b.dataset.target];
-      var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      t.scrollIntoView({behavior:reduce?'auto':'smooth',block:'center'});
-    });
-  });
+  var F=document.getElementById('finder'); if(!F) return;
+  var ML='https://assets.mailerlite.com/jsonp/2721571/forms/201638923122771811/subscribe';
+  var lang=(document.documentElement.lang||'en').slice(0,2);
+  var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var $=function(s,r){return (r||F).querySelector(s)}, $$=function(s,r){return Array.prototype.slice.call((r||F).querySelectorAll(s))};
+  var S=function(k){var e=$('.f-str [data-k="'+k+'"]');return e?e.textContent.trim():''};
+  var ev=function(n,p){try{if(window.gtag)gtag('event',n,p||{})}catch(e){}};
+  var Q=$$('.f-q'), a={}, step=-1;
+  function list(){return Q.filter(function(q){return !(q.dataset.q==='weeks'&&a.race==='none')})}
+  function show(el){el.hidden=false;el.classList.remove('f-in');void el.offsetWidth;el.classList.add('f-in')}
+  function card(id){return document.getElementById(id)}
+
+  function decide(){
+    var race=a.race!=='none', lng=['8to12','gt12','nodate'].indexOf(a.weeks)>-1||!race;
+    var adv=card('advanced')?'advanced':'raceprep', k, note='';
+    function core(){
+      if(a.cat==='doubles'&&race) return 'doubles';
+      if(race&&a.weeks==='3to8') return 'singles';
+      if(a.loss==='runs'&&lng) return 'running';
+      if(race) return a.level==='first'?adv:'raceprep';
+      if(a.days==='6') return a.level==='pro'?'pro':(a.level==='some'?'competitor':'basic');
+      return 'basic';
+    }
+    if(a.race==='yes'&&a.weeks==='lt3') k='taper';
+    else if(a.need==='coach'||a.days==='3'){k='coaching'; if(a.days==='3'&&a.need!=='coach') note=S('n-days');}
+    else k=core();
+    if(a.cat==='relay'&&(k==='singles'||k==='running'||k==='raceprep'||k===adv)) note=S('n-relay');
+    var alt;
+    if(k==='taper') alt=['a-after','competitor'];
+    else if(k==='coaching'){var c=core(); alt=['a-ready',c==='coaching'?'basic':c];}
+    else if(k==='doubles') alt=['a-runweak','running'];
+    else if(k==='running') alt=race?['a-race',a.weeks==='3to8'?'singles':(a.level==='first'?adv:'raceprep')]:['a-more','competitor'];
+    else if(k==='competitor') alt=['a-more','pro'];
+    else if(a.loss==='runs') alt=['a-runs','running'];
+    else alt=['a-personal','coaching'];
+    if(alt[1]===k) alt=['a-personal','coaching'];
+    return {k:k,note:note,alt:alt};
+  }
+
+  function go(id){
+    var c=card(id); if(!c) return;
+    document.querySelectorAll('.card.hit').forEach(function(x){x.classList.remove('hit')});
+    c.classList.add('hit'); c.scrollIntoView({behavior:reduce?'auto':'smooth',block:'center'});
+  }
+
+  function render(){
+    $$('.f-q,.f-res').forEach(function(e){e.hidden=true});
+    $('.f-intro').hidden=step>-1;
+    var qs=list(), inQ=step>-1&&step<qs.length;
+    $('.f-top').hidden=$('.f-bar').hidden=!inQ;
+    if(step<0) return;
+    if(!inQ) return result();
+    var q=qs[step];
+    $('.f-back').style.visibility=step?'visible':'hidden';
+    $('.f-count').textContent=('0'+(step+1)).slice(-2)+' / '+('0'+qs.length).slice(-2);
+    $('.f-bar i').style.width=((step+1)/qs.length*100)+'%';
+    $$('button',q).forEach(function(b){b.classList.toggle('on',a[q.dataset.q]===b.dataset.v)});
+    show(q);
+  }
+
+  function result(){
+    var d=decide(), c=card(d.k), r=$('.f-res');
+    var buy=c.querySelector('a.btn-gold'), ac=card(d.alt[1]);
+    $('.f-name').textContent=c.querySelector('h4,h3').textContent;
+    $('.f-price').innerHTML=c.querySelector('.price').innerHTML;
+    $('.f-pitch').textContent=S('p-'+d.k);
+    $('.f-note').textContent=d.note; $('.f-note').hidden=!d.note;
+    var seen={}, ul=$('.f-why ul'); ul.innerHTML='';
+    list().forEach(function(q){var t=S('w-'+q.dataset.q+'-'+a[q.dataset.q]); if(t&&!seen[t]&&ul.children.length<5){seen[t]=1;var li=document.createElement('li');li.textContent=t;ul.appendChild(li);}});
+    var f=$('.f-buy'); f.href=buy.href; f.dataset.program=buy.dataset.program; f.dataset.value=buy.dataset.value;
+    $('.f-details').onclick=function(e){e.preventDefault();go(d.k)};
+    $('.f-alt-l').textContent=S(d.alt[0]);
+    $('.f-alt-n').textContent=ac?ac.querySelector('h4,h3').textContent:'';
+    $('.f-alt-go').onclick=function(e){e.preventDefault();go(d.alt[1])};
+    F.dataset.result=buy.dataset.program;
+    show(r);
+    F.scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'});
+    ev('quiz_result',{quiz:'program_finder',result:buy.dataset.program});
+  }
+
+  $('.f-start').onclick=function(){step=0;F.dataset.busy='1';ev('quiz_start',{quiz:'program_finder'});render();F.scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'})};
+  $('.f-back').onclick=function(){step--;render()};
+  $('.f-again').onclick=function(){a={};step=0;render()};
+  Q.forEach(function(q){$$('button',q).forEach(function(b){b.onclick=function(){
+    a[q.dataset.q]=b.dataset.v; if(q.dataset.q==='race'&&b.dataset.v==='none') delete a.weeks;
+    $$('button',q).forEach(function(x){x.classList.toggle('on',x===b)});
+    ev('quiz_answer',{quiz:'program_finder',question:q.dataset.q,answer:b.dataset.v});
+    setTimeout(function(){step++;render()},200);
+  }})});
+
+  var form=$('.f-mail form');
+  form.name.placeholder=S('ph-name'); form.email.placeholder=S('ph-email');
+  $('.f-priv').href=(lang==='cs'||lang==='sk')?'/cs/ochrana-osobnich-udaju/':'/privacy/';
+  function enc(o){return Object.keys(o).map(function(k){return encodeURIComponent(k)+'='+encodeURIComponent(o[k])}).join('&')}
+  form.onsubmit=function(e){
+    e.preventDefault();
+    var email=form.email.value.trim(), name=form.name.value.trim();
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){form.email.classList.add('bad');form.email.focus();return}
+    form.email.classList.remove('bad');
+    if(form['bot-field'].value) return;
+    var hdr={'Content-Type':'application/x-www-form-urlencoded'};
+    fetch('/',{method:'POST',headers:hdr,body:enc({'form-name':'program-finder',name:name,email:email,result:F.dataset.result||'',answers:JSON.stringify(a),lang:lang})}).catch(function(){});
+    fetch(ML,{method:'POST',mode:'no-cors',headers:hdr,body:enc({'fields[email]':email,'fields[name]':name,'ml-submit':'1','anticsrf':'true'})}).catch(function(){});
+    try{localStorage.setItem('str2g_nl_done','1')}catch(x){}
+    if(window.str2gLead) window.str2gLead('program_finder');
+    form.hidden=true; $('.f-ok').hidden=false;
+  };
 })();
 </script>
 <!--STR2G_NEWSLETTER-->
@@ -943,6 +1159,8 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
 
   function open() {
     if (shown) return;
+    // Kdo právě vyplňuje Program finder, toho popup neruší (finder má vlastní e-mail)
+    var fd = document.getElementById('finder'); if (fd && fd.dataset.busy) return;
     if (document.getElementById('str2g-consent')) { pending = true; return; }
     shown = true;
     cleanup();
