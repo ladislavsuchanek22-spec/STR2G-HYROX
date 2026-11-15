@@ -9,6 +9,7 @@ import re
 from html import escape
 from pathlib import Path
 
+import aeo_eu
 from pages_content import T, SLUGS, HOME, LOCALE, COUNTRY, PROGRAMS, PLAN_PICKS, PICK_LANGS_ADVANCED, price
 
 
@@ -94,13 +95,16 @@ def price_html(lang, pid):
     return f'<div class="price"><b>{main}</b><span>{period}</span>{fx_html}</div>'
 
 
+aeo_eu.extend_landing(T)
+
+
 def card(lang, pid, kind, details=None):
     sid, czk, monthly, pname = PROGRAMS[pid]
     u = T[lang]["ui"]
     btn = u["start_btn"] if monthly else u["buy_btn"]
     name = T[lang]["names"].get(pid, pname)
     details = details or prog_url(lang, pid)
-    return (f'<article class="card"><div class="kind">{escape(kind)}</div><h4>{escape(name)}</h4>{price_html(lang, pid)}'
+    return (f'<article class="card" data-fw-id="{pid}"><div class="kind">{escape(kind)}</div><h4>{escape(name)}</h4>{price_html(lang, pid)}'
             f'<div class="actions"><a class="btn btn-gold" href="https://train.strivee.app/payment/{sid}" target="_blank" rel="noopener" '
             f'data-program="{escape(pname)}" data-value="{czk}">{btn}</a>'
             + (f'<a class="btn btn-ghost" href="{details}">{u["details"]}</a></div></article>' if details else
@@ -342,7 +346,8 @@ def page(lang, kind, parts):
     html = head + body + tail
     # Newsletter okno (i18n/newsletter.html) – stejné jako na hlavní stránce
     nl = (Path(__file__).resolve().parent / "newsletter.html").read_text(encoding="utf-8").rstrip("\n")
-    return html.replace("</body>", nl + "\n</body>", 1)
+    fw = (Path(__file__).resolve().parent / "freeweek.html").read_text(encoding="utf-8").rstrip("\n")
+    return html.replace("</body>", nl + "\n" + fw + "\n</body>", 1)
 
 
 def build(root):

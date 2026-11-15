@@ -35,3 +35,9 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
     Content-Security-Policy = "frame-ancestors 'self'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests"
+
+# Ukázkové týdny (PDF) jsou výměnou za e-mail: nepouštět je do vyhledávačů
+[[headers]]
+  for = "/free-week/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"

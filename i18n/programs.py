@@ -10,6 +10,7 @@ from pathlib import Path
 from pages_content import PROGRAMS, HOME, LOCALE, price
 from programs_content import PT, PSLUGS, PDATA, PROG_LANGS, PROG_ORDER
 import pages
+import aeo_eu
 
 BASE = "https://str2g.com"
 LANG_LABEL = {"en": "EN", "cs": "CZ", "sk": "SK", "de": "DE", "pl": "PL", "fr": "FR", "es": "ES", "it": "IT", "nl": "NL"}
@@ -32,6 +33,8 @@ PROG_CSS = """
 .app{margin-top:28px;max-width:820px;border-top:1px solid var(--line);padding-top:22px}
 .app h3{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:500;margin:0 0 12px}
 .buybox{display:flex;flex-wrap:wrap;align-items:flex-end;gap:18px 32px;margin-top:30px}
+.fw-week{display:flex;flex-wrap:wrap;align-items:center;gap:14px 22px;margin-top:22px;padding:18px 20px;border:1px dashed var(--line)}
+.fw-week p{margin:0;font-size:16px;line-height:1.45;color:var(--fg);flex:1 1 280px}
 .prog-nav{display:flex;flex-wrap:wrap;gap:8px 20px}
 .prog-nav a{color:var(--fg);text-decoration:none;font-weight:500}.prog-nav a:hover,.prog-nav a[aria-current]{color:var(--accent)}
 @media (max-width:980px){.facts{grid-template-columns:repeat(3,minmax(0,1fr))}.facts div:nth-child(3n+1){padding-left:0;border-left:0}.facts div:nth-child(n+4){border-top:1px solid var(--line)}.fitgrid{grid-template-columns:1fr;gap:28px}}
@@ -146,7 +149,7 @@ def page(lang, pid, parts):
     d = PDATA[pid]
     url = BASE + url_of(pid, lang)
     home = HOME[lang]
-    faq = p["faq"] + u.get("extra_faq", [])
+    faq = p["faq"] + u.get("extra_faq", []) + [aeo_eu.FW_FAQ[lang]]
     alts = "\n".join(f'<link rel="alternate" hreflang="{l}" href="{BASE}{url_of(pid, l)}">' for l in PROG_LANGS) + \
         f'\n<link rel="alternate" hreflang="x-default" href="{BASE}{url_of(pid, "en")}">'
     langnav = "".join(
@@ -215,6 +218,7 @@ def page(lang, pid, parts):
       {price_html(lang, pid)}
       <div class="cta-row" style="margin-top:0">
         {buy_btn(lang, pid)}
+        {aeo_eu.fw_button(lang, pid)}
         <a class="btn btn-ghost" href="{(__import__("hub").HUB[lang] + "#compare") if lang in __import__("hub").HUB else u["plan_url"] + "#pick"}">{escape(u["compare"])}</a>
       </div>
     </div>
@@ -254,6 +258,7 @@ def page(lang, pid, parts):
     <div class="shead"><p class="eyebrow">{escape(p["name"])}</p><h2 class="display"><span class="num">03</span><span>{two(week_h)}</span></h2></div>
     <table class="lp-table"><thead><tr><th>{u["week_cols"][0]}</th><th>{u["week_cols"][1]}</th><th>{u["week_cols"][2]}</th></tr></thead><tbody>{rows}</tbody></table>
     <p class="lp-note">{escape(week_note)}</p>
+    <div class="fw-week"><p>{escape(aeo_eu.FW_WEEK[lang])}</p>{aeo_eu.fw_button(lang, pid, "btn btn-gold")}</div>
   </div>
 </section>
 '''
@@ -293,6 +298,7 @@ def page(lang, pid, parts):
     <p class="lead">{escape(u["cta_lead"])}</p>
     <div class="cta-row">
       {buy_btn(lang, pid)}
+      {aeo_eu.fw_button(lang, pid)}
       <a class="btn btn-ghost" href="{(__import__("hub").HUB[lang] + "#compare") if lang in __import__("hub").HUB else u["plan_url"] + "#pick"}">{escape(u["compare"])}</a>
     </div>
   </div>
@@ -318,7 +324,8 @@ def page(lang, pid, parts):
 '''
     html = head + body + tail
     nl = (Path(__file__).resolve().parent / "newsletter.html").read_text(encoding="utf-8").rstrip("\n")
-    return html.replace("</body>", nl + "\n</body>", 1)
+    fw = (Path(__file__).resolve().parent / "freeweek.html").read_text(encoding="utf-8").rstrip("\n")
+    return html.replace("</body>", nl + "\n" + fw + "\n</body>", 1)
 
 
 def build(root, parts):

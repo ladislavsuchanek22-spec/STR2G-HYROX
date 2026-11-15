@@ -88,6 +88,22 @@
   function enc(o) { return Object.keys(o).map(function (k) { return encodeURIComponent(k) + '=' + encodeURIComponent(o[k]); }).join('&'); }
 
   function addButtons() {
+    // Stránky programů: tlačítka s data-fw-cta="<id>" otevřou okno pro daný program
+    Array.prototype.forEach.call(document.querySelectorAll('[data-fw-cta]'), function (b) {
+      var id = b.getAttribute('data-fw-cta');
+      if (PROGRAMS[id] && !b.fwBound) { b.fwBound = true; b.addEventListener('click', function () { open(id); }); }
+    });
+    // Landing pages: karty s data-fw-id="<id>" dostanou tlačítko stejně jako na hlavní stránce
+    Array.prototype.forEach.call(document.querySelectorAll('article.card[data-fw-id]'), function (card) {
+      var id = card.getAttribute('data-fw-id');
+      if (!PROGRAMS[id] || card.querySelector('.fw-open')) return;
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'fw-open'; b.setAttribute('data-fw', id);
+      b.innerHTML = ICON + '<span>' + esc(t.btn) + '</span>';
+      b.addEventListener('click', function () { open(id); });
+      var actions = card.querySelector('.actions');
+      if (actions) actions.insertAdjacentElement('afterend', b); else card.appendChild(b);
+    });
     Object.keys(PROGRAMS).forEach(function (id) {
       var card = document.getElementById(id);
       if (!card || card.querySelector('.fw-open')) return;
