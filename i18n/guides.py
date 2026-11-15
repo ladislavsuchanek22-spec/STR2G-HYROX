@@ -12,6 +12,7 @@ GUIDES = {
     "hyrox-taper": dict(
         draft=False,
         slug="/guides/hyrox-taper/",
+        date="2026-10-26",
         title="HYROX Taper: How to Taper for a HYROX Race (2-Week Plan) | STR2G",
         desc="How to taper for HYROX: what to cut, what to keep, a 2-week taper outline and race week checklist. From HYROX coaches who race themselves.",
         eyebrow="HYROX guide",
@@ -51,6 +52,7 @@ GUIDES = {
     "compromised-running": dict(
         draft=False,
         slug="/guides/hyrox-compromised-running/",
+        date="2026-10-26",
         title="Compromised Running for HYROX: Workouts to Run Fast on Tired Legs | STR2G",
         desc="Compromised running is running right after a station. Why it decides your HYROX time, how to pace it and 5 workouts to train it.",
         eyebrow="HYROX guide",
@@ -83,6 +85,7 @@ GUIDES = {
     "sled-pull": dict(
         draft=False,
         slug="/guides/hyrox-sled-pull-technique/",
+        date="2026-10-26",
         title="HYROX Sled Pull Technique: How to Pull Faster and Save Your Legs | STR2G",
         desc="How to improve your HYROX sled pull: technique, rope handling, weights for every division and workouts to get faster. From HYROX coaches.",
         eyebrow="HYROX guide",
@@ -120,6 +123,7 @@ GUIDES = {
     "doubles": dict(
         draft=False,
         slug="/guides/hyrox-doubles-training/",
+        date="2026-11-01",
         title="HYROX Doubles Training: Rules, Splitting Stations & Partner Workouts | STR2G",
         desc="How HYROX Doubles works, how to split the stations with your partner and 4 partner workouts to train together. From coaches who race Mixed Doubles.",
         eyebrow="HYROX guide",
@@ -247,8 +251,10 @@ def page(g, parts):
             {"@type": "ListItem", "position": 2, "name": g["h1"][0], "item": url}]},
         {"@type": "Article", "headline": g["title"].split(" | ")[0], "description": g["desc"], "inLanguage": "en",
          "mainEntityOfPage": url, "image": BASE + "/img/lada-ria-finish-line.jpg",
-         "author": [{"@type": "Person", "name": "Ladislav Suchánek"}, {"@type": "Person", "name": "Ria Suchánek Hrušovská"}],
-         "publisher": {"@type": "Organization", "name": "STR2G HYROX", "url": BASE + "/"}},
+         **({"datePublished": g["date"], "dateModified": g.get("updated", g["date"])} if g.get("date") else {}),
+         "author": [{"@type": "Person", "@id": "https://www.ladislavsuchanek.cz/#person", "name": "Ladislav Suchánek", "url": "https://www.ladislavsuchanek.cz/"},
+                    {"@type": "Person", "@id": "https://riahrusovska.cz/#ria", "name": "Ria Suchánek Hrušovská", "url": "https://riahrusovska.cz/"}],
+         "publisher": {"@type": "Organization", "@id": BASE + "/#org", "name": "STR2G HYROX", "url": BASE + "/"}},
         {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in g["faq"]]},
     ]}
     secs = "".join(f'''
