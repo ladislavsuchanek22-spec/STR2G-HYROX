@@ -96,3 +96,73 @@ def extend_landing(T):
             for q, a in extra.get(lang, []):
                 if q not in have:
                     faq.append((q, a))
+
+
+# Recenze klientů (originál z SMS, se souhlasem; podpis zkrácený). Na stránce programu: originál + překlad do jazyka stránky.
+REVIEWS = {
+    "advanced": dict(name="Max S.", lang="de", text="Endlich ein Trainingsprogramm, das wirklich Sinn macht! Keine zufälligen Workouts, sondern ein durchdachtes System, bei dem jede Trainingseinheit ein klares Ziel hat. In 12 Wochen konnte ich meine Ausdauer, Kraft und die Fähigkeit, auch unter hoher Belastung das Tempo zu halten, deutlich verbessern. Besonders gut gefällt mir die Kombination aus Lauftraining und HYROX-spezifischen Einheiten. Definitiv die beste Vorbereitung, die ich bisher gemacht habe.", tr={
+        "en": "Finally a training program that really makes sense! No random workouts, but a well-thought-out system where every session has a clear goal. In 12 weeks I clearly improved my endurance, strength and ability to hold my pace under heavy load. I especially like the combination of running and HYROX-specific sessions. Definitely the best preparation I have done so far.",
+        "cs": "Konečně tréninkový program, který opravdu dává smysl! Žádné náhodné workouty, ale promyšlený systém, kde má každý trénink jasný cíl. Za 12 týdnů jsem výrazně zlepšil vytrvalost, sílu a schopnost držet tempo i pod velkou zátěží. Nejvíc se mi líbí kombinace běhu a HYROX tréninků. Rozhodně nejlepší příprava, jakou jsem zatím absolvoval.",
+        "sk": "Konečne tréningový program, ktorý naozaj dáva zmysel! Žiadne náhodné workouty, ale premyslený systém, kde má každý tréning jasný cieľ. Za 12 týždňov som výrazne zlepšil vytrvalosť, silu a schopnosť držať tempo aj pod veľkou záťažou. Najviac sa mi páči kombinácia behu a HYROX tréningov. Určite najlepšia príprava, akú som zatiaľ absolvoval.",
+        "pl": "Wreszcie program treningowy, który naprawdę ma sens! Żadnych przypadkowych workoutów, tylko przemyślany system, w którym każdy trening ma jasny cel. W 12 tygodni wyraźnie poprawiłem wytrzymałość, siłę i umiejętność trzymania tempa pod dużym obciążeniem. Najbardziej podoba mi się połączenie biegania z treningami typowo pod HYROX. Zdecydowanie najlepsze przygotowanie, jakie do tej pory zrobiłem.",
+        "fr": "Enfin un programme d’entraînement qui a vraiment du sens ! Pas de workouts au hasard, mais un système réfléchi où chaque séance a un objectif clair. En 12 semaines, j’ai nettement amélioré mon endurance, ma force et ma capacité à tenir l’allure sous forte charge. J’aime particulièrement la combinaison de course et de séances spécifiques HYROX. Sans doute la meilleure préparation que j’aie faite jusqu’ici.",
+        "es": "¡Por fin un programa de entrenamiento que tiene sentido de verdad! Nada de workouts al azar, sino un sistema bien pensado en el que cada sesión tiene un objetivo claro. En 12 semanas mejoré claramente mi resistencia, mi fuerza y mi capacidad de mantener el ritmo bajo carga alta. Me gusta especialmente la combinación de carrera y sesiones específicas de HYROX. Sin duda la mejor preparación que he hecho hasta ahora.",
+        "it": "Finalmente un programma di allenamento che ha davvero senso! Niente workout a caso, ma un sistema ben pensato in cui ogni sessione ha un obiettivo chiaro. In 12 settimane ho migliorato nettamente resistenza, forza e capacità di tenere il ritmo sotto carico elevato. Mi piace soprattutto la combinazione di corsa e sessioni specifiche HYROX. Sicuramente la migliore preparazione che abbia fatto finora.",
+        "nl": "Eindelijk een trainingsprogramma dat echt klopt! Geen willekeurige workouts, maar een doordacht systeem waarin elke training een duidelijk doel heeft. In 12 weken heb ik mijn uithouding, kracht en het vermogen om onder zware belasting mijn tempo vast te houden duidelijk verbeterd. Vooral de combinatie van hardlopen en HYROX-specifieke trainingen vind ik sterk. Absoluut de beste voorbereiding die ik tot nu toe heb gedaan.",
+    }),
+    "running": dict(name="Jakub K.", lang="pl", text="Zawsze myślałem, że całkiem dobrze radzę sobie z bieganiem, ale HYROX pokazał mi, że mam jeszcze sporo do poprawy. Ten program całkowicie zmienił moje podejście do treningu biegowego. Nauczyłem się lepiej kontrolować tempo, intensywność i przede wszystkim efektywnie biegać nawet na zmęczonych nogach. Efekt? Szybsze bieganie, niższe tętno przy tym samym tempie i znacznie większa pewność siebie podczas zawodów.", tr={
+        "en": "I always thought I was pretty good at running, but HYROX showed me I still had a lot to improve. This program completely changed how I approach run training. I learned to control pace and intensity better and, above all, to run efficiently even on tired legs. The result? Faster running, a lower heart rate at the same pace and much more confidence on race day.",
+        "cs": "Vždycky jsem si myslel, že běh zvládám docela dobře, ale HYROX mi ukázal, že mám pořád co zlepšovat. Tenhle program úplně změnil můj přístup k běžeckému tréninku. Naučil jsem se líp kontrolovat tempo a intenzitu a hlavně efektivně běhat i na unavených nohách. Výsledek? Rychlejší běh, nižší tep při stejném tempu a mnohem větší jistota na závodech.",
+        "sk": "Vždy som si myslel, že beh zvládam celkom dobre, ale HYROX mi ukázal, že mám stále čo zlepšovať. Tento program úplne zmenil môj prístup k bežeckému tréningu. Naučil som sa lepšie kontrolovať tempo a intenzitu a hlavne efektívne behať aj na unavených nohách. Výsledok? Rýchlejší beh, nižší tep pri rovnakom tempe a oveľa väčšia istota na pretekoch.",
+        "de": "Ich dachte immer, ich komme mit dem Laufen ganz gut klar, aber HYROX hat mir gezeigt, dass ich noch einiges verbessern kann. Dieses Programm hat meinen Zugang zum Lauftraining komplett verändert. Ich habe gelernt, Tempo und Intensität besser zu steuern und vor allem auch mit müden Beinen effizient zu laufen. Das Ergebnis? Schnelleres Laufen, ein niedrigerer Puls bei gleichem Tempo und deutlich mehr Selbstvertrauen im Wettkampf.",
+        "fr": "J’ai toujours pensé que je me débrouillais plutôt bien en course, mais HYROX m’a montré que j’avais encore beaucoup à améliorer. Ce programme a complètement changé ma façon d’aborder l’entraînement de course. J’ai appris à mieux gérer l’allure et l’intensité et surtout à courir efficacement même avec les jambes fatiguées. Résultat ? Une course plus rapide, une fréquence cardiaque plus basse à allure égale et beaucoup plus de confiance en compétition.",
+        "es": "Siempre pensé que se me daba bastante bien correr, pero HYROX me demostró que aún tenía mucho que mejorar. Este programa cambió por completo mi forma de entrenar la carrera. Aprendí a controlar mejor el ritmo y la intensidad y, sobre todo, a correr de forma eficiente incluso con las piernas cansadas. ¿El resultado? Correr más rápido, pulsaciones más bajas al mismo ritmo y mucha más confianza en competición.",
+        "it": "Ho sempre pensato di cavarmela abbastanza bene nella corsa, ma HYROX mi ha mostrato che avevo ancora parecchio da migliorare. Questo programma ha cambiato completamente il mio approccio all’allenamento di corsa. Ho imparato a controllare meglio ritmo e intensità e soprattutto a correre in modo efficiente anche con le gambe stanche. Il risultato? Corsa più veloce, frequenza cardiaca più bassa allo stesso ritmo e molta più sicurezza in gara.",
+        "nl": "Ik dacht altijd dat ik best goed kon hardlopen, maar HYROX liet me zien dat er nog veel te verbeteren viel. Dit programma heeft mijn aanpak van looptraining volledig veranderd. Ik heb geleerd tempo en intensiteit beter te sturen en vooral efficiënt te lopen, ook met vermoeide benen. Het resultaat? Sneller lopen, een lagere hartslag bij hetzelfde tempo en veel meer zelfvertrouwen tijdens wedstrijden.",
+    }),
+    "doubles": dict(name="Anna N.", lang="pl", text="Osiem tygodni przed zawodami potrzebowałam dokładnego planu, żeby wiedzieć, nad czym pracować i jak osiągnąć najlepszą formę na dzień startu. Program świetnie przeprowadził mnie przez końcowy etap przygotowań. Dobrze dobrane intensywności, symulacje zawodów i stopniowe zmniejszanie objętości treningowego przed startem. Na linii startu czułam się przygotowana, wypoczęta i miałam jasną strategię. Efekt? Nowy rekord życiowy i w końcu zawody bez zbyt mocnego początku.", tr={
+        "en": "Eight weeks before the race I needed a precise plan so I knew what to work on and how to peak on race day. The program took me through the final phase of preparation really well. Well-chosen intensities, race simulations and a gradual reduction of training volume before the start. On the start line I felt prepared, rested and had a clear strategy. The result? A new personal best and finally a race without going out too hard.",
+        "cs": "Osm týdnů před závodem jsem potřebovala přesný plán, abych věděla, na čem pracovat a jak být v den startu v nejlepší formě. Program mě skvěle provedl závěrečnou fází přípravy. Dobře nastavené intenzity, simulace závodu a postupné snižování objemu před startem. Na startovní čáře jsem se cítila připravená, odpočatá a měla jsem jasnou strategii. Výsledek? Nový osobní rekord a konečně závod bez přepáleného začátku.",
+        "sk": "Osem týždňov pred pretekmi som potrebovala presný plán, aby som vedela, na čom pracovať a ako byť v deň štartu v najlepšej forme. Program ma skvele previedol záverečnou fázou prípravy. Dobre nastavené intenzity, simulácie pretekov a postupné znižovanie objemu pred štartom. Na štartovej čiare som sa cítila pripravená, oddýchnutá a mala som jasnú stratégiu. Výsledok? Nový osobný rekord a konečne preteky bez prepáleného začiatku.",
+        "de": "Acht Wochen vor dem Wettkampf brauchte ich einen genauen Plan, um zu wissen, woran ich arbeiten muss und wie ich am Renntag in Bestform bin. Das Programm hat mich super durch die letzte Vorbereitungsphase geführt. Gut gewählte Intensitäten, Wettkampfsimulationen und eine schrittweise Reduzierung des Trainingsumfangs vor dem Start. An der Startlinie fühlte ich mich vorbereitet, erholt und hatte eine klare Strategie. Das Ergebnis? Eine neue persönliche Bestzeit und endlich ein Rennen ohne zu schnellen Start.",
+        "fr": "Huit semaines avant la course, j’avais besoin d’un plan précis pour savoir sur quoi travailler et comment être au top le jour J. Le programme m’a parfaitement guidée dans la dernière phase de préparation. Des intensités bien choisies, des simulations de course et une baisse progressive du volume avant le départ. Sur la ligne de départ, je me sentais prête, reposée et j’avais une stratégie claire. Résultat ? Un nouveau record personnel et enfin une course sans départ trop rapide.",
+        "es": "Ocho semanas antes de la competición necesitaba un plan preciso para saber en qué trabajar y cómo llegar en mi mejor forma al día de la carrera. El programa me guio de maravilla en la fase final de la preparación. Intensidades bien elegidas, simulaciones de carrera y una reducción gradual del volumen antes de la salida. En la línea de salida me sentía preparada, descansada y con una estrategia clara. ¿El resultado? Nueva mejor marca personal y, por fin, una carrera sin salir demasiado fuerte.",
+        "it": "Otto settimane prima della gara avevo bisogno di un piano preciso per sapere su cosa lavorare e come arrivare in forma al giorno della gara. Il programma mi ha guidata benissimo nella fase finale della preparazione. Intensità ben scelte, simulazioni di gara e una riduzione graduale del volume prima della partenza. Sulla linea di partenza mi sentivo pronta, riposata e con una strategia chiara. Il risultato? Un nuovo record personale e finalmente una gara senza partire troppo forte.",
+        "nl": "Acht weken voor de wedstrijd had ik een precies plan nodig, zodat ik wist waaraan ik moest werken en hoe ik op de wedstrijddag in topvorm zou zijn. Het programma heeft me uitstekend door de laatste fase van de voorbereiding geleid. Goed gekozen intensiteiten, wedstrijdsimulaties en een geleidelijke afbouw van het trainingsvolume voor de start. Aan de start voelde ik me voorbereid, uitgerust en had ik een duidelijke strategie. Het resultaat? Een nieuw persoonlijk record en eindelijk een wedstrijd zonder te snelle start.",
+    }),
+}
+
+REV_H = {"en": ("What athletes", "say."), "cs": ("Co říkají", "sportovci."), "sk": ("Čo hovoria", "športovci."),
+         "de": ("Was Athleten", "sagen."), "pl": ("Co mówią", "zawodnicy."), "fr": ("Ce qu’en disent", "les athlètes."),
+         "es": ("Lo que dicen", "los atletas."), "it": ("Cosa dicono", "gli atleti."), "nl": ("Wat atleten", "zeggen.")}
+REV_TR = {"en": "Translation", "cs": "Překlad", "sk": "Preklad", "de": "Übersetzung", "pl": "Tłumaczenie",
+          "fr": "Traduction", "es": "Traducción", "it": "Traduzione", "nl": "Vertaling"}
+REV_ORIG = {"de": {"en": "original in German", "cs": "originál v němčině", "sk": "originál v nemčine", "pl": "oryginał po niemiecku", "fr": "original en allemand", "es": "original en alemán", "it": "originale in tedesco", "nl": "origineel in het Duits"},
+            "pl": {"en": "original in Polish", "cs": "originál v polštině", "sk": "originál v poľštine", "de": "Original auf Polnisch", "fr": "original en polonais", "es": "original en polaco", "it": "originale in polacco", "nl": "origineel in het Pools"}}
+
+
+def review_section(lang, pid, pname, two, escape):
+    r = REVIEWS.get(pid)
+    if not r:
+        return ""
+    if lang == r["lang"]:
+        tr = ""
+        note = ""
+    else:
+        tr = f'<p class="rev-tr"><span>{REV_TR[lang]}:</span> {escape(r["tr"][lang])}</p>'
+        note = f' · {REV_ORIG[r["lang"]][lang]}'
+    return f'''
+<section id="reviews">
+  <div class="wrap">
+    <div class="shead"><p class="eyebrow">{escape(pname)}</p><h2 class="display"><span>{two(REV_H[lang])}</span></h2></div>
+    <figure class="q rev"><div class="mark">“</div><blockquote lang="{r["lang"]}">{escape(r["text"])}</blockquote>{tr}<figcaption class="who"><b>{escape(r["name"])}</b> · {escape(pname)}{note}</figcaption></figure>
+  </div>
+</section>
+'''
+
+
+def review_ld(pid):
+    r = REVIEWS.get(pid)
+    if not r:
+        return None
+    return [{"@type": "Review", "author": {"@type": "Person", "name": r["name"]}, "reviewBody": r["text"], "inLanguage": r["lang"]}]
