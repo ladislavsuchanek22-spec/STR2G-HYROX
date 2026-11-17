@@ -10,6 +10,7 @@
   3) Každý klik na platební odkaz do Strivee = InitiateCheckout (Meta) + begin_checkout (GA4) + konverze (Google Ads), včetně názvu programu a ceny.
   4) Funkce window.str2gLead('kviz') pro budoucí kvíz / formulář = Lead (Meta) + generate_lead (GA4) + konverze (Ads).
   5) window.str2gConsentReset() znovu otevře cookie lištu.
+  6) Tanganica (Google Tag Manager GTM-TRS5RSN) se načte až po souhlasu s cookies, stejně jako Meta Pixel.
 -->
 <script>
 (function () {
@@ -18,7 +19,8 @@
     GA4_ID: 'G-P21WD6TY8N',
     ADS_ID: 'AW-11061084387',
     ADS_CHECKOUT_LABEL: 'lFZiCPf0iZ8dEOOBq5op',
-    ADS_LEAD_LABEL: 'xPRgCPr0iZ8dEOOBq5op'
+    ADS_LEAD_LABEL: 'xPRgCPr0iZ8dEOOBq5op',
+    TANGANICA_GTM_ID: 'GTM-TRS5RSN'
   };
 
   var KEY = 'str2g_consent';
@@ -57,11 +59,24 @@
     window.fbq('track', 'PageView');
   }
 
+  // Tanganica pixel (Google Tag Manager) – jen po souhlasu
+  var gtmLoaded = false;
+  function loadTanganica() {
+    if (gtmLoaded || !has(CFG.TANGANICA_GTM_ID)) return;
+    gtmLoaded = true;
+    (function (w, d, s, l, i) {
+      w[l] = w[l] || []; w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+      var f = d.getElementsByTagName(s)[0], j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : '';
+      j.async = true; j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+    })(window, document, 'script', 'dataLayer', CFG.TANGANICA_GTM_ID);
+  }
+
   function grant() {
     gtag('consent', 'update', {
       ad_storage: 'granted', ad_user_data: 'granted', ad_personalization: 'granted', analytics_storage: 'granted'
     });
     loadMeta();
+    loadTanganica();
   }
   function granted() { return getConsent() === 'yes'; }
   if (granted()) grant();
@@ -92,6 +107,10 @@
     var a = e.target && e.target.closest ? e.target.closest('a[href*="train.strivee.app/payment"]') : null;
     if (!a) return;
     var p = programInfo(a);
+
+    // Pro Tag Manager (Tanganica): standardní e-commerce událost v dataLayer
+    window.dataLayer.push({ ecommerce: null });
+    window.dataLayer.push({ event: 'begin_checkout', ecommerce: { currency: 'CZK', value: p.value, items: [{ item_name: p.name, price: p.value, quantity: 1 }] } });
 
     gtag('event', 'begin_checkout', { currency: 'CZK', value: p.value, items: [{ item_name: p.name, price: p.value }] });
     if (has(CFG.ADS_ID) && has(CFG.ADS_CHECKOUT_LABEL)) {
@@ -254,7 +273,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-family:var(--mo
 </ul>
 
 <h2>Cookies, analytics and ads</h2>
-<p>Analytics and advertising tools (Google Analytics 4, Google Ads and Meta Pixel) only run if you agree in the cookie banner. They show us where visitors come from, what they're interested in and which ads work. Without your consent the Meta Pixel doesn't load at all and Google stores no cookies.</p>
+<p>Analytics and advertising tools (Google Analytics 4, Google Ads, Meta Pixel and the Tanganica tracking code) only run if you agree in the cookie banner. They show us where visitors come from, what they're interested in and which ads work. Without your consent the Meta Pixel and Tanganica don't load at all and Google stores no cookies.</p>
 <p>You can change your choice anytime in <a href="#" onclick="str2gConsentReset();return false;">Cookie settings</a>.</p>
 <p>The site also remembers a few technical things in your browser, like your language or that you closed the newsletter window. That information stays on your device.</p>
 
@@ -268,6 +287,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-family:var(--mo
 <li><b>Netlify</b> (USA): website hosting and a backup of form signups</li>
 <li><b>Google</b> (Ireland / USA): analytics and advertising, only with your consent</li>
 <li><b>Meta Platforms</b> (Ireland / USA): ad measurement, only with your consent</li>
+<li><b>Tanganica</b> (tanganica.com, via Google Tag Manager): running and measuring ad campaigns, only with your consent</li>
 </ul>
 <p>Transfers to US-based services rely on the EU–US Data Privacy Framework or the European Commission's standard contractual clauses.</p>
 

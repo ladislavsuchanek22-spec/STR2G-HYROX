@@ -6,6 +6,7 @@
   3) Každý klik na platební odkaz do Strivee = InitiateCheckout (Meta) + begin_checkout (GA4) + konverze (Google Ads), včetně názvu programu a ceny.
   4) Funkce window.str2gLead('kviz') pro budoucí kvíz / formulář = Lead (Meta) + generate_lead (GA4) + konverze (Ads).
   5) window.str2gConsentReset() znovu otevře cookie lištu.
+  6) Tanganica (Google Tag Manager GTM-TRS5RSN) se načte až po souhlasu s cookies, stejně jako Meta Pixel.
 -->
 <script>
 (function () {
@@ -14,7 +15,8 @@
     GA4_ID: 'G-P21WD6TY8N',
     ADS_ID: 'AW-11061084387',
     ADS_CHECKOUT_LABEL: 'lFZiCPf0iZ8dEOOBq5op',
-    ADS_LEAD_LABEL: 'xPRgCPr0iZ8dEOOBq5op'
+    ADS_LEAD_LABEL: 'xPRgCPr0iZ8dEOOBq5op',
+    TANGANICA_GTM_ID: 'GTM-TRS5RSN'
   };
 
   var KEY = 'str2g_consent';
@@ -53,11 +55,24 @@
     window.fbq('track', 'PageView');
   }
 
+  // Tanganica pixel (Google Tag Manager) – jen po souhlasu
+  var gtmLoaded = false;
+  function loadTanganica() {
+    if (gtmLoaded || !has(CFG.TANGANICA_GTM_ID)) return;
+    gtmLoaded = true;
+    (function (w, d, s, l, i) {
+      w[l] = w[l] || []; w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+      var f = d.getElementsByTagName(s)[0], j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : '';
+      j.async = true; j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+    })(window, document, 'script', 'dataLayer', CFG.TANGANICA_GTM_ID);
+  }
+
   function grant() {
     gtag('consent', 'update', {
       ad_storage: 'granted', ad_user_data: 'granted', ad_personalization: 'granted', analytics_storage: 'granted'
     });
     loadMeta();
+    loadTanganica();
   }
   function granted() { return getConsent() === 'yes'; }
   if (granted()) grant();
@@ -88,6 +103,10 @@
     var a = e.target && e.target.closest ? e.target.closest('a[href*="train.strivee.app/payment"]') : null;
     if (!a) return;
     var p = programInfo(a);
+
+    // Pro Tag Manager (Tanganica): standardní e-commerce událost v dataLayer
+    window.dataLayer.push({ ecommerce: null });
+    window.dataLayer.push({ event: 'begin_checkout', ecommerce: { currency: 'CZK', value: p.value, items: [{ item_name: p.name, price: p.value, quantity: 1 }] } });
 
     gtag('event', 'begin_checkout', { currency: 'CZK', value: p.value, items: [{ item_name: p.name, price: p.value }] });
     if (has(CFG.ADS_ID) && has(CFG.ADS_CHECKOUT_LABEL)) {

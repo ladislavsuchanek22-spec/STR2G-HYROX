@@ -37,7 +37,7 @@ CONTENT = {
 </ul>
 
 <h2>Cookies, měření a reklama</h2>
-<p>Analytické a reklamní nástroje (Google Analytics 4, Google Ads a Meta Pixel) spouštíme jen s tvým souhlasem přes cookie lištu. Pomáhají nám zjistit, odkud lidé na web chodí, co je zajímá a které reklamy fungují. Bez souhlasu se Meta Pixel vůbec nenačte a Google neukládá žádné cookies.</p>
+<p>Analytické a reklamní nástroje (Google Analytics 4, Google Ads, Meta Pixel a měřicí kód Tanganica) spouštíme jen s tvým souhlasem přes cookie lištu. Pomáhají nám zjistit, odkud lidé na web chodí, co je zajímá a které reklamy fungují. Bez souhlasu se Meta Pixel ani Tanganica vůbec nenačtou a Google neukládá žádné cookies.</p>
 <p>Souhlas můžeš kdykoliv změnit přes <a href="#" onclick="str2gConsentReset();return false;">Nastavení cookies</a>.</p>
 <p>Web si navíc ve tvém prohlížeči pamatuje pár technických věcí, třeba zvolený jazyk nebo to, že jsi zavřel(a) okno newsletteru. Tyhle informace zůstávají jen u tebe.</p>
 
@@ -51,6 +51,7 @@ CONTENT = {
 <li><b>Netlify</b> (USA): hosting webu a záloha přihlášek z formuláře</li>
 <li><b>Google</b> (Irsko / USA): měření návštěvnosti a reklama, jen s tvým souhlasem</li>
 <li><b>Meta Platforms</b> (Irsko / USA): měření reklamy, jen s tvým souhlasem</li>
+<li><b>Tanganica</b> (tanganica.com, přes Google Tag Manager): správa a měření reklamních kampaní, jen s tvým souhlasem</li>
 </ul>
 <p>U služeb se sídlem v USA probíhá předání na základě rámce EU–USA pro ochranu osobních údajů (Data Privacy Framework) nebo standardních smluvních doložek Evropské komise.</p>
 
@@ -99,7 +100,7 @@ CONTENT = {
 </ul>
 
 <h2>Cookies, analytics and ads</h2>
-<p>Analytics and advertising tools (Google Analytics 4, Google Ads and Meta Pixel) only run if you agree in the cookie banner. They show us where visitors come from, what they're interested in and which ads work. Without your consent the Meta Pixel doesn't load at all and Google stores no cookies.</p>
+<p>Analytics and advertising tools (Google Analytics 4, Google Ads, Meta Pixel and the Tanganica tracking code) only run if you agree in the cookie banner. They show us where visitors come from, what they're interested in and which ads work. Without your consent the Meta Pixel and Tanganica don't load at all and Google stores no cookies.</p>
 <p>You can change your choice anytime in <a href="#" onclick="str2gConsentReset();return false;">Cookie settings</a>.</p>
 <p>The site also remembers a few technical things in your browser, like your language or that you closed the newsletter window. That information stays on your device.</p>
 
@@ -113,6 +114,7 @@ CONTENT = {
 <li><b>Netlify</b> (USA): website hosting and a backup of form signups</li>
 <li><b>Google</b> (Ireland / USA): analytics and advertising, only with your consent</li>
 <li><b>Meta Platforms</b> (Ireland / USA): ad measurement, only with your consent</li>
+<li><b>Tanganica</b> (tanganica.com, via Google Tag Manager): running and measuring ad campaigns, only with your consent</li>
 </ul>
 <p>Transfers to US-based services rely on the EU–US Data Privacy Framework or the European Commission's standard contractual clauses.</p>
 
