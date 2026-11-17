@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">
+  <channel>
+    <title>STR2G HYROX – online training programs</title>
+    <link>https://str2g.com/</link>
+    <description>Online HYROX training programs by Láďa and Ria. Payment and training in the Strivee app.</description>
+    <item>
+      <g:id>str2g-raceprep</g:id>
+      <g:title>12-Week HYROX Training Plan: Race Prep</g:title>
+      <g:description>A complete 12-week HYROX training plan. Base, intensity, race-specific work and final tuning. 6 days a week, about 90 minutes. One payment of CZK 2,100 in the Strivee app.</g:description>
+      <g:link>https://str2g.com/programs/12-week-hyrox-race-prep/</g:link>
+      <g:image_link>https://str2g.com/img/lada-ria-finish-line.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>2100.00 CZK</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>STR2G</g:brand>
+      <g:identifier_exists>no</g:identifier_exists>
+      <g:product_type>HYROX &gt; Race build</g:product_type>
+      <g:custom_label_0>Race build</g:custom_label_0>
+      <g:shipping>
+        <g:country>CZ</g:country>
+        <g:service>Online (Strivee)</g:service>
+        <g:price>0.00 CZK</g:price>
+      </g:shipping>
+    </item>
+    <item>
+      <g:id>str2g-advanced</g:id>
+      <g:title>First HYROX Race? 12-Week HYROX Training Plan</g:title>
+      <g:description>A 12-week HYROX plan for all levels, built around your race date. Strength, threshold running, engine work and full simulations. 6 days a week, about 75 minutes. CZK 1,900.</g:description>
+      <g:link>https://str2g.com/programs/12-week-hyrox-advanced/</g:link>
+      <g:image_link>https://str2g.com/img/lada-finish-help.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>1900.00 CZK</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>STR2G</g:brand>
+      <g:identifier_exists>no</g:identifier_exists>
+      <g:product_type>HYROX &gt; Race build</g:product_type>
+      <g:custom_label_0>Race build</g:custom_label_0>
+      <g:shipping>
+        <g:country>CZ</g:country>
+        <g:service>Online (Strivee)</g:service>
+        <g:price>0.00 CZK</g:price>
+      </g:shipping>
+    </item>
+    <item>
+      <g:id>str2g-singles</g:id>
+      <g:title>8-Week HYROX Training Plan: Singles</g:title>
+      <g:description>An 8-week HYROX training plan for athletes with a training base. Running, strength, HYROX sessions and compromised running every week. 6 days a week, about 60 minutes. CZK 1,500.</g:description>
+      <g:link>https://str2g.com/programs/8-week-hyrox-singles/</g:link>
+      <g:image_link>https://str2g.com/img/ria-class-timer.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>1500.00 CZK</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>STR2G</g:brand>
+      <g:identifier_exists>no</g:identifier_exists>
+      <g:product_type>HYROX &gt; Race build</g:product_type>
+      <g:custom_label_0>Race build</g:custom_label_0>
+      <g:shipping>
+        <g:country>CZ</g:country>
+        <g:service>Online (Strivee)</g:service>
+        <g:price>0.00 CZK</g:price>
+      </g:shipping>
+    </item>
+    <item>
+      <g:id>str2g-doubles</g:id>
+      <g:title>HYROX Doubles Training Plan: 8 Weeks for Pairs</g:title>
+      <g:description>An 8-week HYROX Doubles training plan. Individual fitness plus station strategy, splitting the work and shared pacing. 6 days a week, about 75 minutes. CZK 1,700 per athlete.</g:description>
+      <g:link>https://str2g.com/programs/8-week-hyrox-doubles/</g:link>
+      <g:image_link>https://str2g.com/img/lada-ria-finish-time.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>1700.00 CZK</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>STR2G</g:brand>
+      <g:identifier_exists>no</g:identifier_exists>
+      <g:product_type>HYROX &gt; Race build</g:product_type>
+      <g:custom_label_0>Race build</g:custom_label_0>
+      <g:shipping>
+        <g:country>CZ</g:country>
+        <g:service>Online (Strivee)</g:service>
+        <g:price>0.00 CZK</g:price>
+      </g:shipping>
+    </item>
+    <item>
+      <g:id>str2g-running</g:id>
+      <g:title>Running for HYROX: 12-Week Running Plan</g:title>
+      <g:description>A 12-week running plan for HYROX. Running economy, pacing, aerobic capacity and running that holds up after the sleds. 6 days a week, about 75 minutes. CZK 1,000.</g:description>
+      <g:link>https://str2g.com/programs/running-for-hyrox/</g:link>
+      <g:image_link>https://str2g.com/img/lada-ria-race-day.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>1000.00 CZK</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>STR2G</g:brand>
+      <g:identifier_exists>no</g:identifier_exists>
+      <g:product_type>HYROX &gt; Specialist block</g:product_type>
+      <g:custom_label_0>Specialist block</g:custom_label_0>
+      <g:shipping>
+        <g:country>CZ</g:country>
+        <g:service>Online (Strivee)</g:service>
+        <g:price>0.00 CZK</g:price>
+      </g:shipping>
+    </item>
+    <item>
+      <g:id>str2g-taper</g:id>
+      <g:title>HYROX Taper: 2-Week Plan Before Race Day</g:title>
+      <g:description>The last two weeks before a HYROX race. Lower volume, intensity kept, short race-pace sessions and a plan for race week and race day. For Open, Doubles and Pro. CZK 550.</g:description>
+      <g:link>https://str2g.com/programs/hyrox-taper/</g:link>
+      <g:image_link>https://str2g.com/img/lada-ria-finish-line.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>550.00 CZK</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>STR2G</g:brand>
+      <g:identifier_exists>no</g:identifier_exists>
+      <g:product_type>HYROX &gt; Specialist block</g:product_type>
+      <g:custom_label_0>Specialist block</g:custom_label_0>
+      <g:shipping>
+        <g:country>CZ</g:country>
+        <g:service>Online (Strivee)</g:service>
+        <g:price>0.00 CZK</g:price>
+      </g:shipping>
+    </item>
+  </channel>
+</rss>

@@ -169,3 +169,7 @@ print(f"sitemap.xml: {len(entries)} URLs")
 # ---- FAQPage strukturovaná data (Google + AI vyhledávače)
 import faq_ld
 faq_ld.apply(ROOT)
+
+# ---- Google Merchant produktový feed (/feed.xml CZ, /feed-en.xml EN)
+import feed
+feed.build(ROOT)

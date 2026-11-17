@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">
+  <channel>
+    <title>STR2G HYROX – online tréninkové programy</title>
+    <link>https://str2g.com/cs/</link>
+    <description>Online HYROX tréninkové programy od Láďi a Rii. Platba a trénink v aplikaci Strivee.</description>
+    <item>
+      <g:id>str2g-raceprep</g:id>
+      <g:title>12týdenní HYROX tréninkový plán: Race Prep</g:title>
+      <g:description>Kompletní 12týdenní příprava na HYROX. Základ, intenzita, závodně specifický trénink a ladění formy. 6 dní v týdnu, cca 90 minut. Jednorázově 2 100 Kč v aplikaci Strivee.</g:description>
+      <g:link>https://str2g.com/cs/programy/12tydenni-hyrox-race-prep/</g:link>
+      <g:image_link>https://str2g.com/img/lada-ria-finish-line.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>2100.00 CZK</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>STR2G</g:brand>
+      <g:identifier_exists>no</g:identifier_exists>
+      <g:product_type>HYROX &gt; Příprava na závod</g:product_type>
+      <g:custom_label_0>Příprava na závod</g:custom_label_0>
+      <g:shipping>
+        <g:country>CZ</g:country>
+        <g:service>Online (Strivee)</g:service>
+        <g:price>0.00 CZK</g:price>
+      </g:shipping>
+    </item>
+    <item>
+      <g:id>str2g-advanced</g:id>
+      <g:title>První HYROX závod? 12týdenní HYROX tréninkový plán</g:title>
+      <g:description>12týdenní HYROX plán pro všechny úrovně, postavený na datum tvého závodu. Síla, běh na prahu, motor a kompletní simulace. 6 dní v týdnu, cca 75 minut. 1 900 Kč.</g:description>
+      <g:link>https://str2g.com/cs/programy/12tydenni-hyrox-advanced/</g:link>
+      <g:image_link>https://str2g.com/img/lada-finish-help.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>1900.00 CZK</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>STR2G</g:brand>
+      <g:identifier_exists>no</g:identifier_exists>
+      <g:product_type>HYROX &gt; Příprava na závod</g:product_type>
+      <g:custom_label_0>Příprava na závod</g:custom_label_0>
+      <g:shipping>
+        <g:country>CZ</g:country>
+        <g:service>Online (Strivee)</g:service>
+        <g:price>0.00 CZK</g:price>
+      </g:shipping>
+    </item>
+    <item>
+      <g:id>str2g-singles</g:id>
+      <g:title>8týdenní HYROX tréninkový plán: Singles</g:title>
+      <g:description>8týdenní příprava na HYROX pro ty, kdo už mají tréninkový základ. Běh, síla, HYROX tréninky a běh po stanicích každý týden. 6 dní v týdnu, cca 60 minut. 1 500 Kč.</g:description>
+      <g:link>https://str2g.com/cs/programy/8tydenni-hyrox-singles/</g:link>
+      <g:image_link>https://str2g.com/img/ria-class-timer.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>1500.00 CZK</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>STR2G</g:brand>
+      <g:identifier_exists>no</g:identifier_exists>
+      <g:product_type>HYROX &gt; Příprava na závod</g:product_type>
+      <g:custom_label_0>Příprava na závod</g:custom_label_0>
+      <g:shipping>
+        <g:country>CZ</g:country>
+        <g:service>Online (Strivee)</g:service>
+        <g:price>0.00 CZK</g:price>
+      </g:shipping>
+    </item>
+    <item>
+      <g:id>str2g-doubles</g:id>
+      <g:title>HYROX Doubles: 8týdenní tréninkový plán pro dvojice</g:title>
+      <g:description>8týdenní příprava na HYROX Doubles. Kondice každého z vás plus strategie na stanicích, dělení práce a společné tempo. 6 dní v týdnu, cca 75 minut. 1 700 Kč za osobu.</g:description>
+      <g:link>https://str2g.com/cs/programy/8tydenni-hyrox-doubles/</g:link>
+      <g:image_link>https://str2g.com/img/lada-ria-finish-time.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>1700.00 CZK</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>STR2G</g:brand>
+      <g:identifier_exists>no</g:identifier_exists>
+      <g:product_type>HYROX &gt; Příprava na závod</g:product_type>
+      <g:custom_label_0>Příprava na závod</g:custom_label_0>
+      <g:shipping>
+        <g:country>CZ</g:country>
+        <g:service>Online (Strivee)</g:service>
+        <g:price>0.00 CZK</g:price>
+      </g:shipping>
+    </item>
+    <item>
+      <g:id>str2g-running</g:id>
+      <g:title>Běh pro HYROX: 12týdenní běžecký plán</g:title>
+      <g:description>12týdenní běžecký plán pro HYROX. Běžecká ekonomika, tempo, aerobní kapacita a běh, který se nerozpadne po saních. 6 dní v týdnu, cca 75 minut. 1 000 Kč.</g:description>
+      <g:link>https://str2g.com/cs/programy/beh-pro-hyrox/</g:link>
+      <g:image_link>https://str2g.com/img/lada-ria-race-day.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>1000.00 CZK</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>STR2G</g:brand>
+      <g:identifier_exists>no</g:identifier_exists>
+      <g:product_type>HYROX &gt; Specializovaný blok</g:product_type>
+      <g:custom_label_0>Specializovaný blok</g:custom_label_0>
+      <g:shipping>
+        <g:country>CZ</g:country>
+        <g:service>Online (Strivee)</g:service>
+        <g:price>0.00 CZK</g:price>
+      </g:shipping>
+    </item>
+    <item>
+      <g:id>str2g-taper</g:id>
+      <g:title>HYROX taper: 2týdenní plán před závodem</g:title>
+      <g:description>Poslední dva týdny před HYROX závodem. Snížený objem, zachovaná intenzita, krátké jednotky v závodním tempu a plán na závodní týden i den závodu. Open, Doubles i Pro. 550 Kč.</g:description>
+      <g:link>https://str2g.com/cs/programy/hyrox-taper/</g:link>
+      <g:image_link>https://str2g.com/img/lada-ria-finish-line.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>550.00 CZK</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>STR2G</g:brand>
+      <g:identifier_exists>no</g:identifier_exists>
+      <g:product_type>HYROX &gt; Specializovaný blok</g:product_type>
+      <g:custom_label_0>Specializovaný blok</g:custom_label_0>
+      <g:shipping>
+        <g:country>CZ</g:country>
+        <g:service>Online (Strivee)</g:service>
+        <g:price>0.00 CZK</g:price>
+      </g:shipping>
+    </item>
+  </channel>
+</rss>
