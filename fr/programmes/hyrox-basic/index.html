@@ -10,8 +10,8 @@
   3) Každý klik na platební odkaz do Strivee = InitiateCheckout (Meta) + begin_checkout (GA4) + konverze (Google Ads), včetně názvu programu a ceny.
   4) Funkce window.str2gLead('kviz') pro budoucí kvíz / formulář = Lead (Meta) + generate_lead (GA4) + konverze (Ads).
   5) window.str2gConsentReset() znovu otevře cookie lištu.
-  6) Tanganica (Google Tag Manager GTM-TRS5RSN) se načítá hned, ale až do souhlasu běží v Consent Mode (vše denied),
-     stejně jako Google tag. Kontrola v aplikaci Tanganica ho tak najde i bez kliknutí na cookie lištu.
+  6) Tanganica pixel (Google Tag Manager GTM-TRS5RSN) je na konci tohoto souboru doslova podle Tanganica, aby ho
+     jejich kontrola našla. Načítá se až po nastavení Consent Mode (vše denied), takže do souhlasu neukládá cookies.
 -->
 <script>
 (function () {
@@ -20,8 +20,7 @@
     GA4_ID: 'G-P21WD6TY8N',
     ADS_ID: 'AW-11061084387',
     ADS_CHECKOUT_LABEL: 'lFZiCPf0iZ8dEOOBq5op',
-    ADS_LEAD_LABEL: 'xPRgCPr0iZ8dEOOBq5op',
-    TANGANICA_GTM_ID: 'GTM-TRS5RSN'
+    ADS_LEAD_LABEL: 'xPRgCPr0iZ8dEOOBq5op'
   };
 
   var KEY = 'str2g_consent';
@@ -60,25 +59,12 @@
     window.fbq('track', 'PageView');
   }
 
-  // Tanganica pixel (Google Tag Manager) – načte se hned; souhlas řídí Consent Mode výše
-  var gtmLoaded = false;
-  function loadTanganica() {
-    if (gtmLoaded || !has(CFG.TANGANICA_GTM_ID)) return;
-    gtmLoaded = true;
-    (function (w, d, s, l, i) {
-      w[l] = w[l] || []; w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
-      var f = d.getElementsByTagName(s)[0], j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : '';
-      j.async = true; j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
-    })(window, document, 'script', 'dataLayer', CFG.TANGANICA_GTM_ID);
-  }
-  loadTanganica();
 
   function grant() {
     gtag('consent', 'update', {
       ad_storage: 'granted', ad_user_data: 'granted', ad_personalization: 'granted', analytics_storage: 'granted'
     });
     loadMeta();
-    loadTanganica();
   }
   function granted() { return getConsent() === 'yes'; }
   if (granted()) grant();
@@ -206,6 +192,7 @@
   }
 })();
 </script>
+<!-- Tanganica pixel --><script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0], j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-TRS5RSN');</script><!-- End Tanganica pixel -->
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Programme HYROX débutant : HYROX Basic | STR2G</title>
 <meta name="description" content="HYROX Basic, le programme HYROX en ligne pour débuter. 5 jours par semaine, environ 60 min. Course, force et les huit stations dans un plan. 750 CZK par mois.">
