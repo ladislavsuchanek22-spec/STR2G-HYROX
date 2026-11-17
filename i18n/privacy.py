@@ -37,7 +37,7 @@ CONTENT = {
 </ul>
 
 <h2>Cookies, měření a reklama</h2>
-<p>Analytické a reklamní nástroje (Google Analytics 4, Google Ads, Meta Pixel a měřicí kód Tanganica) spouštíme jen s tvým souhlasem přes cookie lištu. Pomáhají nám zjistit, odkud lidé na web chodí, co je zajímá a které reklamy fungují. Bez souhlasu se Meta Pixel ani Tanganica vůbec nenačtou a Google neukládá žádné cookies.</p>
+<p>Analytické a reklamní nástroje (Google Analytics 4, Google Ads, Meta Pixel a měřicí kód Tanganica) spouštíme jen s tvým souhlasem přes cookie lištu. Pomáhají nám zjistit, odkud lidé na web chodí, co je zajímá a které reklamy fungují. Bez souhlasu se Meta Pixel vůbec nenačte. Google tag a kód Tanganica (Google Tag Manager) se načtou, ale do souhlasu běží v režimu Consent Mode, který reklamní ani analytické cookies neukládá.</p>
 <p>Souhlas můžeš kdykoliv změnit přes <a href="#" onclick="str2gConsentReset();return false;">Nastavení cookies</a>.</p>
 <p>Web si navíc ve tvém prohlížeči pamatuje pár technických věcí, třeba zvolený jazyk nebo to, že jsi zavřel(a) okno newsletteru. Tyhle informace zůstávají jen u tebe.</p>
 
@@ -100,7 +100,7 @@ CONTENT = {
 </ul>
 
 <h2>Cookies, analytics and ads</h2>
-<p>Analytics and advertising tools (Google Analytics 4, Google Ads, Meta Pixel and the Tanganica tracking code) only run if you agree in the cookie banner. They show us where visitors come from, what they're interested in and which ads work. Without your consent the Meta Pixel and Tanganica don't load at all and Google stores no cookies.</p>
+<p>Analytics and advertising tools (Google Analytics 4, Google Ads, Meta Pixel and the Tanganica tracking code) only run if you agree in the cookie banner. They show us where visitors come from, what they're interested in and which ads work. Without your consent the Meta Pixel doesn't load at all. The Google tag and the Tanganica code (Google Tag Manager) load, but until you agree they run in Consent Mode, which stores no advertising or analytics cookies.</p>
 <p>You can change your choice anytime in <a href="#" onclick="str2gConsentReset();return false;">Cookie settings</a>.</p>
 <p>The site also remembers a few technical things in your browser, like your language or that you closed the newsletter window. That information stays on your device.</p>
 
