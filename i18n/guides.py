@@ -161,7 +161,7 @@ GUIDES = {
         ],
     ),
     "running": dict(
-        draft=True,
+        draft=False,
         slug="/guides/how-to-run-faster-in-hyrox/",
         title="How to Run Faster in HYROX: Running Training for Hybrid Racing | STR2G",
         desc="Running is half of your HYROX time. How to build your running for HYROX: easy base, threshold work, compromised runs and pacing the 8 × 1 km.",
