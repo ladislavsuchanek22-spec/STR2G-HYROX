@@ -252,7 +252,9 @@ a{color:inherit}
 .steps li + li{padding-left:20px;border-left:1px solid rgba(255,255,255,.18)}
 .steps b{display:block;font-family:var(--display);font-style:italic;font-weight:900;font-size:30px;color:var(--fg);line-height:1;margin-bottom:6px}
 @media (max-width:760px){.steps{grid-template-columns:1fr}.steps li + li{padding-left:0;border-left:0;border-top:1px solid rgba(255,255,255,.18)}}
-main section{padding-block:clamp(40px,6vw,72px)}
+main.sf{background:#FAFAFA;min-height:60vh}
+main.sf .state{color:#6b675e;padding:40px var(--gut-l)}
+str2g-storefront{display:block}
 .notice{border:1px solid var(--line);border-left:3px solid var(--accent);background:var(--panel);padding:18px 20px;margin-bottom:32px}
 .notice.ok{border-left-color:var(--ok)}
 .notice.err{border-left-color:var(--err)}
@@ -293,26 +295,10 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
   </div>
 </nav>
 
-<header class="top">
-  <div class="wrap">
-    <p class="eyebrow" data-t="eyebrow">STR2G HYROX · Láďa &amp; Ria</p>
-    <h1 class="display" data-t="h1">Vyber si <span class="gold">program</span></h1>
-    <p class="lead" data-t="lead">Zaplatíš kartou tady na webu, registrace předem není potřeba. Trénink pak najdeš v appce Strong Coach.</p>
-    <ol class="steps">
-      <li><b>01</b><span data-t="s1">Vyber program a zaplať kartou.</span></li>
-      <li><b>02</b><span data-t="s2">Na e-mail ti přijde odkaz do appky. Nastavíš si heslo.</span></li>
-      <li><b>03</b><span data-t="s3">Trénink máš v telefonu, zapisuješ výsledky, kouč je vidí.</span></li>
-    </ol>
-  </div>
-</header>
-
-<main>
-  <section>
-    <div class="wrap">
-      <div id="notice"></div>
-      <div id="list" class="grid" aria-live="polite"><p class="state" data-t="loading">Načítám programy…</p></div>
-    </div>
-  </section>
+<main class="sf">
+  <!-- Celý storefront se načítá z appky Strong Coach (app.str2g.com/s/str2g-hyrox): stejný vzhled, programy,
+       koučové i sekce. Co kouč změní v appce v nastavení Storefrontu, je tady hned taky. -->
+  <str2g-storefront slug="str2g-hyrox"><p class="state" data-t="loading">Načítám programy…</p></str2g-storefront>
 </main>
 
 <footer>
@@ -330,98 +316,31 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
 
 <script>
 (function () {
-  // Programy a ceny se berou z appky Strong Coach (veřejný storefront kouče). Platba běží přes Stripe.
-  var API = 'https://nqivuuwnlckgvnohcrlv.supabase.co';
-  var KEY = 'sb_publishable_XTnwDJvGx75s3ctFO6m-fA_8JFPm7P6'; // veřejný klíč appky, určený do prohlížeče
-  var SLUG = 'str2g-hyrox';
-  var APP = 'https://app.str2g.com';
-
+  // Jazyk: CZ / EN přepínač webu. Vložený storefront z appky čte jazyk z klíče 'str2g-lang',
+  // proto se nastaví ještě před jeho načtením a po přepnutí se stránka načte znovu.
   var T = {
-    cs: {
-      eyebrow: 'STR2G HYROX · Láďa & Ria', h1: 'Vyber si <span class="gold">program</span>',
-      lead: 'Zaplatíš kartou tady na webu, registrace předem není potřeba. Trénink pak najdeš v appce Strong Coach.',
-      s1: 'Vyber program a zaplať kartou.', s2: 'Na e-mail ti přijde odkaz do appky. Nastavíš si heslo.', s3: 'Trénink máš v telefonu, zapisuješ výsledky, kouč je vidí.',
-      loading: 'Načítám programy…', home: 'Hlavní stránka', privacy: 'Ochrana osobních údajů', refund: 'Vrácení peněz',
-      buy: 'Koupit', sub: 'Předplatit', opening: 'Otevírám platbu…', more: 'Celý popis', less: 'Méně',
-      month: '/ měsíc', year: '/ rok', once: 'jednorázově',
-      kind: { one_to_one: '1:1 coaching', group: 'Skupinový program', fixed: 'Program' },
-      empty: 'Teď tu žádný program v nabídce není. Napiš nám na Instagram.',
-      loadErr: 'Programy se nepodařilo načíst. Zkus stránku načíst znovu.',
-      noPay: 'Platba kartou tu zatím není zapnutá. Napiš nám na Instagram.',
-      payErr: 'Platbu se nepodařilo spustit. Zkus to za chvíli znovu.',
-      gone: 'Tenhle program už není v nabídce. Načti stránku znovu.',
-      okT: 'Díky, zaplaceno!', okP: 'Na e-mail, který jsi zadal u platby, ti během pár minut přijde odkaz do appky Strong Coach. Nastavíš si heslo a trénink na tebe čeká.',
-      okP2: 'Účet v appce už máš? Prostě se přihlas, program tam najdeš.', okLink: 'Otevřít appku',
-      okP3: 'Nic nepřišlo? Mrkni do spamu, nebo nám napiš.',
-      cancel: 'Platba se nedokončila, nic se nestrhlo.',
-      note: 'Po zaplacení ti přijde e-mail s přístupem do appky.', noteSub: 'Předplatné zrušíš kdykoli v appce.'
-    },
-    en: {
-      eyebrow: 'STR2G HYROX · Láďa & Ria', h1: 'Pick your <span class="gold">program</span>',
-      lead: 'Pay by card right here, no sign-up needed first. Your training then lives in the Strong Coach app.',
-      s1: 'Pick a program and pay by card.', s2: 'You get a link to the app by e-mail. Set your password.', s3: 'Training on your phone, you log results, the coach sees them.',
-      loading: 'Loading programs…', home: 'Home', privacy: 'Privacy policy', refund: 'Refund policy',
-      buy: 'Buy', sub: 'Subscribe', opening: 'Opening payment…', more: 'Full description', less: 'Less',
-      month: '/ month', year: '/ year', once: 'one-off',
-      kind: { one_to_one: '1:1 coaching', group: 'Group program', fixed: 'Program' },
-      empty: 'No programs on offer right now. Message us on Instagram.',
-      loadErr: "Couldn't load the programs. Try reloading the page.",
-      noPay: 'Card payments are not switched on yet. Message us on Instagram.',
-      payErr: "Couldn't start the payment. Try again in a moment.",
-      gone: 'This program is no longer on offer. Reload the page.',
-      okT: "Thanks, you're paid!", okP: "Within a few minutes you'll get a link to the Strong Coach app at the e-mail you used for the payment. Set your password and your training is waiting.",
-      okP2: 'Already have an account? Just log in, the program is there.', okLink: 'Open the app',
-      okP3: 'Nothing arrived? Check your spam, or message us.',
-      cancel: "The payment wasn't completed. You haven't been charged.",
-      note: "After payment you'll get an e-mail with access to the app.", noteSub: 'Cancel your subscription any time in the app.'
-    }
+    cs: { loading: 'Načítám programy…', home: 'Hlavní stránka', privacy: 'Ochrana osobních údajů', refund: 'Vrácení peněz' },
+    en: { loading: 'Loading programs…', home: 'Home', privacy: 'Privacy policy', refund: 'Refund policy' }
   };
-
   var qs = new URLSearchParams(location.search);
   var saved = null; try { saved = localStorage.getItem('str2g-sf-lang'); } catch (e) {}
   var nav = (navigator.language || '').toLowerCase();
   var lang = qs.get('lang') === 'en' || qs.get('lang') === 'cs' ? qs.get('lang') : saved || (/^(cs|sk)/.test(nav) ? 'cs' : 'en');
-  var data = null, loadFailed = false, busy = '';
-
-  function t(k) { return T[lang][k]; }
-  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
-  function safeImg(u) { try { var x = new URL(u); return x.protocol === 'https:' ? x.href : null; } catch (e) { return null; } }
-  function money(p) {
-    var amount = (p.price_cents / 100).toLocaleString(lang === 'cs' ? 'cs-CZ' : 'en-GB', { maximumFractionDigits: 2 });
-    var cur = p.currency === 'eur' ? '€' : (lang === 'cs' ? 'Kč' : 'CZK');
-    return lang === 'cs' || p.currency !== 'eur' ? amount + ' ' + cur : cur + amount;
-  }
-  function rest(path) {
-    return fetch(API + '/rest/v1/' + path, { headers: { apikey: KEY, Authorization: 'Bearer ' + KEY } }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); });
-  }
-
-  function texts() {
-    document.documentElement.lang = lang;
-    document.querySelectorAll('[data-t]').forEach(function (n) {
-      var v = t(n.getAttribute('data-t'));
-      if (n.getAttribute('data-t') === 'h1') n.innerHTML = v; else n.textContent = v;
+  try { localStorage.setItem('str2g-lang', lang); } catch (e) {}
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-t]').forEach(function (n) { var v = T[lang][n.getAttribute('data-t')]; if (v) n.textContent = v; });
+  document.querySelectorAll('.lang button').forEach(function (b) {
+    b.setAttribute('aria-pressed', String(b.getAttribute('data-lang') === lang));
+    b.addEventListener('click', function () {
+      var l = b.getAttribute('data-lang'); if (l === lang) return;
+      try { localStorage.setItem('str2g-sf-lang', l); localStorage.setItem('str2g-lang', l); } catch (e) {}
+      var u = new URL(location.href); u.searchParams.delete('lang'); location.href = u.toString();
     });
-    document.querySelectorAll('.lang button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-lang') === lang)); });
-  }
+  });
 
-  function notice() {
-    var box = document.getElementById('notice'); box.textContent = '';
-    var st = qs.get('platba');
-    if (st === 'ok') {
-      var n = el('div', 'notice ok'); n.setAttribute('role', 'status');
-      n.appendChild(el('strong', null, t('okT'))); n.appendChild(el('p', null, t('okP')));
-      var p2 = el('p', null, t('okP2') + ' '); var a = el('a', null, t('okLink')); a.href = APP; p2.appendChild(a); n.appendChild(p2);
-      n.appendChild(el('p', null, t('okP3')));
-      box.appendChild(n);
-    } else if (st === 'zrusena') {
-      var c = el('div', 'notice'); c.appendChild(el('p', null, t('cancel'))); box.appendChild(c);
-    }
-    // návrat ze Stripe: potvrzení hned na očích, ne až pod úvodem
-    if (st && !notice.shown) { notice.shown = true; setTimeout(function () { box.scrollIntoView({ block: 'center' }); }, 60); }
-  }
-
-  function track(p) {
-    var value = Math.round((p.price_cents || 0) / 100);
+  // Měření: storefront z appky při kliknutí na Koupit pošle událost str2g:checkout
+  document.addEventListener('str2g:checkout', function (e) {
+    var p = e.detail || {}, value = p.value || 0;
     try {
       window.dataLayer = window.dataLayer || [];
       window.dataLayer.push({ ecommerce: null });
@@ -429,90 +348,10 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
       if (window.gtag) window.gtag('event', 'begin_checkout', { currency: 'CZK', value: value, items: [{ item_name: p.name, price: value }] });
       if (window.fbq) window.fbq('track', 'InitiateCheckout', { content_name: p.name, value: value, currency: 'CZK' });
       if (navigator.sendBeacon) navigator.sendBeacon('/api/checkout-click', new Blob([JSON.stringify({ p: p.name, l: lang, src: 'storefront', c: window.fbq ? 1 : 0 })], { type: 'text/plain' }));
-    } catch (e) {}
-  }
-
-  function buy(p, btn, errBox) {
-    if (busy) return;
-    busy = p.id; errBox.textContent = ''; btn.disabled = true; btn.textContent = t('opening');
-    track(p);
-    var back = location.origin + location.pathname + (lang === 'en' ? '?lang=en' : '');
-    fetch(API + '/functions/v1/payments', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', apikey: KEY, Authorization: 'Bearer ' + KEY },
-      body: JSON.stringify({ action: 'store_checkout', program_id: p.id, return_url: back, lang: lang })
-    }).then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { return { ok: r.ok, d: d }; }); })
-      .then(function (res) {
-        if (res.ok && res.d && res.d.url) { location.href = res.d.url; return; }
-        var code = res.d && res.d.error;
-        throw new Error(code === 'coach_no_stripe' || code === 'payments_off' || code === 'live_key_blocked' ? 'noPay' : code === 'program_not_found' ? 'gone' : 'payErr');
-      })
-      .catch(function (e) {
-        busy = ''; btn.disabled = false; btn.textContent = p.billing_period ? t('sub') : t('buy');
-        errBox.textContent = t(T[lang][e.message] ? e.message : 'payErr');
-      });
-  }
-
-  function render() {
-    var list = document.getElementById('list'); list.textContent = '';
-    if (loadFailed) { list.appendChild(el('p', 'state', t('loadErr'))); return; }
-    if (!data) { list.appendChild(el('p', 'state', t('loading'))); return; }
-    var progs = data.programs.filter(function (p) { return p.price_cents; });
-    if (!progs.length) { list.appendChild(el('p', 'state', t('empty'))); return; }
-    progs.forEach(function (p) {
-      var card = el('article', 'card');
-      var img = p.image_url && safeImg(p.image_url);
-      if (img) { var im = el('img'); im.src = img; im.alt = ''; im.loading = 'lazy'; card.appendChild(im); }
-      var inn = el('div', 'in');
-      inn.appendChild(el('span', 'tag', T[lang].kind[p.kind] || 'Program'));
-      inn.appendChild(el('h2', null, p.name));
-      if (p.description) {
-        var d = el('p', 'desc clamp', p.description); inn.appendChild(d);
-        if (p.description.length > 320 || (p.description.match(/\n/g) || []).length > 6) {
-          var m = el('button', 'more', t('more')); m.type = 'button';
-          m.onclick = function () { var c = d.classList.toggle('clamp'); m.textContent = c ? t('more') : t('less'); };
-          inn.appendChild(m);
-        }
-      }
-      var b = el('div', 'buy');
-      var pr = el('div', 'price', money(p) + ' ');
-      pr.appendChild(el('small', null, p.billing_period === 'month' ? t('month') : p.billing_period === 'year' ? t('year') : t('once')));
-      b.appendChild(pr);
-      var errBox = el('p', 'err-inline'); errBox.setAttribute('role', 'alert');
-      if (data.space.can_buy) {
-        var btn = el('button', 'btn btn-gold', p.billing_period ? t('sub') : t('buy')); btn.type = 'button';
-        btn.onclick = function () { buy(p, btn, errBox); };
-        b.appendChild(btn);
-        b.appendChild(el('p', 'hint', p.billing_period ? t('note') + ' ' + t('noteSub') : t('note')));
-      } else {
-        b.appendChild(el('p', 'hint', t('noPay')));
-      }
-      b.appendChild(errBox);
-      inn.appendChild(b);
-      card.appendChild(inn);
-      list.appendChild(card);
-    });
-  }
-
-  document.querySelectorAll('.lang button').forEach(function (b) {
-    b.addEventListener('click', function () {
-      lang = b.getAttribute('data-lang'); try { localStorage.setItem('str2g-sf-lang', lang); } catch (e) {}
-      texts(); notice(); render();
-    });
+    } catch (err) {}
   });
-  texts(); notice();
-
-  rest('storefront_spaces?slug=eq.' + SLUG + '&select=id,name,can_buy')
-    // appka bez sloupce can_buy (starší databáze): programy ukážeme, jen bez nákupu
-    .catch(function () { return rest('storefront_spaces?slug=eq.' + SLUG + '&select=id,name'); })
-    .then(function (s) {
-      if (!s.length) throw new Error('space');
-      return rest('storefront_programs?space_id=eq.' + s[0].id + '&select=id,name,kind,description,image_url,price_cents,currency,billing_period&order=price_cents')
-        .then(function (p) { data = { space: s[0], programs: p }; });
-    })
-    .catch(function () { loadFailed = true; })
-    .then(render);
 })();
 </script>
+<script src="https://app.str2g.com/embed/storefront.js" defer></script>
 </body>
 </html>
