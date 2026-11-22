@@ -42,3 +42,10 @@ English is `index.html` (source). Czech, German and Polish live in `/cs/`, `/de/
 - Stránky programů (zatím EN + CS): obsah v `i18n/programs_content.py`, šablona v `i18n/programs.py`. URL `/programs/<program>/` a `/cs/programy/<program>/`. Ostatní jazyky odkazují „Details“ zatím na Strivee a kartu 12-Week Advanced nemají (bloky `<!--ADV-->` v `index.html`).
 - Orientační ceny v €, £ a zł počítá `price()` v `pages_content.py` podle kurzů v `RATES`. Platí se vždy v CZK přes Strivee.
 - Po každé změně spusť `python3 i18n/build.py`. Přegeneruje jazyky, landing pages i `sitemap.xml`.
+
+## Storefront (`/storefront/`)
+
+- Stránka `storefront/index.html` (CZ/EN přepínačem, bez generátoru). Programy, ceny, popisy a obrázky si načítá živě z appky Strong Coach (veřejný storefront prostoru `str2g-hyrox`, to samé co `app.str2g.com/s/str2g-hyrox`). Co se zapne nebo změní ve Storefrontu v appce, je tady hned taky.
+- Tlačítko Koupit / Předplatit otevře platbu Stripe přes funkci `payments` v Supabase (akce `store_checkout`). Kupující nemusí mít účet: po zaplacení mu `stripe-webhook` založí účet v appce a pošle e-mail s odkazem na nastavení hesla.
+- Měření: klik na Koupit posílá `begin_checkout` / `InitiateCheckout` stejně jako odkazy do Strivee.
+- Stránka není v `sitemap.xml` (tu generuje `i18n/build.py`).

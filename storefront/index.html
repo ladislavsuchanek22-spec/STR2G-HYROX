@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<!--
+  STR2G – měření pro reklamu
+  Co to dělá:
+  1) Cookie lišta (souhlas / odmítnutí) – bez souhlasu se Meta Pixel vůbec nenačte.
+  2) Google tag (GA4 + Google Ads) v režimu Consent Mode v2 – před souhlasem nic neukládá.
+  3) Každý klik na platební odkaz do Strivee = InitiateCheckout (Meta) + begin_checkout (GA4) + konverze (Google Ads), včetně názvu programu a ceny.
+  4) Funkce window.str2gLead('kviz') pro budoucí kvíz / formulář = Lead (Meta) + generate_lead (GA4) + konverze (Ads).
+  5) window.str2gConsentReset() znovu otevře cookie lištu.
+  6) Tanganica pixel (Google Tag Manager GTM-TRS5RSN) je na konci tohoto souboru doslova podle Tanganica, aby ho
+     jejich kontrola našla. Načítá se až po nastavení Consent Mode (vše denied), takže do souhlasu neukládá cookies.
+-->
+<script>
+(function () {
+  var CFG = {
+    META_PIXEL_ID: '1343098769871797',
+    GA4_ID: 'G-P21WD6TY8N',
+    ADS_ID: 'AW-11061084387',
+    ADS_CHECKOUT_LABEL: 'lFZiCPf0iZ8dEOOBq5op',
+    ADS_LEAD_LABEL: 'xPRgCPr0iZ8dEOOBq5op'
+  };
+
+  var KEY = 'str2g_consent';
+  function getConsent() { try { return localStorage.getItem(KEY); } catch (e) { return null; } }
+  function setConsent(v) { try { localStorage.setItem(KEY, v); } catch (e) {} }
+  function has(id) { return id && id.indexOf('DOPLNIT') === -1; }
+
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { window.dataLayer.push(arguments); }
+  window.gtag = window.gtag || gtag;
+  gtag('consent', 'default', {
+    ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied',
+    analytics_storage: 'denied', wait_for_update: 500
+  });
+  gtag('js', new Date());
+  if (has(CFG.GA4_ID)) gtag('config', CFG.GA4_ID);
+  if (has(CFG.ADS_ID)) gtag('config', CFG.ADS_ID);
+  var firstId = has(CFG.GA4_ID) ? CFG.GA4_ID : (has(CFG.ADS_ID) ? CFG.ADS_ID : null);
+  if (firstId) {
+    var gs = document.createElement('script');
+    gs.async = true;
+    gs.src = 'https://www.googletagmanager.com/gtag/js?id=' + firstId;
+    document.head.appendChild(gs);
+  }
+
+  var metaLoaded = false;
+  function loadMeta() {
+    if (metaLoaded || !has(CFG.META_PIXEL_ID)) return;
+    metaLoaded = true;
+    !function (f, b, e, v, n, t, s) {
+      if (f.fbq) return; n = f.fbq = function () { n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments); };
+      if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0'; n.queue = [];
+      t = b.createElement(e); t.async = !0; t.src = v; s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s);
+    }(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+    window.fbq('init', CFG.META_PIXEL_ID);
+    window.fbq('track', 'PageView');
+  }
+
+
+  function grant() {
+    gtag('consent', 'update', {
+      ad_storage: 'granted', ad_user_data: 'granted', ad_personalization: 'granted', analytics_storage: 'granted'
+    });
+    loadMeta();
+  }
+  function granted() { return getConsent() === 'yes'; }
+  if (granted()) grant();
+
+  function programInfo(a) {
+    var name = a.getAttribute('data-program') || '';
+    var value = parseInt(a.getAttribute('data-value') || '0', 10) || 0;
+    if (name && value) return { name: name, value: value };
+    var el = a;
+    for (var i = 0; i < 8 && el; i++) {
+      el = el.parentElement;
+      if (!el || !el.querySelector) continue;
+      var h = el.querySelector('h3, h4');
+      if (h) {
+        if (!name) name = h.textContent.replace(/\s+/g, ' ').trim();
+        if (!value) {
+          var t = el.textContent;
+          var m = t.match(/CZK\s*([\d][\d.,\u00a0 ]*\d|\d)/) || t.match(/(\d[\d.,\u00a0 ]*\d|\d)\s*Kč/);
+          if (m) value = parseInt(m[1].replace(/[^\d]/g, ''), 10) || 0;
+        }
+        break;
+      }
+    }
+    return { name: name || 'STR2G program', value: value };
+  }
+
+  document.addEventListener('click', function (e) {
+    var a = e.target && e.target.closest ? e.target.closest('a[href*="train.strivee.app/payment"]') : null;
+    if (!a) return;
+    var p = programInfo(a);
+
+    // Pro Tag Manager (Tanganica): standardní e-commerce událost v dataLayer
+    window.dataLayer.push({ ecommerce: null });
+    window.dataLayer.push({ event: 'begin_checkout', ecommerce: { currency: 'CZK', value: p.value, items: [{ item_name: p.name, price: p.value, quantity: 1 }] } });
+
+    gtag('event', 'begin_checkout', { currency: 'CZK', value: p.value, items: [{ item_name: p.name, price: p.value }] });
+    if (has(CFG.ADS_ID) && has(CFG.ADS_CHECKOUT_LABEL)) {
+      gtag('event', 'conversion', { send_to: CFG.ADS_ID + '/' + CFG.ADS_CHECKOUT_LABEL, value: p.value, currency: 'CZK' });
+    }
+    if (granted() && window.fbq) {
+      window.fbq('track', 'InitiateCheckout', { content_name: p.name, value: p.value, currency: 'CZK' });
+    }
+    // Anonymous first-party count (no cookies, no IDs) – also for visitors without consent.
+    try {
+      var q = location.search, r = document.referrer || '';
+      var src = /[?&]fbclid=|[?&]utm_source=(facebook|instagram|ig|meta|fb)\b/i.test(q) || /instagram\.|facebook\.|fb\.me/i.test(r) ? 'meta'
+        : /[?&](gclid|gbraid|wbraid)=|[?&]utm_source=google\b/i.test(q) || /google\./i.test(r) ? 'google'
+        : r && r.indexOf(location.host) === -1 ? 'other' : 'direct';
+      var body = JSON.stringify({ p: p.name, l: (document.documentElement.lang || '').slice(0, 2), src: src, c: granted() ? 1 : 0 });
+      if (navigator.sendBeacon) navigator.sendBeacon('/api/checkout-click', new Blob([body], { type: 'text/plain' }));
+    } catch (err) {}
+
+    // Cmd/Ctrl/Shift/middle click: leave it to the browser, this page stays open.
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
+    // Instagram/Facebook in-app browsers open target=_blank in the SAME window,
+    // which kills the Meta/Google requests above before they leave. There (and for
+    // same-tab links) wait a moment so the events get sent, then go to Strivee.
+    var inApp = /FBAN|FBAV|FB_IAB|FBIOS|Instagram/i.test(navigator.userAgent || '');
+    if (a.target !== '_blank' || inApp) {
+      e.preventDefault();
+      setTimeout(function () { window.location.href = a.href; }, 400);
+    }
+  }, true);
+
+  window.str2gLead = function (source) {
+    gtag('event', 'generate_lead', { lead_source: source || 'web' });
+    if (has(CFG.ADS_ID) && has(CFG.ADS_LEAD_LABEL)) {
+      gtag('event', 'conversion', { send_to: CFG.ADS_ID + '/' + CFG.ADS_LEAD_LABEL });
+    }
+    if (granted() && window.fbq) window.fbq('track', 'Lead', { content_name: source || 'web' });
+  };
+
+  var TXT = {
+    en: ['We use cookies to measure the site and show you relevant ads. Only with your consent.', 'Accept', 'Reject'],
+    cs: ['Používáme cookies na měření webu a zobrazení relevantní reklamy. Jen s tvým souhlasem.', 'Souhlasím', 'Odmítnout'],
+    de: ['Wir nutzen Cookies, um die Website zu messen und dir relevante Werbung zu zeigen. Nur mit deiner Zustimmung.', 'Akzeptieren', 'Ablehnen'],
+    pl: ['Używamy plików cookie do pomiaru strony i wyświetlania trafnych reklam. Tylko za Twoją zgodą.', 'Akceptuję', 'Odrzuć'],
+    sk: ['Používame cookies na meranie webu a zobrazenie relevantnej reklamy. Len s tvojím súhlasom.', 'Súhlasím', 'Odmietnuť'],
+    fr: ['Nous utilisons des cookies pour mesurer le site et te montrer des publicités pertinentes. Uniquement avec ton accord.', 'Accepter', 'Refuser'],
+    es: ['Usamos cookies para medir la web y mostrarte publicidad relevante. Solo con tu consentimiento.', 'Aceptar', 'Rechazar'],
+    it: ['Usiamo i cookie per misurare il sito e mostrarti pubblicità pertinente. Solo con il tuo consenso.', 'Accetto', 'Rifiuta'],
+    nl: ['We gebruiken cookies om de site te meten en je relevante advertenties te tonen. Alleen met je toestemming.', 'Accepteren', 'Weigeren']
+  };
+
+  function showBanner() {
+    if (document.getElementById('str2g-consent')) return;
+    var lang = (document.documentElement.lang || 'en').slice(0, 2).toLowerCase();
+    var t = TXT[lang] || TXT.en;
+    var box = document.createElement('div');
+    box.id = 'str2g-consent';
+    box.setAttribute('role', 'dialog');
+    box.setAttribute('aria-live', 'polite');
+    box.style.cssText = 'position:fixed;left:16px;right:16px;bottom:16px;z-index:99999;max-width:560px;margin:0 auto;' +
+      'background:#0d0d0d;color:#f2f2f2;border:1px solid #2a2a2a;border-radius:12px;padding:16px;' +
+      'font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.4)';
+    var p = document.createElement('p');
+    p.style.cssText = 'margin:0 0 12px';
+    p.textContent = t[0];
+    var row = document.createElement('div');
+    row.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap';
+    function btn(label, primary, fn) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = label;
+      b.style.cssText = 'flex:1 1 120px;padding:10px 14px;border-radius:8px;cursor:pointer;font-weight:700;font-size:14px;' +
+        (primary ? 'background:#C9A950;color:#050505;border:1px solid #C9A950' : 'background:transparent;color:#f2f2f2;border:1px solid #f2f2f2');
+      b.onclick = fn;
+      return b;
+    }
+    row.appendChild(btn(t[1], true, function () { setConsent('yes'); grant(); box.remove(); }));
+    row.appendChild(btn(t[2], false, function () { setConsent('no'); box.remove(); }));
+    box.appendChild(p);
+    box.appendChild(row);
+    document.body.appendChild(box);
+  }
+
+  window.str2gConsentReset = function () {
+    try { localStorage.removeItem(KEY); } catch (e) {}
+    showBanner();
+  };
+
+  if (!getConsent()) {
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', showBanner);
+    else showBanner();
+  }
+})();
+</script>
+<!-- Tanganica pixel --><script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0], j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-TRS5RSN');</script><!-- End Tanganica pixel -->
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Programy STR2G HYROX – koupit online | Programs</title>
+<meta name="description" content="HYROX programy STR2G od Ládi a Rii Suchánkových. Vyber program, zaplať kartou a trénink ti přijde do appky Strong Coach.">
+<link rel="canonical" href="https://str2g.com/storefront/">
+<link rel="icon" href="/favicon.ico?v=2" sizes="any">
+<link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2">
+<link rel="manifest" href="/site.webmanifest?v=2">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://nqivuuwnlckgvnohcrlv.supabase.co" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700&family=Barlow+Condensed:ital,wght@0,700;0,800;1,800;1,900&family=JetBrains+Mono:wght@500&display=swap">
+<meta property="og:title" content="STR2G HYROX – programy">
+<meta property="og:url" content="https://str2g.com/storefront/">
+<meta property="og:type" content="website">
+<style>
+/* Storefront: programy se načítají živě z appky Strong Coach (Storefront u kouče v appce). */
+:root{
+  --bg:#050505; --panel:#0F0F0E; --line:#262521;
+  --fg:#FFFFFF; --muted:#9A978F; --accent:#C9A950; --on-accent:#050505; --ok:#7BC47F; --err:#E5736B;
+  --display:"Barlow Condensed","Arial Narrow",Impact,sans-serif;
+  --body:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  --wrap:1200px;
+  --gut-l:max(20px,env(safe-area-inset-left,0px));
+  --gut-r:max(20px,env(safe-area-inset-right,0px));
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+a{color:inherit}
+.wrap{max-width:var(--wrap);margin:0 auto;padding-left:var(--gut-l);padding-right:var(--gut-r)}
+.display{font-family:var(--display);font-weight:900;font-style:italic;text-transform:uppercase;line-height:.9;margin:0;text-wrap:balance}
+.gold{color:var(--accent)}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin:0 0 16px}
+.lead{font-size:clamp(17px,1.6vw,19px);color:var(--muted);max-width:62ch;margin:18px 0 0}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font-family:var(--display);font-weight:800;font-style:italic;text-transform:uppercase;font-size:20px;letter-spacing:.02em;padding:14px 26px 13px;text-decoration:none;border:1.5px solid var(--accent);transition:background .15s,color .15s,border-color .15s;cursor:pointer;background:transparent;color:var(--fg)}
+.btn-gold{background:var(--accent);color:var(--on-accent)}
+.btn-gold:hover{background:var(--fg);border-color:var(--fg)}
+.btn[disabled]{opacity:.6;cursor:wait}
+.btn:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:rgba(5,5,5,.86);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;height:68px}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none}
+.logo .mark{width:34px;height:34px;border:1px solid var(--line);border-radius:7px;flex:none}
+.logo b{font-family:var(--display);font-weight:900;font-style:italic;font-size:30px;line-height:1}
+.logo small{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+.navlinks{display:flex;align-items:center;gap:18px}
+.lang{display:flex;border:1px solid var(--line)}
+.lang button{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--muted);padding:7px 8px;line-height:1;background:none;border:0;cursor:pointer}
+.lang button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
+.top{padding-block:clamp(56px,8vw,104px) clamp(32px,4vw,48px);border-bottom:1px solid var(--line)}
+.top h1{font-size:clamp(54px,9vw,120px)}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin:44px 0 0;padding:0;border-top:1px solid rgba(255,255,255,.18)}
+.steps li{list-style:none;padding:16px 20px 4px 0;color:var(--muted);font-size:15px}
+.steps li + li{padding-left:20px;border-left:1px solid rgba(255,255,255,.18)}
+.steps b{display:block;font-family:var(--display);font-style:italic;font-weight:900;font-size:30px;color:var(--fg);line-height:1;margin-bottom:6px}
+@media (max-width:760px){.steps{grid-template-columns:1fr}.steps li + li{padding-left:0;border-left:0;border-top:1px solid rgba(255,255,255,.18)}}
+main section{padding-block:clamp(40px,6vw,72px)}
+.notice{border:1px solid var(--line);border-left:3px solid var(--accent);background:var(--panel);padding:18px 20px;margin-bottom:32px}
+.notice.ok{border-left-color:var(--ok)}
+.notice.err{border-left-color:var(--err)}
+.notice strong{font-family:var(--display);font-style:italic;text-transform:uppercase;font-size:26px;display:block;line-height:1.1;margin-bottom:6px}
+.notice p{margin:4px 0 0;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+.card{background:var(--panel);border:1px solid var(--line);display:flex;flex-direction:column}
+.card img{width:100%;aspect-ratio:16/9;object-fit:cover;border-bottom:1px solid var(--line)}
+.card .in{padding:20px;display:flex;flex-direction:column;gap:12px;flex:1}
+.tag{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.card h2{font-family:var(--display);font-weight:900;font-style:italic;text-transform:uppercase;font-size:34px;line-height:.95;margin:0}
+.desc{color:var(--muted);font-size:15px;white-space:pre-line;margin:0;overflow:hidden}
+.desc.clamp{display:-webkit-box;-webkit-line-clamp:7;-webkit-box-orient:vertical}
+.more{background:none;border:0;padding:0;color:var(--fg);font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;align-self:flex-start;text-decoration:underline}
+.buy{margin-top:auto;display:flex;flex-direction:column;gap:12px;padding-top:8px;border-top:1px solid var(--line)}
+.price{font-family:var(--display);font-weight:900;font-style:italic;font-size:40px;line-height:1;font-variant-numeric:tabular-nums}
+.price small{font-size:20px;color:var(--muted);font-weight:800}
+.hint{color:var(--muted);font-size:14px;margin:0}
+.state{color:var(--muted);padding-block:40px}
+.err-inline{color:var(--err);font-size:14px;margin:0}
+footer{border-top:1px solid var(--line);padding-block:34px 42px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+footer .wrap{display:flex;flex-wrap:wrap;gap:14px 32px;justify-content:space-between}
+footer a{text-decoration:none;color:var(--fg)}
+footer a:hover{color:var(--accent)}
+footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
+@media (max-width:420px){.lang button{padding:7px 6px}.logo b{display:none}}
+@media (max-width:900px){.logo small{display:none}}
+</style>
+</head>
+<body>
+
+<nav class="nav" aria-label="Main">
+  <div class="wrap">
+    <a class="logo" href="/" aria-label="STR2G HYROX"><img class="mark" src="/favicon.svg?v=2" alt="" width="34" height="34"><b>STR<span class="gold">2</span>G</b><small>Storefront</small></a>
+    <div class="navlinks">
+      <div class="lang" role="group" aria-label="Language"><button type="button" data-lang="cs">CZ</button><button type="button" data-lang="en">EN</button></div>
+    </div>
+  </div>
+</nav>
+
+<header class="top">
+  <div class="wrap">
+    <p class="eyebrow" data-t="eyebrow">STR2G HYROX · Láďa &amp; Ria</p>
+    <h1 class="display" data-t="h1">Vyber si <span class="gold">program</span></h1>
+    <p class="lead" data-t="lead">Zaplatíš kartou tady na webu, registrace předem není potřeba. Trénink pak najdeš v appce Strong Coach.</p>
+    <ol class="steps">
+      <li><b>01</b><span data-t="s1">Vyber program a zaplať kartou.</span></li>
+      <li><b>02</b><span data-t="s2">Na e-mail ti přijde odkaz do appky. Nastavíš si heslo.</span></li>
+      <li><b>03</b><span data-t="s3">Trénink máš v telefonu, zapisuješ výsledky, kouč je vidí.</span></li>
+    </ol>
+  </div>
+</header>
+
+<main>
+  <section>
+    <div class="wrap">
+      <div id="notice"></div>
+      <div id="list" class="grid" aria-live="polite"><p class="state" data-t="loading">Načítám programy…</p></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div style="display:flex;align-items:center;gap:12px"><img loading="lazy" src="/favicon.svg?v=2" alt="" width="26" height="26" style="border:1px solid var(--line);border-radius:6px"><span>© 2026 STR2G · Stronger Together · Strong Coach</span></div>
+    <div class="links">
+      <a href="/" data-t="home">Hlavní stránka</a>
+      <a href="https://instagram.com/22segge_coach" target="_blank" rel="noopener">@22segge_coach</a>
+      <a href="/privacy/" data-t="privacy">Ochrana osobních údajů</a>
+      <a href="/refund-policy/" data-t="refund">Vrácení peněz</a>
+      <a href="#" onclick="window.str2gConsentReset&&str2gConsentReset();return false;">Cookies</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  // Programy a ceny se berou z appky Strong Coach (veřejný storefront kouče). Platba běží přes Stripe.
+  var API = 'https://nqivuuwnlckgvnohcrlv.supabase.co';
+  var KEY = 'sb_publishable_XTnwDJvGx75s3ctFO6m-fA_8JFPm7P6'; // veřejný klíč appky, určený do prohlížeče
+  var SLUG = 'str2g-hyrox';
+  var APP = 'https://app.str2g.com';
+
+  var T = {
+    cs: {
+      eyebrow: 'STR2G HYROX · Láďa & Ria', h1: 'Vyber si <span class="gold">program</span>',
+      lead: 'Zaplatíš kartou tady na webu, registrace předem není potřeba. Trénink pak najdeš v appce Strong Coach.',
+      s1: 'Vyber program a zaplať kartou.', s2: 'Na e-mail ti přijde odkaz do appky. Nastavíš si heslo.', s3: 'Trénink máš v telefonu, zapisuješ výsledky, kouč je vidí.',
+      loading: 'Načítám programy…', home: 'Hlavní stránka', privacy: 'Ochrana osobních údajů', refund: 'Vrácení peněz',
+      buy: 'Koupit', sub: 'Předplatit', opening: 'Otevírám platbu…', more: 'Celý popis', less: 'Méně',
+      month: '/ měsíc', year: '/ rok', once: 'jednorázově',
+      kind: { one_to_one: '1:1 coaching', group: 'Skupinový program', fixed: 'Program' },
+      empty: 'Teď tu žádný program v nabídce není. Napiš nám na Instagram.',
+      loadErr: 'Programy se nepodařilo načíst. Zkus stránku načíst znovu.',
+      noPay: 'Platba kartou tu zatím není zapnutá. Napiš nám na Instagram.',
+      payErr: 'Platbu se nepodařilo spustit. Zkus to za chvíli znovu.',
+      gone: 'Tenhle program už není v nabídce. Načti stránku znovu.',
+      okT: 'Díky, zaplaceno!', okP: 'Na e-mail, který jsi zadal u platby, ti během pár minut přijde odkaz do appky Strong Coach. Nastavíš si heslo a trénink na tebe čeká.',
+      okP2: 'Účet v appce už máš? Prostě se přihlas, program tam najdeš.', okLink: 'Otevřít appku',
+      okP3: 'Nic nepřišlo? Mrkni do spamu, nebo nám napiš.',
+      cancel: 'Platba se nedokončila, nic se nestrhlo.',
+      note: 'Po zaplacení ti přijde e-mail s přístupem do appky.', noteSub: 'Předplatné zrušíš kdykoli v appce.'
+    },
+    en: {
+      eyebrow: 'STR2G HYROX · Láďa & Ria', h1: 'Pick your <span class="gold">program</span>',
+      lead: 'Pay by card right here, no sign-up needed first. Your training then lives in the Strong Coach app.',
+      s1: 'Pick a program and pay by card.', s2: 'You get a link to the app by e-mail. Set your password.', s3: 'Training on your phone, you log results, the coach sees them.',
+      loading: 'Loading programs…', home: 'Home', privacy: 'Privacy policy', refund: 'Refund policy',
+      buy: 'Buy', sub: 'Subscribe', opening: 'Opening payment…', more: 'Full description', less: 'Less',
+      month: '/ month', year: '/ year', once: 'one-off',
+      kind: { one_to_one: '1:1 coaching', group: 'Group program', fixed: 'Program' },
+      empty: 'No programs on offer right now. Message us on Instagram.',
+      loadErr: "Couldn't load the programs. Try reloading the page.",
+      noPay: 'Card payments are not switched on yet. Message us on Instagram.',
+      payErr: "Couldn't start the payment. Try again in a moment.",
+      gone: 'This program is no longer on offer. Reload the page.',
+      okT: "Thanks, you're paid!", okP: "Within a few minutes you'll get a link to the Strong Coach app at the e-mail you used for the payment. Set your password and your training is waiting.",
+      okP2: 'Already have an account? Just log in, the program is there.', okLink: 'Open the app',
+      okP3: 'Nothing arrived? Check your spam, or message us.',
+      cancel: "The payment wasn't completed. You haven't been charged.",
+      note: "After payment you'll get an e-mail with access to the app.", noteSub: 'Cancel your subscription any time in the app.'
+    }
+  };
+
+  var qs = new URLSearchParams(location.search);
+  var saved = null; try { saved = localStorage.getItem('str2g-sf-lang'); } catch (e) {}
+  var nav = (navigator.language || '').toLowerCase();
+  var lang = qs.get('lang') === 'en' || qs.get('lang') === 'cs' ? qs.get('lang') : saved || (/^(cs|sk)/.test(nav) ? 'cs' : 'en');
+  var data = null, loadFailed = false, busy = '';
+
+  function t(k) { return T[lang][k]; }
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  function safeImg(u) { try { var x = new URL(u); return x.protocol === 'https:' ? x.href : null; } catch (e) { return null; } }
+  function money(p) {
+    var amount = (p.price_cents / 100).toLocaleString(lang === 'cs' ? 'cs-CZ' : 'en-GB', { maximumFractionDigits: 2 });
+    var cur = p.currency === 'eur' ? '€' : (lang === 'cs' ? 'Kč' : 'CZK');
+    return lang === 'cs' || p.currency !== 'eur' ? amount + ' ' + cur : cur + amount;
+  }
+  function rest(path) {
+    return fetch(API + '/rest/v1/' + path, { headers: { apikey: KEY, Authorization: 'Bearer ' + KEY } }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); });
+  }
+
+  function texts() {
+    document.documentElement.lang = lang;
+    document.querySelectorAll('[data-t]').forEach(function (n) {
+      var v = t(n.getAttribute('data-t'));
+      if (n.getAttribute('data-t') === 'h1') n.innerHTML = v; else n.textContent = v;
+    });
+    document.querySelectorAll('.lang button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-lang') === lang)); });
+  }
+
+  function notice() {
+    var box = document.getElementById('notice'); box.textContent = '';
+    var st = qs.get('platba');
+    if (st === 'ok') {
+      var n = el('div', 'notice ok'); n.setAttribute('role', 'status');
+      n.appendChild(el('strong', null, t('okT'))); n.appendChild(el('p', null, t('okP')));
+      var p2 = el('p', null, t('okP2') + ' '); var a = el('a', null, t('okLink')); a.href = APP; p2.appendChild(a); n.appendChild(p2);
+      n.appendChild(el('p', null, t('okP3')));
+      box.appendChild(n);
+    } else if (st === 'zrusena') {
+      var c = el('div', 'notice'); c.appendChild(el('p', null, t('cancel'))); box.appendChild(c);
+    }
+    // návrat ze Stripe: potvrzení hned na očích, ne až pod úvodem
+    if (st && !notice.shown) { notice.shown = true; setTimeout(function () { box.scrollIntoView({ block: 'center' }); }, 60); }
+  }
+
+  function track(p) {
+    var value = Math.round((p.price_cents || 0) / 100);
+    try {
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({ ecommerce: null });
+      window.dataLayer.push({ event: 'begin_checkout', ecommerce: { currency: 'CZK', value: value, items: [{ item_name: p.name, price: value, quantity: 1 }] } });
+      if (window.gtag) window.gtag('event', 'begin_checkout', { currency: 'CZK', value: value, items: [{ item_name: p.name, price: value }] });
+      if (window.fbq) window.fbq('track', 'InitiateCheckout', { content_name: p.name, value: value, currency: 'CZK' });
+      if (navigator.sendBeacon) navigator.sendBeacon('/api/checkout-click', new Blob([JSON.stringify({ p: p.name, l: lang, src: 'storefront', c: window.fbq ? 1 : 0 })], { type: 'text/plain' }));
+    } catch (e) {}
+  }
+
+  function buy(p, btn, errBox) {
+    if (busy) return;
+    busy = p.id; errBox.textContent = ''; btn.disabled = true; btn.textContent = t('opening');
+    track(p);
+    var back = location.origin + location.pathname + (lang === 'en' ? '?lang=en' : '');
+    fetch(API + '/functions/v1/payments', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', apikey: KEY, Authorization: 'Bearer ' + KEY },
+      body: JSON.stringify({ action: 'store_checkout', program_id: p.id, return_url: back, lang: lang })
+    }).then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { return { ok: r.ok, d: d }; }); })
+      .then(function (res) {
+        if (res.ok && res.d && res.d.url) { location.href = res.d.url; return; }
+        var code = res.d && res.d.error;
+        throw new Error(code === 'coach_no_stripe' || code === 'payments_off' || code === 'live_key_blocked' ? 'noPay' : code === 'program_not_found' ? 'gone' : 'payErr');
+      })
+      .catch(function (e) {
+        busy = ''; btn.disabled = false; btn.textContent = p.billing_period ? t('sub') : t('buy');
+        errBox.textContent = t(T[lang][e.message] ? e.message : 'payErr');
+      });
+  }
+
+  function render() {
+    var list = document.getElementById('list'); list.textContent = '';
+    if (loadFailed) { list.appendChild(el('p', 'state', t('loadErr'))); return; }
+    if (!data) { list.appendChild(el('p', 'state', t('loading'))); return; }
+    var progs = data.programs.filter(function (p) { return p.price_cents; });
+    if (!progs.length) { list.appendChild(el('p', 'state', t('empty'))); return; }
+    progs.forEach(function (p) {
+      var card = el('article', 'card');
+      var img = p.image_url && safeImg(p.image_url);
+      if (img) { var im = el('img'); im.src = img; im.alt = ''; im.loading = 'lazy'; card.appendChild(im); }
+      var inn = el('div', 'in');
+      inn.appendChild(el('span', 'tag', T[lang].kind[p.kind] || 'Program'));
+      inn.appendChild(el('h2', null, p.name));
+      if (p.description) {
+        var d = el('p', 'desc clamp', p.description); inn.appendChild(d);
+        if (p.description.length > 320 || (p.description.match(/\n/g) || []).length > 6) {
+          var m = el('button', 'more', t('more')); m.type = 'button';
+          m.onclick = function () { var c = d.classList.toggle('clamp'); m.textContent = c ? t('more') : t('less'); };
+          inn.appendChild(m);
+        }
+      }
+      var b = el('div', 'buy');
+      var pr = el('div', 'price', money(p) + ' ');
+      pr.appendChild(el('small', null, p.billing_period === 'month' ? t('month') : p.billing_period === 'year' ? t('year') : t('once')));
+      b.appendChild(pr);
+      var errBox = el('p', 'err-inline'); errBox.setAttribute('role', 'alert');
+      if (data.space.can_buy) {
+        var btn = el('button', 'btn btn-gold', p.billing_period ? t('sub') : t('buy')); btn.type = 'button';
+        btn.onclick = function () { buy(p, btn, errBox); };
+        b.appendChild(btn);
+        b.appendChild(el('p', 'hint', p.billing_period ? t('note') + ' ' + t('noteSub') : t('note')));
+      } else {
+        b.appendChild(el('p', 'hint', t('noPay')));
+      }
+      b.appendChild(errBox);
+      inn.appendChild(b);
+      card.appendChild(inn);
+      list.appendChild(card);
+    });
+  }
+
+  document.querySelectorAll('.lang button').forEach(function (b) {
+    b.addEventListener('click', function () {
+      lang = b.getAttribute('data-lang'); try { localStorage.setItem('str2g-sf-lang', lang); } catch (e) {}
+      texts(); notice(); render();
+    });
+  });
+  texts(); notice();
+
+  rest('storefront_spaces?slug=eq.' + SLUG + '&select=id,name,can_buy')
+    // appka bez sloupce can_buy (starší databáze): programy ukážeme, jen bez nákupu
+    .catch(function () { return rest('storefront_spaces?slug=eq.' + SLUG + '&select=id,name'); })
+    .then(function (s) {
+      if (!s.length) throw new Error('space');
+      return rest('storefront_programs?space_id=eq.' + s[0].id + '&select=id,name,kind,description,image_url,price_cents,currency,billing_period&order=price_cents')
+        .then(function (p) { data = { space: s[0], programs: p }; });
+    })
+    .catch(function () { loadFailed = true; })
+    .then(render);
+})();
+</script>
+</body>
+</html>
