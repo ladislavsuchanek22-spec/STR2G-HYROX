@@ -29,6 +29,10 @@ PROGRAMS = {
     "taper":      ("JBwt4zlJKA0vCQn9cfih", 550, False, "2-Week HYROX Taper 2.0"),
     "coaching":   ("Ckjr2cZAiemzMVVr8F1D", 3500, True, "HYROX Individual Program 1:1"),
 }
+# Ceny a měsíční/jednorázové bere web z appky Strong Coach (i18n/app_store.py, i18n/app_programs.json)
+from app_store import apply as _app_apply
+_app_apply(PROGRAMS)
+
 # Pořadí karet na stránce "plan"
 PLAN_PICKS = ["basic", "advanced", "raceprep", "singles", "running", "taper", "coaching"]
 # Advanced má zatím obsah jen v EN a CS; ostatní jazyky ho na stránce "plan" vynechají

@@ -7,7 +7,7 @@
   Co to dělá:
   1) Cookie lišta (souhlas / odmítnutí) – bez souhlasu se Meta Pixel vůbec nenačte.
   2) Google tag (GA4 + Google Ads) v režimu Consent Mode v2 – před souhlasem nic neukládá.
-  3) Každý klik na platební odkaz do Strivee = InitiateCheckout (Meta) + begin_checkout (GA4) + konverze (Google Ads), včetně názvu programu a ceny.
+  3) Každý klik na platební odkaz do Strivee (u odkazů na vlastní /storefront/ jen select_item, checkout hlásí storefront) = InitiateCheckout (Meta) + begin_checkout (GA4) + konverze (Google Ads), včetně názvu programu a ceny.
   4) Funkce window.str2gLead('kviz') pro budoucí kvíz / formulář = Lead (Meta) + generate_lead (GA4) + konverze (Ads).
   5) window.str2gConsentReset() znovu otevře cookie lištu.
   6) Tanganica pixel (Google Tag Manager GTM-TRS5RSN) je na konci tohoto souboru doslova podle Tanganica, aby ho
@@ -92,9 +92,22 @@
   }
 
   document.addEventListener('click', function (e) {
-    var a = e.target && e.target.closest ? e.target.closest('a[href*="train.strivee.app/payment"]') : null;
+    var a = e.target && e.target.closest ? e.target.closest('a[href*="train.strivee.app/payment"], a[href*="/storefront/?program="]') : null;
     if (!a) return;
     var p = programInfo(a);
+    // Odkaz na vlastní storefront: výběr programu. Samotný begin_checkout / InitiateCheckout pošle
+    // storefront až při kliku na Koupit, aby se nepočítal dvakrát.
+    var toStore = a.href.indexOf('/storefront/') !== -1;
+    if (toStore) {
+      window.dataLayer.push({ ecommerce: null });
+      window.dataLayer.push({ event: 'select_item', ecommerce: { currency: 'CZK', value: p.value, items: [{ item_name: p.name, price: p.value, quantity: 1 }] } });
+      gtag('event', 'select_item', { items: [{ item_name: p.name, price: p.value }] });
+      if (granted() && window.fbq) window.fbq('track', 'ViewContent', { content_name: p.name, value: p.value, currency: 'CZK' });
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
+      e.preventDefault();
+      setTimeout(function () { window.location.href = a.href; }, 250);
+      return;
+    }
 
     // Pro Tag Manager (Tanganica): standardní e-commerce událost v dataLayer
     window.dataLayer.push({ ecommerce: null });
@@ -690,7 +703,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
         <div class="meta"><div><strong>5</strong>dní / týždeň</div><div><strong>60</strong>min / deň</div><div><strong>1</strong>fáza / deň</div></div>
         <p class="for">Pre tých, čo chcú začať trénovať HYROX poriadne.</p>
         <p>Beh, sila a HYROX pohyby v jednom pláne. Postavíš základ, vyladíš techniku a vytvoríš si rutinu, ktorú udržíš.</p>
-        <div class="actions"><a class="btn btn-gold" href="https://train.strivee.app/payment/0i7RPLukkMgXOLeInwKe" target="_blank" rel="noopener" data-program="HYROX Basic" data-value="750">Začať</a><a class="btn btn-ghost" href="/sk/programy/hyrox-basic/">Detail</a></div>
+        <div class="actions"><a class="btn btn-gold" href="/storefront/?program=c18b7800-f596-441d-841e-1e81d444d00c" data-program="HYROX Basic" data-value="750">Začať</a><a class="btn btn-ghost" href="/sk/programy/hyrox-basic/">Detail</a></div>
       </article>
       <article class="card" id="competitor">
         <div class="kind">Výkon</div>
@@ -699,7 +712,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
         <div class="meta"><div><strong>6</strong>dní / týždeň</div><div><strong>120</strong>min / deň</div><div><strong>2</strong>fázy / deň</div></div>
         <p class="for">Pre skúsenejších pretekárov, ktorí chcú rýchlejší čas.</p>
         <p>Viac behu, vyššia pracovná kapacita, sila, pretekové tempo a rýchle prechody. Pre tých, čo trénujú pravidelne a majú jasný cieľ.</p>
-        <div class="actions"><a class="btn btn-gold" href="https://train.strivee.app/payment/O1mbnAnKs03B8RGEtMxv" target="_blank" rel="noopener" data-program="HYROX Competitor" data-value="960">Začať</a><a class="btn btn-ghost" href="/sk/programy/hyrox-competitor/">Detail</a></div>
+        <div class="actions"><a class="btn btn-gold" href="/storefront/?program=4bb39d07-5f72-4c58-b074-b6c2f3d25730" data-program="HYROX Competitor" data-value="960">Začať</a><a class="btn btn-ghost" href="/sk/programy/hyrox-competitor/">Detail</a></div>
       </article>
       <article class="card" id="pro">
         <div class="kind">Najvyššia úroveň</div>
@@ -708,7 +721,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
         <div class="meta"><div><strong>6</strong>dní / týždeň</div><div><strong>75</strong>min / deň</div><div><strong>1</strong>fáza / deň</div></div>
         <p class="for">Pre tých, čo berú HYROX vážne a chcú to najlepšie, čo robíme.</p>
         <p>Beh a funkčný tréning v jasnej štruktúre, technické videá a vedenie k tempu, regenerácii a odpočinku. Výkon rastie bez pretrénovania.</p>
-        <div class="actions"><a class="btn btn-gold" href="https://train.strivee.app/payment/D6kVnKDHN2Y3sKO0sPGI" target="_blank" rel="noopener" data-program="HYROX Pro Athlete" data-value="1350">Začať</a><a class="btn btn-ghost" href="/sk/programy/hyrox-pro-athlete/">Detail</a></div>
+        <div class="actions"><a class="btn btn-gold" href="/storefront/?program=cb99bf54-d8b4-433e-a08b-d0fe2a138ee5" data-program="HYROX Pro Athlete" data-value="1350">Začať</a><a class="btn btn-ghost" href="/sk/programy/hyrox-pro-athlete/">Detail</a></div>
       </article>
     </div>
 
@@ -721,7 +734,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
         <div class="meta"><div><strong>6</strong>dní / týždeň</div><div><strong>75</strong>min / deň</div><div><strong>12</strong>týždňov</div></div>
         <p class="for">Na prvé preteky, pre akúkoľvek úroveň.</p>
         <p>Príprava postavená na konkrétny dátum. Sila, beh na prahu, motor, HYROX tempové tréningy a kompletné simulácie. Preteky sú v sobotu 12. týždňa.</p>
-        <div class="actions"><a class="btn btn-gold" href="https://train.strivee.app/payment/PAAjJouaTHNtDEpVeWq2" target="_blank" rel="noopener" data-program="12-Week HYROX Advanced" data-value="1900">Kúpiť</a><a class="btn btn-ghost" href="/sk/programy/12-tyzdnovy-hyrox-advanced/">Detail</a></div>
+        <div class="actions"><a class="btn btn-gold" href="/storefront/?program=bf5b8a49-3c35-4fb5-ba06-837f9f40a650" data-program="12-Week HYROX Advanced" data-value="1900">Kúpiť</a><a class="btn btn-ghost" href="/sk/programy/12-tyzdnovy-hyrox-advanced/">Detail</a></div>
       </article><!--/ADV-->
       <article class="card" id="raceprep">
         <div class="kind">12 týždňov do pretekov</div>
@@ -730,7 +743,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
         <div class="meta"><div><strong>6</strong>dní / týždeň</div><div><strong>90</strong>min / deň</div><div><strong>12</strong>týždňov</div></div>
         <p class="for">Pre tých, čo chcú na pretekoch podať výkon, nie len dobehnúť.</p>
         <p>Kompletná príprava. Najprv základ, potom intenzita a špecifický tréning na preteky, nakoniec ladenie. Tempo, stanice, prechody a výkon pod únavou.</p>
-        <div class="actions"><a class="btn btn-gold" href="https://train.strivee.app/payment/0dvaQ3aahjzyCoWmPgMz" target="_blank" rel="noopener" data-program="12-Week HYROX Race Prep" data-value="2100">Kúpiť</a><a class="btn btn-ghost" href="/sk/programy/12-tyzdnovy-hyrox-race-prep/">Detail</a></div>
+        <div class="actions"><a class="btn btn-gold" href="/storefront/?program=9cb1e2aa-9a7e-4f05-93b8-4b948b461891" data-program="12-Week HYROX Race Prep" data-value="2100">Kúpiť</a><a class="btn btn-ghost" href="/sk/programy/12-tyzdnovy-hyrox-race-prep/">Detail</a></div>
       </article>
       <article class="card" id="singles">
         <div class="kind">8 týždňov · Singles</div>
@@ -739,7 +752,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
         <div class="meta"><div><strong>6</strong>dní / týždeň</div><div><strong>60</strong>min / deň</div><div><strong>8</strong>týždňov</div></div>
         <p class="for">Pre tých, čo majú tréningový základ a preteky v kalendári.</p>
         <p>Kompletná osemtýždňová príprava. Beh, sila, HYROX tréningy a beh po staniciach. Čím bližšie k pretekom, tým špecifickejšie.</p>
-        <div class="actions"><a class="btn btn-gold" href="https://train.strivee.app/payment/tsC3Khz8zSQMLLIs9Fnp" target="_blank" rel="noopener" data-program="8-Week HYROX Singles" data-value="1500">Kúpiť</a><a class="btn btn-ghost" href="/sk/programy/8-tyzdnovy-hyrox-singles/">Detail</a></div>
+        <div class="actions"><a class="btn btn-gold" href="/storefront/?program=1f4f0945-7a22-4b7e-a5aa-558536973d6b" data-program="8-Week HYROX Singles" data-value="1500">Kúpiť</a><a class="btn btn-ghost" href="/sk/programy/8-tyzdnovy-hyrox-singles/">Detail</a></div>
       </article>
       <article class="card" id="doubles">
         <div class="kind">8 týždňov · Doubles</div>
@@ -748,7 +761,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
         <div class="meta"><div><strong>6</strong>dní / týždeň</div><div><strong>75</strong>min / deň</div><div><strong>8</strong>týždňov</div></div>
         <p class="for">Pre dvojice, ktoré chcú pretekať múdro, nie len spolu.</p>
         <p>Individuálna kondícia aj tímová stránka: stratégia na staniciach, delenie práce, spoločné tempo a priebeh pretekov. Využijete silné stránky oboch.</p>
-        <div class="actions"><a class="btn btn-gold" href="https://train.strivee.app/payment/QFgjJOqEU6Y1x58k0SBH" target="_blank" rel="noopener" data-program="8-Week HYROX Doubles" data-value="1700">Kúpiť</a><a class="btn btn-ghost" href="/sk/programy/8-tyzdnovy-hyrox-doubles/">Detail</a></div>
+        <div class="actions"><a class="btn btn-gold" href="/storefront/?program=b63f4bcc-0007-4bee-b040-7a0349f59f04" data-program="8-Week HYROX Doubles" data-value="1700">Kúpiť</a><a class="btn btn-ghost" href="/sk/programy/8-tyzdnovy-hyrox-doubles/">Detail</a></div>
       </article>
     </div>
 
@@ -761,7 +774,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
         <div class="meta"><div><strong>6</strong>dní / týždeň</div><div><strong>75</strong>min / deň</div><div><strong>12</strong>týždňov</div></div>
         <p class="for">Pre všetkých, ktorým na pretekoch uteká čas na behu.</p>
         <p>Bežecká ekonomika, tempo, aeróbna kapacita a kvalitný beh pod únavou. Ľahké behy, tempá, intervaly a pretekové tempo. Samostatne aj popri silovom tréningu.</p>
-        <div class="actions"><a class="btn btn-gold" href="https://train.strivee.app/payment/l4LKqbJX8ezlAEDBm6Dg" target="_blank" rel="noopener" data-program="Running for HYROX 2.0" data-value="1000">Kúpiť</a><a class="btn btn-ghost" href="/sk/programy/beh-pre-hyrox/">Detail</a></div>
+        <div class="actions"><a class="btn btn-gold" href="/storefront/?program=74b976b7-5861-4567-8771-516438a6f406" data-program="Running for HYROX 2.0" data-value="1000">Kúpiť</a><a class="btn btn-ghost" href="/sk/programy/beh-pre-hyrox/">Detail</a></div>
       </article>
       <article class="card" id="taper">
         <div class="kind">Posledné 2 týždne</div>
@@ -770,7 +783,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
         <div class="meta"><div><strong>6</strong>dní / týždeň</div><div><strong>90</strong>min / deň</div><div><strong>2</strong>týždňov</div></div>
         <p class="for">Pre všetkých, čo majú preteky za dverami. Open, Doubles aj Pro.</p>
         <p>Odmakané máš. Teraz to nepokaz. Uberieme objem, udržíme ťa ostrého v pretekovom tempe a na štart prídeš s čerstvými nohami a jasným plánom.</p>
-        <div class="actions"><a class="btn btn-gold" href="https://train.strivee.app/payment/JBwt4zlJKA0vCQn9cfih" target="_blank" rel="noopener" data-program="2-Week HYROX Taper 2.0" data-value="550">Kúpiť</a><a class="btn btn-ghost" href="/sk/programy/hyrox-taper/">Detail</a></div>
+        <div class="actions"><a class="btn btn-gold" href="/storefront/?program=f82e4048-8685-4e56-ae09-1ed40367a1b8" data-program="2-Week HYROX Taper 2.0" data-value="550">Kúpiť</a><a class="btn btn-ghost" href="/sk/programy/hyrox-taper/">Detail</a></div>
       </article>
     </div>
 
@@ -790,7 +803,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
           <li>Priamy kontakt s trénerom</li>
         </ul>
         <div class="actions">
-          <a class="btn btn-gold" href="https://train.strivee.app/payment/Ckjr2cZAiemzMVVr8F1D" target="_blank" rel="noopener" data-program="HYROX Individual Program 1:1" data-value="3500">Chcem 1:1</a>
+          <a class="btn btn-gold" href="/storefront/?program=f855a4e1-d333-40e2-b35f-fe3c7387f271" data-program="HYROX Individual Program 1:1" data-value="3500">Chcem 1:1</a>
           <a class="btn btn-ghost" href="/sk/online-hyrox-trener/">Detail</a>
         </div>
       </div>
@@ -920,7 +933,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
     <p class="lead">Vyber program, stiahni Strivee a zajtra ráno presne vieš, čo ťa čaká.</p>
     <div class="cta-row">
       <a class="btn btn-gold" href="#programs">Vybrať program</a>
-      <a class="btn btn-ghost" href="https://train.strivee.app/p/str2g-hyrox" target="_blank" rel="noopener">Všetky programy na Strivee</a>
+      <a class="btn btn-ghost" href="/storefront/">Všetky programy</a>
     </div>
   </div>
 </section>
@@ -1246,7 +1259,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
     if (h > 0 && scrollY / h >= CFG.SCROLL_RATIO) open();
   }
   function buyVisible() {
-    var as = document.querySelectorAll('a[href*="train.strivee.app/payment"]');
+    var as = document.querySelectorAll('a[href*="train.strivee.app/payment"], a[href*="/storefront/?program="]');
     for (var i = 0; i < as.length; i++) {
       var r = as[i].getBoundingClientRect();
       if (r.width && r.bottom > 0 && r.top < innerHeight) return true;

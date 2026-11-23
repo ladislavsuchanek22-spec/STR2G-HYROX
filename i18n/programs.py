@@ -8,6 +8,7 @@ from html import escape
 from pathlib import Path
 
 from pages_content import PROGRAMS, HOME, LOCALE, price
+from app_store import buy_url
 from programs_content import PT, PSLUGS, PDATA, PROG_LANGS, PROG_ORDER
 import pages
 import aeo_eu
@@ -66,7 +67,7 @@ def price_html(lang, pid):
 def buy_btn(lang, pid, cls="btn btn-gold"):
     sid, czk, monthly, pname = PROGRAMS[pid]
     u = PT[lang]["ui"]
-    return (f'<a class="{cls}" href="https://train.strivee.app/payment/{sid}" target="_blank" rel="noopener" '
+    return (f'<a class="{cls}" href="{buy_url(pid)}" '
             f'data-program="{escape(pname)}" data-value="{czk}">{u["start"] if monthly else u["buy"]}</a>')
 
 
@@ -112,7 +113,7 @@ def schema(lang, pid, url, p, faq):
     u = PT[lang]["ui"]
     home = BASE + HOME[lang]
     offer = {"@type": "Offer", "price": str(czk), "priceCurrency": "CZK", "availability": "https://schema.org/InStock",
-             "url": f"https://train.strivee.app/payment/{sid}", "seller": {"@id": BASE + "/#org"},
+             "url": BASE + buy_url(pid), "seller": {"@id": BASE + "/#org"},
              "shippingDetails": SHIPPING, "hasMerchantReturnPolicy": RETURNS}
     if monthly:
         offer["priceSpecification"] = {"@type": "UnitPriceSpecification", "price": str(czk), "priceCurrency": "CZK", "billingDuration": "P1M"}

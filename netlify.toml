@@ -1,6 +1,11 @@
 [build]
   publish = "."
-  command = ""
+  # Při každém nasazení si web stáhne programy a ceny z appky Strong Coach a přegeneruje stránky
+  # (i18n/app_store.py). Když API appky neodpoví, použije se uložený stav i18n/app_programs.json.
+  command = "python3 i18n/build.py"
+
+[build.environment]
+  PYTHON_VERSION = "3.12"
 
 # Zdrojáky serverových funkcí (STR2G Athletes) leží v publikované složce: nikdy je neservírovat jako soubory
 [[redirects]]

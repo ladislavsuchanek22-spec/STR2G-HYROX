@@ -7,7 +7,7 @@
   Co to dělá:
   1) Cookie lišta (souhlas / odmítnutí) – bez souhlasu se Meta Pixel vůbec nenačte.
   2) Google tag (GA4 + Google Ads) v režimu Consent Mode v2 – před souhlasem nic neukládá.
-  3) Každý klik na platební odkaz do Strivee = InitiateCheckout (Meta) + begin_checkout (GA4) + konverze (Google Ads), včetně názvu programu a ceny.
+  3) Každý klik na platební odkaz do Strivee (u odkazů na vlastní /storefront/ jen select_item, checkout hlásí storefront) = InitiateCheckout (Meta) + begin_checkout (GA4) + konverze (Google Ads), včetně názvu programu a ceny.
   4) Funkce window.str2gLead('kviz') pro budoucí kvíz / formulář = Lead (Meta) + generate_lead (GA4) + konverze (Ads).
   5) window.str2gConsentReset() znovu otevře cookie lištu.
   6) Tanganica pixel (Google Tag Manager GTM-TRS5RSN) je na konci tohoto souboru doslova podle Tanganica, aby ho
@@ -92,9 +92,22 @@
   }
 
   document.addEventListener('click', function (e) {
-    var a = e.target && e.target.closest ? e.target.closest('a[href*="train.strivee.app/payment"]') : null;
+    var a = e.target && e.target.closest ? e.target.closest('a[href*="train.strivee.app/payment"], a[href*="/storefront/?program="]') : null;
     if (!a) return;
     var p = programInfo(a);
+    // Odkaz na vlastní storefront: výběr programu. Samotný begin_checkout / InitiateCheckout pošle
+    // storefront až při kliku na Koupit, aby se nepočítal dvakrát.
+    var toStore = a.href.indexOf('/storefront/') !== -1;
+    if (toStore) {
+      window.dataLayer.push({ ecommerce: null });
+      window.dataLayer.push({ event: 'select_item', ecommerce: { currency: 'CZK', value: p.value, items: [{ item_name: p.name, price: p.value, quantity: 1 }] } });
+      gtag('event', 'select_item', { items: [{ item_name: p.name, price: p.value }] });
+      if (granted() && window.fbq) window.fbq('track', 'ViewContent', { content_name: p.name, value: p.value, currency: 'CZK' });
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
+      e.preventDefault();
+      setTimeout(function () { window.location.href = a.href; }, 250);
+      return;
+    }
 
     // Pro Tag Manager (Tanganica): standardní e-commerce událost v dataLayer
     window.dataLayer.push({ ecommerce: null });
@@ -690,7 +703,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
         <div class="meta"><div><strong>5</strong>giorni / settimana</div><div><strong>60</strong>min / giorno</div><div><strong>1</strong>sessione / giorno</div></div>
         <p class="for">Per chi vuole iniziare ad allenarsi seriamente per HYROX.</p>
         <p>Corsa, forza e movimenti HYROX in un unico piano. Costruisci la base, migliori la tecnica e crei una routine che riesci a mantenere.</p>
-        <div class="actions"><a class="btn btn-gold" href="https://train.strivee.app/payment/0i7RPLukkMgXOLeInwKe" target="_blank" rel="noopener" data-program="HYROX Basic" data-value="750">Inizia</a><a class="btn btn-ghost" href="/it/programmi/hyrox-basic/">Dettagli</a></div>
+        <div class="actions"><a class="btn btn-gold" href="/storefront/?program=c18b7800-f596-441d-841e-1e81d444d00c" data-program="HYROX Basic" data-value="750">Inizia</a><a class="btn btn-ghost" href="/it/programmi/hyrox-basic/">Dettagli</a></div>
       </article>
       <article class="card" id="competitor">
         <div class="kind">Performance</div>
@@ -699,7 +712,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
         <div class="meta"><div><strong>6</strong>giorni / settimana</div><div><strong>120</strong>min / giorno</div><div><strong>2</strong>sessioni / giorno</div></div>
         <p class="for">Per atleti esperti che vogliono un tempo migliore.</p>
         <p>Più corsa, più capacità di lavoro, forza, ritmo gara e transizioni rapide. Per chi si allena con costanza e ha un obiettivo chiaro.</p>
-        <div class="actions"><a class="btn btn-gold" href="https://train.strivee.app/payment/O1mbnAnKs03B8RGEtMxv" target="_blank" rel="noopener" data-program="HYROX Competitor" data-value="960">Inizia</a><a class="btn btn-ghost" href="/it/programmi/hyrox-competitor/">Dettagli</a></div>
+        <div class="actions"><a class="btn btn-gold" href="/storefront/?program=4bb39d07-5f72-4c58-b074-b6c2f3d25730" data-program="HYROX Competitor" data-value="960">Inizia</a><a class="btn btn-ghost" href="/it/programmi/hyrox-competitor/">Dettagli</a></div>
       </article>
       <article class="card" id="pro">
         <div class="kind">Livello top</div>
@@ -708,7 +721,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
         <div class="meta"><div><strong>6</strong>giorni / settimana</div><div><strong>75</strong>min / giorno</div><div><strong>1</strong>sessione / giorno</div></div>
         <p class="for">Per chi prende HYROX sul serio e vuole il meglio di ciò che facciamo.</p>
         <p>Corsa e lavoro funzionale con una struttura chiara, video tecnici e indicazioni su ritmo, recupero e riposo. La performance cresce senza sovrallenamento.</p>
-        <div class="actions"><a class="btn btn-gold" href="https://train.strivee.app/payment/D6kVnKDHN2Y3sKO0sPGI" target="_blank" rel="noopener" data-program="HYROX Pro Athlete" data-value="1350">Inizia</a><a class="btn btn-ghost" href="/it/programmi/hyrox-pro-athlete/">Dettagli</a></div>
+        <div class="actions"><a class="btn btn-gold" href="/storefront/?program=cb99bf54-d8b4-433e-a08b-d0fe2a138ee5" data-program="HYROX Pro Athlete" data-value="1350">Inizia</a><a class="btn btn-ghost" href="/it/programmi/hyrox-pro-athlete/">Dettagli</a></div>
       </article>
     </div>
 
@@ -721,7 +734,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
         <div class="meta"><div><strong>6</strong>giorni / settimana</div><div><strong>75</strong>min / giorno</div><div><strong>12</strong>settimane</div></div>
         <p class="for">Per la tua prima gara, a qualsiasi livello.</p>
         <p>Una preparazione costruita su una data precisa. Forza, corsa alla soglia, lavoro sul motore, sedute HYROX a ritmo e simulazioni complete. La gara cade il sabato della 12ª settimana.</p>
-        <div class="actions"><a class="btn btn-gold" href="https://train.strivee.app/payment/PAAjJouaTHNtDEpVeWq2" target="_blank" rel="noopener" data-program="12-Week HYROX Advanced" data-value="1900">Acquista</a><a class="btn btn-ghost" href="/it/programmi/12-settimane-hyrox-advanced/">Dettagli</a></div>
+        <div class="actions"><a class="btn btn-gold" href="/storefront/?program=bf5b8a49-3c35-4fb5-ba06-837f9f40a650" data-program="12-Week HYROX Advanced" data-value="1900">Acquista</a><a class="btn btn-ghost" href="/it/programmi/12-settimane-hyrox-advanced/">Dettagli</a></div>
       </article><!--/ADV-->
       <article class="card" id="raceprep">
         <div class="kind">12 settimane alla gara</div>
@@ -730,7 +743,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
         <div class="meta"><div><strong>6</strong>giorni / settimana</div><div><strong>90</strong>min / giorno</div><div><strong>12</strong>settimane</div></div>
         <p class="for">Per chi vuole rendere al massimo in gara, non solo arrivare in fondo.</p>
         <p>La preparazione completa. Prima la base, poi intensità e lavoro specifico, infine la rifinitura. Ritmo, stazioni, transizioni e performance sotto fatica.</p>
-        <div class="actions"><a class="btn btn-gold" href="https://train.strivee.app/payment/0dvaQ3aahjzyCoWmPgMz" target="_blank" rel="noopener" data-program="12-Week HYROX Race Prep" data-value="2100">Acquista</a><a class="btn btn-ghost" href="/it/programmi/12-settimane-hyrox-race-prep/">Dettagli</a></div>
+        <div class="actions"><a class="btn btn-gold" href="/storefront/?program=9cb1e2aa-9a7e-4f05-93b8-4b948b461891" data-program="12-Week HYROX Race Prep" data-value="2100">Acquista</a><a class="btn btn-ghost" href="/it/programmi/12-settimane-hyrox-race-prep/">Dettagli</a></div>
       </article>
       <article class="card" id="singles">
         <div class="kind">8 settimane · Singles</div>
@@ -739,7 +752,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
         <div class="meta"><div><strong>6</strong>giorni / settimana</div><div><strong>60</strong>min / giorno</div><div><strong>8</strong>settimane</div></div>
         <p class="for">Per chi ha una base di allenamento e una gara in calendario.</p>
         <p>Una preparazione completa di otto settimane. Corsa, forza, sessioni HYROX e corsa dopo le stazioni. Più si avvicina la gara, più diventa specifica.</p>
-        <div class="actions"><a class="btn btn-gold" href="https://train.strivee.app/payment/tsC3Khz8zSQMLLIs9Fnp" target="_blank" rel="noopener" data-program="8-Week HYROX Singles" data-value="1500">Acquista</a><a class="btn btn-ghost" href="/it/programmi/8-settimane-hyrox-singles/">Dettagli</a></div>
+        <div class="actions"><a class="btn btn-gold" href="/storefront/?program=1f4f0945-7a22-4b7e-a5aa-558536973d6b" data-program="8-Week HYROX Singles" data-value="1500">Acquista</a><a class="btn btn-ghost" href="/it/programmi/8-settimane-hyrox-singles/">Dettagli</a></div>
       </article>
       <article class="card" id="doubles">
         <div class="kind">8 settimane · Doubles</div>
@@ -748,7 +761,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
         <div class="meta"><div><strong>6</strong>giorni / settimana</div><div><strong>75</strong>min / giorno</div><div><strong>8</strong>settimane</div></div>
         <p class="for">Per le coppie che vogliono gareggiare con intelligenza, non solo insieme.</p>
         <p>Forma individuale e lato di squadra: strategia nelle stazioni, divisione del lavoro, ritmo comune e gestione della gara. Sfruttate i punti di forza di entrambi.</p>
-        <div class="actions"><a class="btn btn-gold" href="https://train.strivee.app/payment/QFgjJOqEU6Y1x58k0SBH" target="_blank" rel="noopener" data-program="8-Week HYROX Doubles" data-value="1700">Acquista</a><a class="btn btn-ghost" href="/it/programmi/8-settimane-hyrox-doubles/">Dettagli</a></div>
+        <div class="actions"><a class="btn btn-gold" href="/storefront/?program=b63f4bcc-0007-4bee-b040-7a0349f59f04" data-program="8-Week HYROX Doubles" data-value="1700">Acquista</a><a class="btn btn-ghost" href="/it/programmi/8-settimane-hyrox-doubles/">Dettagli</a></div>
       </article>
     </div>
 
@@ -761,7 +774,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
         <div class="meta"><div><strong>6</strong>giorni / settimana</div><div><strong>75</strong>min / giorno</div><div><strong>12</strong>settimane</div></div>
         <p class="for">Per chi perde tempo nelle frazioni di corsa.</p>
         <p>Economia di corsa, ritmo, capacità aerobica e corsa di qualità sotto fatica. Lenti, medi, ripetute e ritmo gara. Da solo o insieme al lavoro di forza.</p>
-        <div class="actions"><a class="btn btn-gold" href="https://train.strivee.app/payment/l4LKqbJX8ezlAEDBm6Dg" target="_blank" rel="noopener" data-program="Running for HYROX 2.0" data-value="1000">Acquista</a><a class="btn btn-ghost" href="/it/programmi/corsa-per-hyrox/">Dettagli</a></div>
+        <div class="actions"><a class="btn btn-gold" href="/storefront/?program=74b976b7-5861-4567-8771-516438a6f406" data-program="Running for HYROX 2.0" data-value="1000">Acquista</a><a class="btn btn-ghost" href="/it/programmi/corsa-per-hyrox/">Dettagli</a></div>
       </article>
       <article class="card" id="taper">
         <div class="kind">Ultime 2 settimane</div>
@@ -770,7 +783,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
         <div class="meta"><div><strong>6</strong>giorni / settimana</div><div><strong>90</strong>min / giorno</div><div><strong>2</strong>settimane</div></div>
         <p class="for">Per chi ha la gara dietro l'angolo. Open, Doubles o Pro.</p>
         <p>Il lavoro è fatto. Ora non sprecarlo. Riduciamo il volume, ti teniamo brillante a ritmo gara e arrivi alla partenza con gambe fresche e un piano chiaro.</p>
-        <div class="actions"><a class="btn btn-gold" href="https://train.strivee.app/payment/JBwt4zlJKA0vCQn9cfih" target="_blank" rel="noopener" data-program="2-Week HYROX Taper 2.0" data-value="550">Acquista</a><a class="btn btn-ghost" href="/it/programmi/hyrox-taper/">Dettagli</a></div>
+        <div class="actions"><a class="btn btn-gold" href="/storefront/?program=f82e4048-8685-4e56-ae09-1ed40367a1b8" data-program="2-Week HYROX Taper 2.0" data-value="550">Acquista</a><a class="btn btn-ghost" href="/it/programmi/hyrox-taper/">Dettagli</a></div>
       </article>
     </div>
 
@@ -790,7 +803,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
           <li>Contatto diretto con il tuo coach</li>
         </ul>
         <div class="actions">
-          <a class="btn btn-gold" href="https://train.strivee.app/payment/Ckjr2cZAiemzMVVr8F1D" target="_blank" rel="noopener" data-program="HYROX Individual Program 1:1" data-value="3500">Inizia l'1:1</a>
+          <a class="btn btn-gold" href="/storefront/?program=f855a4e1-d333-40e2-b35f-fe3c7387f271" data-program="HYROX Individual Program 1:1" data-value="3500">Inizia l'1:1</a>
           <a class="btn btn-ghost" href="/it/coach-hyrox-online/">Dettagli</a>
         </div>
       </div>
@@ -920,7 +933,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
     <p class="lead">Scegli un programma, scarica Strivee e domattina sai esattamente cosa ti aspetta.</p>
     <div class="cta-row">
       <a class="btn btn-gold" href="#programs">Scegli un programma</a>
-      <a class="btn btn-ghost" href="https://train.strivee.app/p/str2g-hyrox" target="_blank" rel="noopener">Tutti i programmi su Strivee</a>
+      <a class="btn btn-ghost" href="/storefront/">Tutti i programmi</a>
     </div>
   </div>
 </section>
@@ -1246,7 +1259,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
     if (h > 0 && scrollY / h >= CFG.SCROLL_RATIO) open();
   }
   function buyVisible() {
-    var as = document.querySelectorAll('a[href*="train.strivee.app/payment"]');
+    var as = document.querySelectorAll('a[href*="train.strivee.app/payment"], a[href*="/storefront/?program="]');
     for (var i = 0; i < as.length; i++) {
       var r = as[i].getBoundingClientRect();
       if (r.width && r.bottom > 0 && r.top < innerHeight) return true;

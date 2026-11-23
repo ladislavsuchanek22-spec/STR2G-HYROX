@@ -1,0 +1,72 @@
+{
+ "1f4f0945-7a22-4b7e-a5aa-558536973d6b": {
+  "billing_period": null,
+  "currency": "czk",
+  "kind": "fixed",
+  "name": "STR2G 8-WEEK HYROX SINGLES",
+  "price_cents": 150000
+ },
+ "4bb39d07-5f72-4c58-b074-b6c2f3d25730": {
+  "billing_period": "month",
+  "currency": "czk",
+  "kind": "group",
+  "name": "STR2G HYROX COMPETITOR PROGRAM",
+  "price_cents": 96000
+ },
+ "74b976b7-5861-4567-8771-516438a6f406": {
+  "billing_period": null,
+  "currency": "czk",
+  "kind": "fixed",
+  "name": "STR2G RUNNING FOR HYROX 2.0 (12 WEEKS)",
+  "price_cents": 100000
+ },
+ "9cb1e2aa-9a7e-4f05-93b8-4b948b461891": {
+  "billing_period": null,
+  "currency": "czk",
+  "kind": "fixed",
+  "name": "STR2G 12 WEEK HYROX RACE PREP",
+  "price_cents": 210000
+ },
+ "b63f4bcc-0007-4bee-b040-7a0349f59f04": {
+  "billing_period": null,
+  "currency": "czk",
+  "kind": "fixed",
+  "name": "STR2G 8-WEEK HYROX DOUBLES",
+  "price_cents": 170000
+ },
+ "bf5b8a49-3c35-4fb5-ba06-837f9f40a650": {
+  "billing_period": null,
+  "currency": "czk",
+  "kind": "fixed",
+  "name": "STR2G 12-WEEK HYROX ADVANCED PROGRAM",
+  "price_cents": 190000
+ },
+ "c18b7800-f596-441d-841e-1e81d444d00c": {
+  "billing_period": "month",
+  "currency": "czk",
+  "kind": "group",
+  "name": "STR2G HYROX BASIC PROGRAM",
+  "price_cents": 75000
+ },
+ "cb99bf54-d8b4-433e-a08b-d0fe2a138ee5": {
+  "billing_period": "month",
+  "currency": "czk",
+  "kind": "group",
+  "name": "STR2G HYROX PRO ATHLETE",
+  "price_cents": 135000
+ },
+ "f82e4048-8685-4e56-ae09-1ed40367a1b8": {
+  "billing_period": null,
+  "currency": "czk",
+  "kind": "fixed",
+  "name": "STR2G 2-WEEK HYROX TAPER 2.0",
+  "price_cents": 55000
+ },
+ "f855a4e1-d333-40e2-b35f-fe3c7387f271": {
+  "billing_period": "month",
+  "currency": "czk",
+  "kind": "one_to_one",
+  "name": "STR2G HYROX ADVANCED PROGRAM 1:1",
+  "price_cents": 350000
+ }
+}

@@ -5,6 +5,10 @@ Edit index.html (English) and the i18n/*.json files, then re-run.
 """
 import json, re, pathlib, sys
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+# Programy a ceny z appky Strong Coach: stáhnout dřív, než se načte pages_content (ten z nich bere ceny)
+import app_store
+_APP_DATA, _APP_SRC = app_store.sync()
+print(f"app_store: {len(_APP_DATA)} programů z appky ({_APP_SRC}); chybí: {app_store.missing(_APP_DATA) or 'nic'}")
 from pages_content import T as PT, SLUGS, price
 import pages
 
@@ -23,6 +27,7 @@ ATTRS = ("alt", "aria-label", "content", "title")
 
 # Newsletter okno: i18n/newsletter.html je zdroj, do index.html se vždy přepíše aktuální verze
 import re as _re
+import re
 _idx = ROOT / "index.html"
 _nl = (ROOT / "i18n" / "newsletter.html").read_text(encoding="utf-8").rstrip("\n")
 _html = _idx.read_text(encoding="utf-8")
@@ -34,6 +39,17 @@ _html = _re.sub(r"<!--STR2G_FREEWEEK-->.*?<!--/STR2G_FREEWEEK-->", lambda m: _fw
 import sys as _sys; _sys.path.insert(0, str(ROOT / "i18n"))
 import guides as _guides
 _html = _re.sub(r"<!--STR2G_GUIDES-->.*?<!--/STR2G_GUIDES-->", lambda m: "<!--STR2G_GUIDES-->" + _guides.nav("en") + "<!--/STR2G_GUIDES-->", _html, count=1, flags=_re.S)
+# Tlačítka koupit + ceny na hlavní stránce podle appky (odkaz na vlastní storefront místo Strivee)
+from pages_content import PROGRAMS as _P
+def _fmt(n): return f"{n:,}"
+for _pid in app_store.APP_IDS:
+    if _pid not in _P: continue
+    _sid, _czk, _mon, _name = _P[_pid]
+    _html = re.sub(r'href="https://train\.strivee\.app/payment/[A-Za-z0-9]+" target="_blank" rel="noopener" (data-program="%s") data-value="\d+"' % re.escape(_name),
+                   lambda m: f'href="{app_store.buy_url(_pid)}" {m.group(1)} data-value="{_czk}"', _html)
+    _html = re.sub(r'(href="%s" data-program="[^"]*") data-value="\d+"' % re.escape(app_store.buy_url(_pid)), lambda m: f'{m.group(1)} data-value="{_czk}"', _html)
+    _html = re.sub(r'(id="%s">.*?<div class="price"><b>)CZK [\d,]+(</b>.*?data-czk=")\d+(")' % _pid,
+                   lambda m: f'{m.group(1)}CZK {_fmt(_czk)}{m.group(2)}{_czk}{m.group(3)}', _html, count=1, flags=re.S)
 _idx.write_text(_html, encoding="utf-8")
 
 src = (ROOT / "index.html").read_text(encoding="utf-8")
@@ -87,13 +103,14 @@ for lang, locale in LANGS.items():
     # Odkazy "Details" na vlastní stránky programů: CS má svoje stránky, ostatní jazyky zatím vedou na Strivee
     from programs_content import PSLUGS, PROG_LANGS
     from pages_content import PROGRAMS
+    from app_store import buy_url
     page_src = page_src.replace('<a class="btn btn-ghost" href="/online-hyrox-coach/">Details</a>',
                                 f'<a class="btn btn-ghost" href="{SLUGS["coach"][lang]}">Details</a>', 1)
     for _pid, _sl in PSLUGS.items():
         if lang in PROG_LANGS:
             _new = f'href="{_sl[lang]}"'
         else:
-            _new = f'href="https://train.strivee.app/program/{PROGRAMS[_pid][0]}" target="_blank" rel="noopener"'
+            _new = f'href="{buy_url(_pid)}"'
         page_src = page_src.replace(f'href="{_sl["en"]}"', _new)
     # 12-Week Advanced má zatím texty jen v EN a CS
     if lang not in PROG_LANGS:

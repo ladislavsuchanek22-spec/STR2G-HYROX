@@ -11,6 +11,7 @@ from pathlib import Path
 
 import aeo_eu
 from pages_content import T, SLUGS, HOME, LOCALE, COUNTRY, PROGRAMS, PLAN_PICKS, PICK_LANGS_ADVANCED, price
+from app_store import buy_url
 
 
 def prog_url(lang, pid):
@@ -105,10 +106,10 @@ def card(lang, pid, kind, details=None):
     name = T[lang]["names"].get(pid, pname)
     details = details or prog_url(lang, pid)
     return (f'<article class="card" data-fw-id="{pid}"><div class="kind">{escape(kind)}</div><h4>{escape(name)}</h4>{price_html(lang, pid)}'
-            f'<div class="actions"><a class="btn btn-gold" href="https://train.strivee.app/payment/{sid}" target="_blank" rel="noopener" '
+            f'<div class="actions"><a class="btn btn-gold" href="{buy_url(pid)}" '
             f'data-program="{escape(pname)}" data-value="{czk}">{btn}</a>'
             + (f'<a class="btn btn-ghost" href="{details}">{u["details"]}</a></div></article>' if details else
-               f'<a class="btn btn-ghost" href="https://train.strivee.app/program/{sid}" target="_blank" rel="noopener">{u["details"]}</a></div></article>'))
+               f'<a class="btn btn-ghost" href="{buy_url(pid)}">{u["details"]}</a></div></article>'))
 
 
 def faq_html(lang, faq):
@@ -143,7 +144,7 @@ def schema(lang, kind, url, d):
         stype = u["plan_link"]
     else:
         offers = {"@type": "Offer", "price": "3500", "priceCurrency": "CZK", "availability": "https://schema.org/InStock",
-                  "url": "https://train.strivee.app/program/" + PROGRAMS["coaching"][0],
+                  "url": BASE + buy_url("coaching"),
                   "priceSpecification": {"@type": "UnitPriceSpecification", "price": "3500", "priceCurrency": "CZK", "billingDuration": "P1M"}}
         stype = u["coach_link"]
     graph = [

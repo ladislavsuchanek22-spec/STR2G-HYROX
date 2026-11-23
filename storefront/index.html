@@ -7,7 +7,7 @@
   Co to dělá:
   1) Cookie lišta (souhlas / odmítnutí) – bez souhlasu se Meta Pixel vůbec nenačte.
   2) Google tag (GA4 + Google Ads) v režimu Consent Mode v2 – před souhlasem nic neukládá.
-  3) Každý klik na platební odkaz do Strivee = InitiateCheckout (Meta) + begin_checkout (GA4) + konverze (Google Ads), včetně názvu programu a ceny.
+  3) Každý klik na platební odkaz do Strivee (u odkazů na vlastní /storefront/ jen select_item, checkout hlásí storefront) = InitiateCheckout (Meta) + begin_checkout (GA4) + konverze (Google Ads), včetně názvu programu a ceny.
   4) Funkce window.str2gLead('kviz') pro budoucí kvíz / formulář = Lead (Meta) + generate_lead (GA4) + konverze (Ads).
   5) window.str2gConsentReset() znovu otevře cookie lištu.
   6) Tanganica pixel (Google Tag Manager GTM-TRS5RSN) je na konci tohoto souboru doslova podle Tanganica, aby ho
@@ -92,9 +92,22 @@
   }
 
   document.addEventListener('click', function (e) {
-    var a = e.target && e.target.closest ? e.target.closest('a[href*="train.strivee.app/payment"]') : null;
+    var a = e.target && e.target.closest ? e.target.closest('a[href*="train.strivee.app/payment"], a[href*="/storefront/?program="]') : null;
     if (!a) return;
     var p = programInfo(a);
+    // Odkaz na vlastní storefront: výběr programu. Samotný begin_checkout / InitiateCheckout pošle
+    // storefront až při kliku na Koupit, aby se nepočítal dvakrát.
+    var toStore = a.href.indexOf('/storefront/') !== -1;
+    if (toStore) {
+      window.dataLayer.push({ ecommerce: null });
+      window.dataLayer.push({ event: 'select_item', ecommerce: { currency: 'CZK', value: p.value, items: [{ item_name: p.name, price: p.value, quantity: 1 }] } });
+      gtag('event', 'select_item', { items: [{ item_name: p.name, price: p.value }] });
+      if (granted() && window.fbq) window.fbq('track', 'ViewContent', { content_name: p.name, value: p.value, currency: 'CZK' });
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
+      e.preventDefault();
+      setTimeout(function () { window.location.href = a.href; }, 250);
+      return;
+    }
 
     // Pro Tag Manager (Tanganica): standardní e-commerce událost v dataLayer
     window.dataLayer.push({ ecommerce: null });
@@ -338,9 +351,25 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
     });
   });
 
+  // Nákup dokončen: Stripe vrátí zákazníka sem s ?platba=ok. Program a cenu si pamatujeme z kliku na Koupit.
+  try {
+    var pend = JSON.parse(sessionStorage.getItem('str2g-pending') || 'null');
+    if (qs.get('platba') === 'ok' && pend && pend.value && Date.now() - pend.t < 6 * 3600e3) {
+      sessionStorage.removeItem('str2g-pending');
+      var tid = 'sf-' + pend.t;
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({ ecommerce: null });
+      window.dataLayer.push({ event: 'purchase', ecommerce: { transaction_id: tid, currency: 'CZK', value: pend.value, items: [{ item_name: pend.name, price: pend.value, quantity: 1 }] } });
+      if (window.gtag) window.gtag('event', 'purchase', { transaction_id: tid, currency: 'CZK', value: pend.value, items: [{ item_name: pend.name, price: pend.value }] });
+      var fire = function () { if (window.fbq) window.fbq('track', 'Purchase', { content_name: pend.name, value: pend.value, currency: 'CZK' }); };
+      if (window.fbq) fire(); else setTimeout(fire, 1500);
+    }
+  } catch (err) {}
+
   // Měření: storefront z appky při kliknutí na Koupit pošle událost str2g:checkout
   document.addEventListener('str2g:checkout', function (e) {
     var p = e.detail || {}, value = p.value || 0;
+    try { sessionStorage.setItem('str2g-pending', JSON.stringify({ name: p.name, value: value, t: Date.now() })); } catch (err) {}
     try {
       window.dataLayer = window.dataLayer || [];
       window.dataLayer.push({ ecommerce: null });
