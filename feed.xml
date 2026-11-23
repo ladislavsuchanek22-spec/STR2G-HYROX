@@ -3,11 +3,11 @@
   <channel>
     <title>STR2G HYROX – online tréninkové programy</title>
     <link>https://str2g.com/cs/</link>
-    <description>Online HYROX tréninkové programy od Láďi a Rii. Platba a trénink v aplikaci Strivee.</description>
+    <description>Online HYROX tréninkové programy od Láďi a Rii. Platba kartou na str2g.com, trénink v aplikaci Strong Coach.</description>
     <item>
       <g:id>str2g-raceprep</g:id>
       <g:title>12týdenní HYROX tréninkový plán: Race Prep</g:title>
-      <g:description>Kompletní 12týdenní příprava na HYROX. Základ, intenzita, závodně specifický trénink a ladění formy. 6 dní v týdnu, cca 90 minut. Jednorázově 2 100 Kč v aplikaci Strivee.</g:description>
+      <g:description>Kompletní 12týdenní příprava na HYROX. Základ, intenzita, závodně specifický trénink a ladění formy. 6 dní v týdnu, cca 90 minut. Jednorázově 2 100 Kč, tréninky v aplikaci Strong Coach.</g:description>
       <g:link>https://str2g.com/cs/programy/12tydenni-hyrox-race-prep/</g:link>
       <g:image_link>https://str2g.com/img/lada-ria-finish-line.jpg</g:image_link>
       <g:availability>in_stock</g:availability>
@@ -19,7 +19,7 @@
       <g:custom_label_0>Příprava na závod</g:custom_label_0>
       <g:shipping>
         <g:country>CZ</g:country>
-        <g:service>Online (Strivee)</g:service>
+        <g:service>Online (Strong Coach)</g:service>
         <g:price>0.00 CZK</g:price>
       </g:shipping>
     </item>
@@ -38,7 +38,7 @@
       <g:custom_label_0>Příprava na závod</g:custom_label_0>
       <g:shipping>
         <g:country>CZ</g:country>
-        <g:service>Online (Strivee)</g:service>
+        <g:service>Online (Strong Coach)</g:service>
         <g:price>0.00 CZK</g:price>
       </g:shipping>
     </item>
@@ -57,7 +57,7 @@
       <g:custom_label_0>Příprava na závod</g:custom_label_0>
       <g:shipping>
         <g:country>CZ</g:country>
-        <g:service>Online (Strivee)</g:service>
+        <g:service>Online (Strong Coach)</g:service>
         <g:price>0.00 CZK</g:price>
       </g:shipping>
     </item>
@@ -76,7 +76,7 @@
       <g:custom_label_0>Příprava na závod</g:custom_label_0>
       <g:shipping>
         <g:country>CZ</g:country>
-        <g:service>Online (Strivee)</g:service>
+        <g:service>Online (Strong Coach)</g:service>
         <g:price>0.00 CZK</g:price>
       </g:shipping>
     </item>
@@ -95,7 +95,7 @@
       <g:custom_label_0>Specializovaný blok</g:custom_label_0>
       <g:shipping>
         <g:country>CZ</g:country>
-        <g:service>Online (Strivee)</g:service>
+        <g:service>Online (Strong Coach)</g:service>
         <g:price>0.00 CZK</g:price>
       </g:shipping>
     </item>
@@ -114,7 +114,7 @@
       <g:custom_label_0>Specializovaný blok</g:custom_label_0>
       <g:shipping>
         <g:country>CZ</g:country>
-        <g:service>Online (Strivee)</g:service>
+        <g:service>Online (Strong Coach)</g:service>
         <g:price>0.00 CZK</g:price>
       </g:shipping>
     </item>

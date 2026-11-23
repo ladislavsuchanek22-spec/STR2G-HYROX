@@ -332,7 +332,7 @@ def page(lang, kind, parts):
   <div class="wrap">
     {progs}<nav class="guides" aria-label="Guides"><a href="{SLUGS["plan"][lang]}"{" aria-current=\"page\"" if kind == "plan" else ""}>{escape(u["plan_link"])}</a><a href="{SLUGS["coach"][lang]}"{" aria-current=\"page\"" if kind == "coach" else ""}>{escape(u["coach_link"])}</a><a href="{__import__("hub").HUB.get(lang, home + "#programs")}">{u["programs"]}</a>{__import__("guides").nav(lang)}</nav>
     <nav class="net" aria-label="STR2G"><p class="net-h">STR2G</p><ul>{net}</ul></nav>
-    <div style="display:flex;align-items:center;gap:12px"><img loading="lazy" src="/favicon.svg?v=2" alt="" width="26" height="26" style="border:1px solid var(--line);border-radius:6px"><span>© 2026 STR2G · Stronger Together · Strivee</span></div>
+    <div style="display:flex;align-items:center;gap:12px"><img loading="lazy" src="/favicon.svg?v=2" alt="" width="26" height="26" style="border:1px solid var(--line);border-radius:6px"><span>© 2026 STR2G · Stronger Together · Strong Coach</span></div>
     <div class="links">
       <a href="https://instagram.com/22segge_coach" target="_blank" rel="noopener">@22segge_coach</a>
       <a href="https://instagram.com/riahrusovskaofficial" target="_blank" rel="noopener">@riahrusovskaofficial</a>

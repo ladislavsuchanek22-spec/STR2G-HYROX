@@ -322,6 +322,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
       <a href="https://instagram.com/22segge_coach" target="_blank" rel="noopener">@22segge_coach</a>
       <a href="/privacy/" data-t="privacy">Ochrana osobních údajů</a>
       <a href="/refund-policy/" data-t="refund">Vrácení peněz</a>
+      <a href="/cs/obchodni-podminky/" data-t="terms" id="sf-terms">Obchodní podmínky</a>
       <a href="#" onclick="window.str2gConsentReset&&str2gConsentReset();return false;">Cookies</a>
     </div>
   </div>
@@ -332,8 +333,8 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
   // Jazyk: CZ / EN přepínač webu. Vložený storefront z appky čte jazyk z klíče 'str2g-lang',
   // proto se nastaví ještě před jeho načtením a po přepnutí se stránka načte znovu.
   var T = {
-    cs: { loading: 'Načítám programy…', home: 'Hlavní stránka', privacy: 'Ochrana osobních údajů', refund: 'Vrácení peněz' },
-    en: { loading: 'Loading programs…', home: 'Home', privacy: 'Privacy policy', refund: 'Refund policy' }
+    cs: { loading: 'Načítám programy…', home: 'Hlavní stránka', privacy: 'Ochrana osobních údajů', refund: 'Vrácení peněz', terms: 'Obchodní podmínky' },
+    en: { loading: 'Loading programs…', home: 'Home', privacy: 'Privacy policy', refund: 'Refund policy', terms: 'Terms' }
   };
   var qs = new URLSearchParams(location.search);
   var saved = null; try { saved = localStorage.getItem('str2g-sf-lang'); } catch (e) {}
@@ -341,6 +342,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
   var lang = qs.get('lang') === 'en' || qs.get('lang') === 'cs' ? qs.get('lang') : saved || (/^(cs|sk)/.test(nav) ? 'cs' : 'en');
   try { localStorage.setItem('str2g-lang', lang); } catch (e) {}
   document.documentElement.lang = lang;
+  var tl = document.getElementById('sf-terms'); if (tl && lang === 'en') tl.href = '/terms/';
   document.querySelectorAll('[data-t]').forEach(function (n) { var v = T[lang][n.getAttribute('data-t')]; if (v) n.textContent = v; });
   document.querySelectorAll('.lang button').forEach(function (b) {
     b.setAttribute('aria-pressed', String(b.getAttribute('data-lang') === lang));

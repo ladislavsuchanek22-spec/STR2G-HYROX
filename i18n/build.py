@@ -124,6 +124,7 @@ for lang, locale in LANGS.items():
     out = out.replace(TRACK_MARK, TRACK, 1)
     if lang in ("cs", "sk"):
         out = out.replace('<a href="/privacy/">', '<a href="/cs/ochrana-osobnich-udaju/">', 1)
+        out = out.replace('<a href="/terms/">', '<a href="/cs/obchodni-podminky/">', 1)
     out = out.replace('<html lang="en">', f'<html lang="{lang}">', 1)
     out = out.replace('content="en_GB"', f'content="{locale}"', 1)
     out = out.replace(f'<link rel="canonical" href="{BASE}/">', f'<link rel="canonical" href="{BASE}/{lang}/">', 1)
@@ -151,6 +152,8 @@ import privacy
 _tr_parts = pages.extract(src.replace(TRACK_MARK, TRACK, 1))
 _tr, _st, _fonts, _ver, _icons = _tr_parts
 privacy.build(ROOT, TRACK, _fonts, _icons)
+import terms
+terms.build(ROOT, TRACK, _fonts, _icons)
 ALL = ["en", "cs", "sk", "de", "pl", "fr", "es", "it", "nl"]
 HOMES = {l: (f"{BASE}/" if l == "en" else f"{BASE}/{l}/") for l in ALL}
 LASTMOD = "2026-10-23"

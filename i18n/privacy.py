@@ -42,12 +42,15 @@ CONTENT = {
 <p>Web si navíc ve tvém prohlížeči pamatuje pár technických věcí, třeba zvolený jazyk nebo to, že jsi zavřel(a) okno newsletteru. Tyhle informace zůstávají jen u tebe.</p>
 
 <h2>Nákup programů</h2>
-<p>Programy se kupují a platí v aplikaci Strivee. Údaje, které zadáš při registraci, platbě a v aplikaci, zpracovává Strivee podle svých zásad ochrany osobních údajů.</p>
+<p>Programy se kupují přímo na str2g.com. Platbu kartou zpracovává Stripe (Stripe Payments Europe, Ltd., Irsko). Údaje o kartě jdou jen do Stripe, my je nevidíme ani neukládáme.</p>
+<p>Po zaplacení ti založíme účet v aplikaci Strong Coach, kterou provozujeme my. Tvůj účet a tréninková data (zapsané výsledky, osobní rekordy, zprávy s trenérem) ukládáme v aplikaci Strong Coach, hostované u Supabase v EU.</p>
 
 <h2>Komu údaje předáváme</h2>
 <p>Údaje neprodáváme. Předáváme je jen službám, bez kterých by web a newsletter nefungovaly:</p>
 <ul>
 <li><b>MailerLite</b> (UAB MailerLite, Litva): rozesílání newsletteru</li>
+<li><b>Stripe</b> (Stripe Payments Europe, Ltd., Irsko): platby kartou za programy</li>
+<li><b>Supabase</b> (servery v EU): provoz aplikace Strong Coach, tvůj účet a tréninková data</li>
 <li><b>Netlify</b> (USA): hosting webu a záloha přihlášek z formuláře</li>
 <li><b>Google</b> (Irsko / USA): měření návštěvnosti a reklama, jen s tvým souhlasem</li>
 <li><b>Meta Platforms</b> (Irsko / USA): měření reklamy, jen s tvým souhlasem</li>
@@ -105,12 +108,15 @@ CONTENT = {
 <p>The site also remembers a few technical things in your browser, like your language or that you closed the newsletter window. That information stays on your device.</p>
 
 <h2>Buying a program</h2>
-<p>Programs are bought and paid for in the Strivee app. The data you enter when you register, pay and train in the app is processed by Strivee under its own privacy policy.</p>
+<p>Programs are bought directly on str2g.com. Card payments are processed by Stripe (Stripe Payments Europe, Ltd., Ireland). Your card details go only to Stripe; we never see or store them.</p>
+<p>After payment we set up your account in the Strong Coach app, which we run ourselves. Your account and training data (logged results, personal records, messages with your coach) are stored in the Strong Coach app, hosted on Supabase in the EU.</p>
 
 <h2>Who we share data with</h2>
 <p>We never sell your data. We only share it with services the site and newsletter can't run without:</p>
 <ul>
 <li><b>MailerLite</b> (UAB MailerLite, Lithuania): sending the newsletter</li>
+<li><b>Stripe</b> (Stripe Payments Europe, Ltd., Ireland): card payments for programs</li>
+<li><b>Supabase</b> (EU servers): running the Strong Coach app, your account and training data</li>
 <li><b>Netlify</b> (USA): website hosting and a backup of form signups</li>
 <li><b>Google</b> (Ireland / USA): analytics and advertising, only with your consent</li>
 <li><b>Meta Platforms</b> (Ireland / USA): ad measurement, only with your consent</li>
@@ -174,13 +180,14 @@ REFUND = {
 "updated": "Platné od",
 "back": "Zpět na STR2G",
 "body": f"""
-<p class="lead">STR2G programy jsou digitální obsah. Po zaplacení je máš hned k dispozici v aplikaci Strivee. Proto peníze za zakoupené programy nevracíme.</p>
+<p class="lead">STR2G programy jsou digitální obsah. Po zaplacení je máš hned k dispozici v aplikaci Strong Coach. Proto peníze za zakoupené programy nevracíme.</p>
 <h2>Jednorázové programy</h2>
 <p>Programy placené jednorázově (8týdenní Singles a Doubles, Taper, Running for HYROX, Race Prep, Advanced) nevracíme, jakmile je program zakoupený a zpřístupněný.</p>
 <h2>Měsíční předplatné</h2>
-<p>Měsíční předplatné (HYROX Basic, HYROX Competitor, HYROX Pro Athlete, individuální program 1:1) můžeš kdykoliv zrušit. Zrušením se zastaví další platby. Už zaplacené období nevracíme, ani jeho část, i když předplatné ukončíš v jeho průběhu.</p>
+<p>Měsíční předplatné (HYROX Basic, HYROX Competitor, HYROX Pro Athlete, individuální program 1:1) můžeš kdykoliv zrušit v aplikaci Strong Coach. Předplatné pak skončí na konci zaplaceného období a další platby se zastaví. Už zaplacené období nevracíme, ani jeho část, i když předplatné ukončíš v jeho průběhu.</p>
 <h2>Digitální obsah a odstoupení od smlouvy</h2>
 <p>Nákupem souhlasíš s tím, že ti program zpřístupníme hned, a bereš na vědomí, že tím ztrácíš právo odstoupit od smlouvy do 14 dnů.</p>
+<p>Celé podmínky nákupu, včetně odstoupení od smlouvy a reklamací, najdeš v <a href="/cs/obchodni-podminky/">obchodních podmínkách</a>.</p>
 <h2>Kontakt</h2>
 <p>Pokud máš s nákupem nebo přístupem problém, napiš na <a href="mailto:{EMAIL}">{EMAIL}</a>. Vyřešíme to.</p>
 """,
@@ -191,13 +198,14 @@ REFUND = {
 "updated": "Effective from",
 "back": "Back to STR2G",
 "body": f"""
-<p class="lead">STR2G programs are digital content. You get access in the Strivee app right after payment, so we don't offer refunds on purchased programs.</p>
+<p class="lead">STR2G programs are digital content. You get access in the Strong Coach app right after payment, so we don't offer refunds on purchased programs.</p>
 <h2>One-time programs</h2>
 <p>Programs paid once (8-Week Singles and Doubles, Taper, Running for HYROX, Race Prep, Advanced) are non-refundable once purchased and unlocked.</p>
 <h2>Monthly subscriptions</h2>
-<p>You can cancel a monthly subscription (HYROX Basic, HYROX Competitor, HYROX Pro Athlete, Individual Program 1:1) at any time. Cancelling stops future payments. Periods already paid are not refunded, in full or in part, even if you cancel mid-period.</p>
+<p>You can cancel a monthly subscription (HYROX Basic, HYROX Competitor, HYROX Pro Athlete, Individual Program 1:1) at any time in the Strong Coach app. It then ends at the end of the paid period and future payments stop. Periods already paid are not refunded, in full or in part, even if you cancel mid-period.</p>
 <h2>Digital content and withdrawal</h2>
 <p>By purchasing, you agree that we give you access immediately and acknowledge that you lose your 14-day right of withdrawal.</p>
+<p>The full terms of purchase, including withdrawal and complaints, are in our <a href="/terms/">terms and conditions</a>.</p>
 <h2>Contact</h2>
 <p>If something is wrong with your purchase or access, email <a href="mailto:{EMAIL}">{EMAIL}</a> and we'll sort it out.</p>
 """,
