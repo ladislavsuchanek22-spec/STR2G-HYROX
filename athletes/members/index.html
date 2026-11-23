@@ -98,8 +98,8 @@
 <!-- Annual: codes -->
 <section class="codes" id="codes" hidden aria-labelledby="codes-h">
 <div style="display:flex;flex-direction:column;gap:10px">
-<p class="eyebrow">Annual member · Your codes</p>
-<h2 class="d-l" id="codes-h" style="font-size:48px">−15 % <span class="gold">is yours.</span></h2>
+<p class="eyebrow">Annual member · Your code</p>
+<h2 class="d-l" id="codes-h" style="font-size:48px">−15 % <span class="gold">on training.</span></h2>
 </div>
 <div class="code-grid">
 <div class="code">
@@ -109,13 +109,6 @@
 <span class="small muted">1 300 Kč → 1 105 Kč per session. Enter the code at checkout.</span>
 <a class="btn btn-gold" href="https://buy.stripe.com/aFaeVf6T6gOI2iR7WPgUM02">Book training →</a>
 </div>
-<div class="code">
-<span class="meta">Programs in Strivee</span>
-<span class="code-value" id="code-programs"></span>
-<button class="copy" type="button" data-copy="code-programs" id="copy-programs">COPY CODE</button>
-<span class="small muted">8-Week Singles, 8-Week Doubles, 2-Week Taper, Running for HYROX.</span>
-<a class="btn" href="/#programs">See programs →</a>
-</div>
 </div>
 </section>
 
@@ -123,8 +116,8 @@
 <section class="upsell" id="upsell" hidden>
 <div>
 <p class="eyebrow" style="color:var(--muted)">Locked · Annual only</p>
-<h2 class="d-m">Get −15 % on coaching <span class="gold">and programs.</span></h2>
-<p class="small muted" style="margin:0">Switch to annual for €100 a year. Two months free plus your discount codes.</p>
+<h2 class="d-m">Get −15 % on <span class="gold">personal training.</span></h2>
+<p class="small muted" style="margin:0">Switch to annual for €100 a year. Two months free plus your discount code.</p>
 </div>
 <form method="post" action="/api/athletes/portal" style="margin:0"><button class="btn btn-gold" type="submit">Switch to annual →</button></form>
 </section>
@@ -302,8 +295,6 @@
     $('upsell').hidden = annual;
     if (annual && d.codes) {
       text('code-training', d.codes.training);
-      if (d.codes.programs) { text('code-programs', d.codes.programs); }
-      else { text('code-programs', 'COMING SOON'); $('copy-programs').hidden = true; }
     }
 
     var c = d.content || {};
