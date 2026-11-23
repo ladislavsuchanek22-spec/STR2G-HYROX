@@ -3,11 +3,11 @@
   <channel>
     <title>STR2G HYROX – online training programs</title>
     <link>https://str2g.com/</link>
-    <description>Online HYROX training programs by Láďa and Ria. Payment and training in the Strivee app.</description>
+    <description>Online HYROX training programs by Láďa and Ria. Card payment on str2g.com, training in the Strong Coach app.</description>
     <item>
       <g:id>str2g-raceprep</g:id>
       <g:title>12-Week HYROX Training Plan: Race Prep</g:title>
-      <g:description>A complete 12-week HYROX training plan. Base, intensity, race-specific work and final tuning. 6 days a week, about 90 minutes. One payment of CZK 2,100 in the Strivee app.</g:description>
+      <g:description>A complete 12-week HYROX training plan. Base, intensity, race-specific work and final tuning. 6 days a week, about 90 minutes. One payment of CZK 2,100, sessions in the Strong Coach app.</g:description>
       <g:link>https://str2g.com/programs/12-week-hyrox-race-prep/</g:link>
       <g:image_link>https://str2g.com/img/lada-ria-finish-line.jpg</g:image_link>
       <g:availability>in_stock</g:availability>
@@ -19,7 +19,7 @@
       <g:custom_label_0>Race build</g:custom_label_0>
       <g:shipping>
         <g:country>CZ</g:country>
-        <g:service>Online (Strivee)</g:service>
+        <g:service>Online (Strong Coach)</g:service>
         <g:price>0.00 CZK</g:price>
       </g:shipping>
     </item>
@@ -38,7 +38,7 @@
       <g:custom_label_0>Race build</g:custom_label_0>
       <g:shipping>
         <g:country>CZ</g:country>
-        <g:service>Online (Strivee)</g:service>
+        <g:service>Online (Strong Coach)</g:service>
         <g:price>0.00 CZK</g:price>
       </g:shipping>
     </item>
@@ -57,7 +57,7 @@
       <g:custom_label_0>Race build</g:custom_label_0>
       <g:shipping>
         <g:country>CZ</g:country>
-        <g:service>Online (Strivee)</g:service>
+        <g:service>Online (Strong Coach)</g:service>
         <g:price>0.00 CZK</g:price>
       </g:shipping>
     </item>
@@ -76,7 +76,7 @@
       <g:custom_label_0>Race build</g:custom_label_0>
       <g:shipping>
         <g:country>CZ</g:country>
-        <g:service>Online (Strivee)</g:service>
+        <g:service>Online (Strong Coach)</g:service>
         <g:price>0.00 CZK</g:price>
       </g:shipping>
     </item>
@@ -95,7 +95,7 @@
       <g:custom_label_0>Specialist block</g:custom_label_0>
       <g:shipping>
         <g:country>CZ</g:country>
-        <g:service>Online (Strivee)</g:service>
+        <g:service>Online (Strong Coach)</g:service>
         <g:price>0.00 CZK</g:price>
       </g:shipping>
     </item>
@@ -114,7 +114,7 @@
       <g:custom_label_0>Specialist block</g:custom_label_0>
       <g:shipping>
         <g:country>CZ</g:country>
-        <g:service>Online (Strivee)</g:service>
+        <g:service>Online (Strong Coach)</g:service>
         <g:price>0.00 CZK</g:price>
       </g:shipping>
     </item>

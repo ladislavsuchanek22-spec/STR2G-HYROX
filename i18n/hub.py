@@ -36,7 +36,7 @@ H = {}
 H["en"] = dict(
     title="HYROX Training Programs: Compare All Online Plans | STR2G",
     desc="Compare every STR2G HYROX training program: beginner, 12-week race prep, singles, doubles, running and taper. Days per week, session length, price and who each one is for.",
-    crumb="HYROX training programs", eyebrow="9 programs · 1:1 coaching · Strivee app",
+    crumb="HYROX training programs", eyebrow="9 programs · 1:1 coaching · Strong Coach app",
     h1=("HYROX training", "programs."),
     lead="Nine online HYROX programs and 1:1 coaching from two coaches who race. Pick by your race date and level, not by which plan looks the hardest.",
     pick_h=("Pick in", "30 seconds."),
@@ -67,7 +67,7 @@ H["en"] = dict(
          ("Is there a HYROX Doubles training program?",
           "Yes. The 8-Week HYROX Doubles program is built for pairs, including how to split the stations. The price is per athlete."),
          ("How do I get the program?",
-          "You buy the program through Strivee and every session appears in the Strivee app on your phone. Payment runs in Czech koruna (CZK), your bank converts it."),
+          "You buy the program on str2g.com and pay by card. You get an e-mail with a link to the Strong Coach app, set your password and every session is waiting on your phone. Payment runs in Czech koruna (CZK), your bank converts it."),
          ("Can I get a plan written just for me?",
           "Yes. HYROX 1:1 coaching is a plan built only for you, adjusted to your schedule, your race and your results.")],
     cta=("Pick a plan.", "Start tomorrow."),
@@ -75,7 +75,7 @@ H["en"] = dict(
 H["cs"] = dict(
     title="HYROX tréninkové programy: srovnání všech plánů | STR2G",
     desc="Srovnání všech HYROX tréninkových programů STR2G: pro začátečníky, 12týdenní příprava, singles, doubles, běh a taper. Dny v týdnu, délka tréninku, cena a pro koho je.",
-    crumb="HYROX tréninkové programy", eyebrow="9 programů · individuální koučink · aplikace Strivee",
+    crumb="HYROX tréninkové programy", eyebrow="9 programů · individuální koučink · aplikace Strong Coach",
     h1=("HYROX tréninkové", "programy."),
     lead="Devět online HYROX programů a individuální koučink od dvou trenérů, kteří sami závodí. Vybírej podle data závodu a úrovně, ne podle toho, který plán vypadá nejtěžší.",
     pick_h=("Vyber za", "30 vteřin."),
@@ -106,7 +106,7 @@ H["cs"] = dict(
          ("Máte tréninkový program na HYROX Doubles?",
           "Ano. 8týdenní HYROX Doubles je postavený pro dvojice, včetně toho, jak si rozdělit stanice. Cena je za jednoho závodníka."),
          ("Jak program dostanu?",
-          "Program koupíš přes Strivee a všechny tréninky se ti objeví v aplikaci Strivee v mobilu. Platí se v korunách."),
+          "Program koupíš na str2g.com a zaplatíš kartou. Přijde ti e-mail s odkazem do aplikace Strong Coach, nastavíš si heslo a všechny tréninky máš v mobilu. Platí se v korunách."),
          ("Můžu mít plán napsaný jen pro sebe?",
           "Ano. Individuální HYROX koučink je plán postavený jen pro tebe, podle tvého času, závodu a výsledků.")],
     cta=("Vyber plán.", "Začni zítra."),
@@ -302,12 +302,13 @@ def page(lang, parts):
     {P.footer_programs(lang)}
     <nav class="guides" aria-label="Guides"><a href="{u["plan_url"]}">{escape(u["plan_link"])}</a><a href="{u["coaching_url"]}">{escape(u["coach_link"])}</a><a href="{HUB[lang]}" aria-current="page">{escape(h["crumb"])}</a>{guides_nav}</nav>
     <nav class="net" aria-label="STR2G"><p class="net-h">STR2G</p><ul>{net}</ul></nav>
-    <div style="display:flex;align-items:center;gap:12px"><img loading="lazy" src="/favicon.svg?v=2" alt="" width="26" height="26" style="border:1px solid var(--line);border-radius:6px"><span>© 2026 STR2G · Stronger Together · Strivee</span></div>
+    <div style="display:flex;align-items:center;gap:12px"><img loading="lazy" src="/favicon.svg?v=2" alt="" width="26" height="26" style="border:1px solid var(--line);border-radius:6px"><span>© 2026 STR2G · Stronger Together · Strong Coach</span></div>
     <div class="links">
       <a href="https://instagram.com/22segge_coach" target="_blank" rel="noopener">@22segge_coach</a>
       <a href="https://instagram.com/riahrusovskaofficial" target="_blank" rel="noopener">@riahrusovskaofficial</a>
       <a href="{"/cs/ochrana-osobnich-udaju/" if lang == "cs" else "/privacy/"}">{pages.PRIV_LBL[lang]}</a>
       <a href="{"/cs/vraceni-penez/" if lang == "cs" else "/refund-policy/"}">{"Vrácení peněz" if lang == "cs" else "Refund policy"}</a>
+      <a href="{"/cs/obchodni-podminky/" if lang == "cs" else "/terms/"}">{"Obchodní podmínky" if lang == "cs" else "Terms"}</a>
       <a href="#" onclick="str2gConsentReset();return false;">Cookies</a>
     </div>
   </div>

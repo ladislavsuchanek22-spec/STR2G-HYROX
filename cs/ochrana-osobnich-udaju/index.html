@@ -7,7 +7,7 @@
   Co to dělá:
   1) Cookie lišta (souhlas / odmítnutí) – bez souhlasu se Meta Pixel vůbec nenačte.
   2) Google tag (GA4 + Google Ads) v režimu Consent Mode v2 – před souhlasem nic neukládá.
-  3) Každý klik na platební odkaz do Strivee = InitiateCheckout (Meta) + begin_checkout (GA4) + konverze (Google Ads), včetně názvu programu a ceny.
+  3) Každý klik na platební odkaz do Strivee (u odkazů na vlastní /storefront/ jen select_item, checkout hlásí storefront) = InitiateCheckout (Meta) + begin_checkout (GA4) + konverze (Google Ads), včetně názvu programu a ceny.
   4) Funkce window.str2gLead('kviz') pro budoucí kvíz / formulář = Lead (Meta) + generate_lead (GA4) + konverze (Ads).
   5) window.str2gConsentReset() znovu otevře cookie lištu.
   6) Tanganica pixel (Google Tag Manager GTM-TRS5RSN) je na konci tohoto souboru doslova podle Tanganica, aby ho
@@ -92,9 +92,22 @@
   }
 
   document.addEventListener('click', function (e) {
-    var a = e.target && e.target.closest ? e.target.closest('a[href*="train.strivee.app/payment"]') : null;
+    var a = e.target && e.target.closest ? e.target.closest('a[href*="train.strivee.app/payment"], a[href*="/storefront/?program="]') : null;
     if (!a) return;
     var p = programInfo(a);
+    // Odkaz na vlastní storefront: výběr programu. Samotný begin_checkout / InitiateCheckout pošle
+    // storefront až při kliku na Koupit, aby se nepočítal dvakrát.
+    var toStore = a.href.indexOf('/storefront/') !== -1;
+    if (toStore) {
+      window.dataLayer.push({ ecommerce: null });
+      window.dataLayer.push({ event: 'select_item', ecommerce: { currency: 'CZK', value: p.value, items: [{ item_name: p.name, price: p.value, quantity: 1 }] } });
+      gtag('event', 'select_item', { items: [{ item_name: p.name, price: p.value }] });
+      if (granted() && window.fbq) window.fbq('track', 'ViewContent', { content_name: p.name, value: p.value, currency: 'CZK' });
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
+      e.preventDefault();
+      setTimeout(function () { window.location.href = a.href; }, 250);
+      return;
+    }
 
     // Pro Tag Manager (Tanganica): standardní e-commerce událost v dataLayer
     window.dataLayer.push({ ecommerce: null });
@@ -267,12 +280,15 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;font-family:var(--mo
 <p>Web si navíc ve tvém prohlížeči pamatuje pár technických věcí, třeba zvolený jazyk nebo to, že jsi zavřel(a) okno newsletteru. Tyhle informace zůstávají jen u tebe.</p>
 
 <h2>Nákup programů</h2>
-<p>Programy se kupují a platí v aplikaci Strivee. Údaje, které zadáš při registraci, platbě a v aplikaci, zpracovává Strivee podle svých zásad ochrany osobních údajů.</p>
+<p>Programy se kupují přímo na str2g.com. Platbu kartou zpracovává Stripe (Stripe Payments Europe, Ltd., Irsko). Údaje o kartě jdou jen do Stripe, my je nevidíme ani neukládáme.</p>
+<p>Po zaplacení ti založíme účet v aplikaci Strong Coach, kterou provozujeme my. Tvůj účet a tréninková data (zapsané výsledky, osobní rekordy, zprávy s trenérem) ukládáme v aplikaci Strong Coach, hostované u Supabase v EU.</p>
 
 <h2>Komu údaje předáváme</h2>
 <p>Údaje neprodáváme. Předáváme je jen službám, bez kterých by web a newsletter nefungovaly:</p>
 <ul>
 <li><b>MailerLite</b> (UAB MailerLite, Litva): rozesílání newsletteru</li>
+<li><b>Stripe</b> (Stripe Payments Europe, Ltd., Irsko): platby kartou za programy</li>
+<li><b>Supabase</b> (servery v EU): provoz aplikace Strong Coach, tvůj účet a tréninková data</li>
 <li><b>Netlify</b> (USA): hosting webu a záloha přihlášek z formuláře</li>
 <li><b>Google</b> (Irsko / USA): měření návštěvnosti a reklama, jen s tvým souhlasem</li>
 <li><b>Meta Platforms</b> (Irsko / USA): měření reklamy, jen s tvým souhlasem</li>

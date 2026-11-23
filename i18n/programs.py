@@ -8,6 +8,7 @@ from html import escape
 from pathlib import Path
 
 from pages_content import PROGRAMS, HOME, LOCALE, price
+from app_store import buy_url
 from programs_content import PT, PSLUGS, PDATA, PROG_LANGS, PROG_ORDER
 import pages
 import aeo_eu
@@ -66,7 +67,7 @@ def price_html(lang, pid):
 def buy_btn(lang, pid, cls="btn btn-gold"):
     sid, czk, monthly, pname = PROGRAMS[pid]
     u = PT[lang]["ui"]
-    return (f'<a class="{cls}" href="https://train.strivee.app/payment/{sid}" target="_blank" rel="noopener" '
+    return (f'<a class="{cls}" href="{buy_url(pid)}" '
             f'data-program="{escape(pname)}" data-value="{czk}">{u["start"] if monthly else u["buy"]}</a>')
 
 
@@ -112,7 +113,7 @@ def schema(lang, pid, url, p, faq):
     u = PT[lang]["ui"]
     home = BASE + HOME[lang]
     offer = {"@type": "Offer", "price": str(czk), "priceCurrency": "CZK", "availability": "https://schema.org/InStock",
-             "url": f"https://train.strivee.app/payment/{sid}", "seller": {"@id": BASE + "/#org"},
+             "url": BASE + buy_url(pid), "seller": {"@id": BASE + "/#org"},
              "shippingDetails": SHIPPING, "hasMerchantReturnPolicy": RETURNS}
     if monthly:
         offer["priceSpecification"] = {"@type": "UnitPriceSpecification", "price": str(czk), "priceCurrency": "CZK", "billingDuration": "P1M"}
@@ -314,12 +315,13 @@ def page(lang, pid, parts):
     {footer_programs(lang, pid)}
     <nav class="guides" aria-label="Guides"><a href="{u["plan_url"]}">{escape(u["plan_link"])}</a><a href="{u["coaching_url"]}">{escape(u["coach_link"])}</a><a href="{__import__("hub").HUB.get(lang, home + "#programs")}">{u["programs"]}</a>{__import__("guides").nav(lang)}</nav>
     <nav class="net" aria-label="STR2G"><p class="net-h">STR2G</p><ul>{net}</ul></nav>
-    <div style="display:flex;align-items:center;gap:12px"><img loading="lazy" src="/favicon.svg?v=2" alt="" width="26" height="26" style="border:1px solid var(--line);border-radius:6px"><span>© 2026 STR2G · Stronger Together · Strivee</span></div>
+    <div style="display:flex;align-items:center;gap:12px"><img loading="lazy" src="/favicon.svg?v=2" alt="" width="26" height="26" style="border:1px solid var(--line);border-radius:6px"><span>© 2026 STR2G · Stronger Together · Strong Coach</span></div>
     <div class="links">
       <a href="https://instagram.com/22segge_coach" target="_blank" rel="noopener">@22segge_coach</a>
       <a href="https://instagram.com/riahrusovskaofficial" target="_blank" rel="noopener">@riahrusovskaofficial</a>
       <a href="{"/cs/ochrana-osobnich-udaju/" if lang in ("cs", "sk") else "/privacy/"}">{pages.PRIV_LBL[lang]}</a>
       <a href="{"/cs/vraceni-penez/" if lang in ("cs", "sk") else "/refund-policy/"}">{"Vrácení peněz" if lang in ("cs", "sk") else "Refund policy"}</a>
+      <a href="{"/cs/obchodni-podminky/" if lang in ("cs", "sk") else "/terms/"}">{"Obchodní podmínky" if lang in ("cs", "sk") else "Terms"}</a>
       <a href="#" onclick="str2gConsentReset();return false;">Cookies</a>
     </div>
   </div>

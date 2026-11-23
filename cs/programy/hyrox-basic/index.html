@@ -7,7 +7,7 @@
   Co to dělá:
   1) Cookie lišta (souhlas / odmítnutí) – bez souhlasu se Meta Pixel vůbec nenačte.
   2) Google tag (GA4 + Google Ads) v režimu Consent Mode v2 – před souhlasem nic neukládá.
-  3) Každý klik na platební odkaz do Strivee = InitiateCheckout (Meta) + begin_checkout (GA4) + konverze (Google Ads), včetně názvu programu a ceny.
+  3) Každý klik na platební odkaz do Strivee (u odkazů na vlastní /storefront/ jen select_item, checkout hlásí storefront) = InitiateCheckout (Meta) + begin_checkout (GA4) + konverze (Google Ads), včetně názvu programu a ceny.
   4) Funkce window.str2gLead('kviz') pro budoucí kvíz / formulář = Lead (Meta) + generate_lead (GA4) + konverze (Ads).
   5) window.str2gConsentReset() znovu otevře cookie lištu.
   6) Tanganica pixel (Google Tag Manager GTM-TRS5RSN) je na konci tohoto souboru doslova podle Tanganica, aby ho
@@ -92,9 +92,22 @@
   }
 
   document.addEventListener('click', function (e) {
-    var a = e.target && e.target.closest ? e.target.closest('a[href*="train.strivee.app/payment"]') : null;
+    var a = e.target && e.target.closest ? e.target.closest('a[href*="train.strivee.app/payment"], a[href*="/storefront/?program="]') : null;
     if (!a) return;
     var p = programInfo(a);
+    // Odkaz na vlastní storefront: výběr programu. Samotný begin_checkout / InitiateCheckout pošle
+    // storefront až při kliku na Koupit, aby se nepočítal dvakrát.
+    var toStore = a.href.indexOf('/storefront/') !== -1;
+    if (toStore) {
+      window.dataLayer.push({ ecommerce: null });
+      window.dataLayer.push({ event: 'select_item', ecommerce: { currency: 'CZK', value: p.value, items: [{ item_name: p.name, price: p.value, quantity: 1 }] } });
+      gtag('event', 'select_item', { items: [{ item_name: p.name, price: p.value }] });
+      if (granted() && window.fbq) window.fbq('track', 'ViewContent', { content_name: p.name, value: p.value, currency: 'CZK' });
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
+      e.preventDefault();
+      setTimeout(function () { window.location.href = a.href; }, 250);
+      return;
+    }
 
     // Pro Tag Manager (Tanganica): standardní e-commerce událost v dataLayer
     window.dataLayer.push({ ecommerce: null });
@@ -195,7 +208,7 @@
 <!-- Tanganica pixel --><script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0], j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-TRS5RSN');</script><!-- End Tanganica pixel -->
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>HYROX program pro začátečníky: HYROX Basic | STR2G</title>
-<meta name="description" content="HYROX Basic je online HYROX program pro začátečníky. 5 dní v týdnu, cca 60 minut. Běh, síla a všech osm stanic v jednom plánu. 750 Kč měsíčně v aplikaci Strivee.">
+<meta name="description" content="HYROX Basic je online HYROX program pro začátečníky. 5 dní v týdnu, cca 60 minut. Běh, síla a všech osm stanic v jednom plánu. 750 Kč měsíčně v aplikaci Strong Coach.">
 <meta name="robots" content="index,follow,max-image-preview:large">
 <meta name="theme-color" content="#050505">
 <meta name="google-site-verification" content="SrmBIZppwrQAD9y8VO0Kd-viE5CwP-86--lh2cew3o4">
@@ -216,7 +229,7 @@
 <meta property="og:site_name" content="STR2G HYROX">
 <meta property="og:url" content="https://str2g.com/cs/programy/hyrox-basic/">
 <meta property="og:title" content="HYROX program pro začátečníky: HYROX Basic | STR2G">
-<meta property="og:description" content="HYROX Basic je online HYROX program pro začátečníky. 5 dní v týdnu, cca 60 minut. Běh, síla a všech osm stanic v jednom plánu. 750 Kč měsíčně v aplikaci Strivee.">
+<meta property="og:description" content="HYROX Basic je online HYROX program pro začátečníky. 5 dní v týdnu, cca 60 minut. Běh, síla a všech osm stanic v jednom plánu. 750 Kč měsíčně v aplikaci Strong Coach.">
 <meta property="og:image" content="https://str2g.com/img/ria-coaching-group.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.ico?v=2" sizes="any">
@@ -227,7 +240,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700&family=Barlow+Condensed:ital,wght@0,700;0,800;1,800;1,900&family=JetBrains+Mono:wght@500&display=swap">
-<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebPage", "@id": "https://str2g.com/cs/programy/hyrox-basic/", "url": "https://str2g.com/cs/programy/hyrox-basic/", "name": "HYROX program pro začátečníky: HYROX Basic | STR2G", "description": "HYROX Basic je online HYROX program pro začátečníky. 5 dní v týdnu, cca 60 minut. Běh, síla a všech osm stanic v jednom plánu. 750 Kč měsíčně v aplikaci Strivee.", "inLanguage": "cs", "isPartOf": {"@id": "https://str2g.com/#web"}, "about": {"@id": "https://str2g.com/cs/programy/hyrox-basic/#product"}}, {"@type": "Product", "@id": "https://str2g.com/cs/programy/hyrox-basic/#product", "name": "STR2G HYROX Basic", "description": "HYROX Basic je online HYROX program pro začátečníky. 5 dní v týdnu, cca 60 minut. Běh, síla a všech osm stanic v jednom plánu. 750 Kč měsíčně v aplikaci Strivee.", "brand": {"@type": "Brand", "name": "STR2G"}, "category": "Online HYROX training program", "image": "https://str2g.com/img/ria-coaching-group.jpg", "offers": {"@type": "Offer", "price": "750", "priceCurrency": "CZK", "availability": "https://schema.org/InStock", "url": "https://train.strivee.app/payment/0i7RPLukkMgXOLeInwKe", "seller": {"@id": "https://str2g.com/#org"}, "shippingDetails": {"@type": "OfferShippingDetails", "shippingRate": {"@type": "MonetaryAmount", "value": "0", "currency": "CZK"}, "shippingDestination": [{"@type": "DefinedRegion", "addressCountry": "CZ"}, {"@type": "DefinedRegion", "addressCountry": "SK"}, {"@type": "DefinedRegion", "addressCountry": "DE"}, {"@type": "DefinedRegion", "addressCountry": "AT"}, {"@type": "DefinedRegion", "addressCountry": "PL"}, {"@type": "DefinedRegion", "addressCountry": "FR"}, {"@type": "DefinedRegion", "addressCountry": "ES"}, {"@type": "DefinedRegion", "addressCountry": "IT"}, {"@type": "DefinedRegion", "addressCountry": "NL"}, {"@type": "DefinedRegion", "addressCountry": "BE"}, {"@type": "DefinedRegion", "addressCountry": "GB"}, {"@type": "DefinedRegion", "addressCountry": "IE"}, {"@type": "DefinedRegion", "addressCountry": "US"}], "deliveryTime": {"@type": "ShippingDeliveryTime", "handlingTime": {"@type": "QuantitativeValue", "minValue": 0, "maxValue": 0, "unitCode": "DAY"}, "transitTime": {"@type": "QuantitativeValue", "minValue": 0, "maxValue": 0, "unitCode": "DAY"}}}, "hasMerchantReturnPolicy": {"@type": "MerchantReturnPolicy", "applicableCountry": ["CZ", "SK", "DE", "AT", "PL", "FR", "ES", "IT", "NL", "BE", "GB", "IE", "US"], "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted", "merchantReturnLink": "https://str2g.com/refund-policy/"}, "priceSpecification": {"@type": "UnitPriceSpecification", "price": "750", "priceCurrency": "CZK", "billingDuration": "P1M"}}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "STR2G HYROX", "item": "https://str2g.com/cs/"}, {"@type": "ListItem", "position": 2, "name": "Programy", "item": "https://str2g.com/cs/programy/"}, {"@type": "ListItem", "position": 3, "name": "HYROX Basic", "item": "https://str2g.com/cs/programy/hyrox-basic/"}]}, {"@type": "FAQPage", "@id": "https://str2g.com/cs/programy/hyrox-basic/#faq", "mainEntity": [{"@type": "Question", "name": "Zvládne Basic úplný začátečník?", "acceptedAnswer": {"@type": "Answer", "text": "Ano, je přesně pro něj. Váhy a objem si upravíš podle sebe. Cílem je trénink dokončit kvalitně, ne ho jen přežít."}}, {"@type": "Question", "name": "Jaké vybavení potřebuju?", "acceptedAnswer": {"@type": "Answer", "text": "Ideálně fitko se SkiErgem, veslem, saněmi a wall ballem. Když ti něco chybí, napiš nám a poradíme náhradu."}}, {"@type": "Question", "name": "Můžu s Basicem jít na závod?", "acceptedAnswer": {"@type": "Answer", "text": "Ano, na start tě připraví. Až budeš mít závod zhruba za 12 týdnů, víc tě vyladí příprava jako 12týdenní HYROX Advanced."}}, {"@type": "Question", "name": "Jak předplatné zruším?", "acceptedAnswer": {"@type": "Answer", "text": "Basic je měsíční předplatné ve Strivee. Tam ho taky zrušíš."}}, {"@type": "Question", "name": "V jakém jazyce je program?", "acceptedAnswer": {"@type": "Answer", "text": "Plány, videa i podpora jsou v angličtině. Potřebuješ překlad? Napiš nám a domluvíme se."}}, {"@type": "Question", "name": "Můžu si program vyzkoušet, než ho koupím?", "acceptedAnswer": {"@type": "Answer", "text": "Ano. Na této stránce si stáhneš ukázkový týden zdarma v PDF. Je to skutečný týden programu: stejné tréninky, tempa a poznámky, jaké dostaneš v aplikaci."}}]}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebPage", "@id": "https://str2g.com/cs/programy/hyrox-basic/", "url": "https://str2g.com/cs/programy/hyrox-basic/", "name": "HYROX program pro začátečníky: HYROX Basic | STR2G", "description": "HYROX Basic je online HYROX program pro začátečníky. 5 dní v týdnu, cca 60 minut. Běh, síla a všech osm stanic v jednom plánu. 750 Kč měsíčně v aplikaci Strong Coach.", "inLanguage": "cs", "isPartOf": {"@id": "https://str2g.com/#web"}, "about": {"@id": "https://str2g.com/cs/programy/hyrox-basic/#product"}}, {"@type": "Product", "@id": "https://str2g.com/cs/programy/hyrox-basic/#product", "name": "STR2G HYROX Basic", "description": "HYROX Basic je online HYROX program pro začátečníky. 5 dní v týdnu, cca 60 minut. Běh, síla a všech osm stanic v jednom plánu. 750 Kč měsíčně v aplikaci Strong Coach.", "brand": {"@type": "Brand", "name": "STR2G"}, "category": "Online HYROX training program", "image": "https://str2g.com/img/ria-coaching-group.jpg", "offers": {"@type": "Offer", "price": "750", "priceCurrency": "CZK", "availability": "https://schema.org/InStock", "url": "https://str2g.com/storefront/?program=c18b7800-f596-441d-841e-1e81d444d00c", "seller": {"@id": "https://str2g.com/#org"}, "shippingDetails": {"@type": "OfferShippingDetails", "shippingRate": {"@type": "MonetaryAmount", "value": "0", "currency": "CZK"}, "shippingDestination": [{"@type": "DefinedRegion", "addressCountry": "CZ"}, {"@type": "DefinedRegion", "addressCountry": "SK"}, {"@type": "DefinedRegion", "addressCountry": "DE"}, {"@type": "DefinedRegion", "addressCountry": "AT"}, {"@type": "DefinedRegion", "addressCountry": "PL"}, {"@type": "DefinedRegion", "addressCountry": "FR"}, {"@type": "DefinedRegion", "addressCountry": "ES"}, {"@type": "DefinedRegion", "addressCountry": "IT"}, {"@type": "DefinedRegion", "addressCountry": "NL"}, {"@type": "DefinedRegion", "addressCountry": "BE"}, {"@type": "DefinedRegion", "addressCountry": "GB"}, {"@type": "DefinedRegion", "addressCountry": "IE"}, {"@type": "DefinedRegion", "addressCountry": "US"}], "deliveryTime": {"@type": "ShippingDeliveryTime", "handlingTime": {"@type": "QuantitativeValue", "minValue": 0, "maxValue": 0, "unitCode": "DAY"}, "transitTime": {"@type": "QuantitativeValue", "minValue": 0, "maxValue": 0, "unitCode": "DAY"}}}, "hasMerchantReturnPolicy": {"@type": "MerchantReturnPolicy", "applicableCountry": ["CZ", "SK", "DE", "AT", "PL", "FR", "ES", "IT", "NL", "BE", "GB", "IE", "US"], "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted", "merchantReturnLink": "https://str2g.com/refund-policy/"}, "priceSpecification": {"@type": "UnitPriceSpecification", "price": "750", "priceCurrency": "CZK", "billingDuration": "P1M"}}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "STR2G HYROX", "item": "https://str2g.com/cs/"}, {"@type": "ListItem", "position": 2, "name": "Programy", "item": "https://str2g.com/cs/programy/"}, {"@type": "ListItem", "position": 3, "name": "HYROX Basic", "item": "https://str2g.com/cs/programy/hyrox-basic/"}]}, {"@type": "FAQPage", "@id": "https://str2g.com/cs/programy/hyrox-basic/#faq", "mainEntity": [{"@type": "Question", "name": "Zvládne Basic úplný začátečník?", "acceptedAnswer": {"@type": "Answer", "text": "Ano, je přesně pro něj. Váhy a objem si upravíš podle sebe. Cílem je trénink dokončit kvalitně, ne ho jen přežít."}}, {"@type": "Question", "name": "Jaké vybavení potřebuju?", "acceptedAnswer": {"@type": "Answer", "text": "Ideálně fitko se SkiErgem, veslem, saněmi a wall ballem. Když ti něco chybí, napiš nám a poradíme náhradu."}}, {"@type": "Question", "name": "Můžu s Basicem jít na závod?", "acceptedAnswer": {"@type": "Answer", "text": "Ano, na start tě připraví. Až budeš mít závod zhruba za 12 týdnů, víc tě vyladí příprava jako 12týdenní HYROX Advanced."}}, {"@type": "Question", "name": "Jak předplatné zruším?", "acceptedAnswer": {"@type": "Answer", "text": "Basic je měsíční předplatné. Zrušíš ho kdykoliv v aplikaci Strong Coach (Programy → Spravovat platby a kartu). Skončí na konci zaplaceného období."}}, {"@type": "Question", "name": "V jakém jazyce je program?", "acceptedAnswer": {"@type": "Answer", "text": "Plány, videa i podpora jsou v angličtině. Potřebuješ překlad? Napiš nám a domluvíme se."}}, {"@type": "Question", "name": "Můžu si program vyzkoušet, než ho koupím?", "acceptedAnswer": {"@type": "Answer", "text": "Ano. Na této stránce si stáhneš ukázkový týden zdarma v PDF. Je to skutečný týden programu: stejné tréninky, tempa a poznámky, jaké dostaneš v aplikaci."}}]}]}</script>
 <style>
 /* Matches hyrox-prague.eu: near-black, muted gold, Barlow Condensed italic display, numbered sections, photo-led. */
 :root{
@@ -587,7 +600,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
       <a class="txt" href="/cs/#programs">Programy</a>
       <a class="txt" href="/cs/hyrox-treninkovy-plan/">HYROX tréninkový plán</a>
       <nav class="lang" aria-label="Jazyk"><a href="/programs/hyrox-basic/" hreflang="en" lang="en">EN</a><a href="/cs/programy/hyrox-basic/" hreflang="cs" lang="cs" aria-current="page">CZ</a><a href="/sk/programy/hyrox-basic/" hreflang="sk" lang="sk">SK</a><a href="/de/programme/hyrox-basic/" hreflang="de" lang="de">DE</a><a href="/pl/programy/hyrox-basic/" hreflang="pl" lang="pl">PL</a><a href="/fr/programmes/hyrox-basic/" hreflang="fr" lang="fr">FR</a><a href="/es/programas/hyrox-basic/" hreflang="es" lang="es">ES</a><a href="/it/programmi/hyrox-basic/" hreflang="it" lang="it">IT</a><a href="/nl/programmas/hyrox-basic/" hreflang="nl" lang="nl">NL</a></nav>
-      <a class="btn btn-gold" href="https://train.strivee.app/payment/0i7RPLukkMgXOLeInwKe" target="_blank" rel="noopener" data-program="HYROX Basic" data-value="750">Začít</a>
+      <a class="btn btn-gold" href="/storefront/?program=c18b7800-f596-441d-841e-1e81d444d00c" data-program="HYROX Basic" data-value="750">Začít</a>
     </div>
   </div>
 </nav>
@@ -602,7 +615,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
     <div class="buybox">
       <div class="price"><b>750 Kč</b><span>/ měsíc</span></div>
       <div class="cta-row" style="margin-top:0">
-        <a class="btn btn-gold" href="https://train.strivee.app/payment/0i7RPLukkMgXOLeInwKe" target="_blank" rel="noopener" data-program="HYROX Basic" data-value="750">Začít</a>
+        <a class="btn btn-gold" href="/storefront/?program=c18b7800-f596-441d-841e-1e81d444d00c" data-program="HYROX Basic" data-value="750">Začít</a>
         <button type="button" class="btn btn-ghost" data-fw-cta="basic">Ukázkový týden zdarma</button>
         <a class="btn btn-ghost" href="/cs/programy/#compare">Porovnat všechny programy</a>
       </div>
@@ -625,7 +638,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
   <div class="wrap">
     <div class="shead"><p class="eyebrow">HYROX Basic</p><h2 class="display"><span class="num">02</span><span>Co v tom <span class="gold">najdeš.</span></span></h2></div>
     <ul class="lp-list"><li>Běh, síla a HYROX pohyby v jednom týdenním plánu.</li><li>Technika na stanicích od prvního dne: SkiErg, sled push, sled pull, burpee broad jumps, veslo, farmers carry, výpady s pytlem, wall balls.</li><li>Váhy a objem si upravíš podle sebe.</li><li>Tréninky dokončíš kvalitně, nejen přežiješ.</li><li>Rutina, kterou udržíš měsíce, ne šest týdnů.</li></ul>
-    <div class="app"><h3>V aplikaci Strivee</h3><ul class="lp-list"><li>Každý trénink v mobilu, každý den.</li><li>Žebříček u každého tréninku.</li><li>Sledování progresu: maxima, procenta, benchmarky.</li><li>Můžeš si zapisovat i vlastní tréninky navíc.</li></ul></div>
+    <div class="app"><h3>V aplikaci Strong Coach</h3><ul class="lp-list"><li>Dnešní trénink v mobilu, každý den.</li><li>Výsledky zapíšeš po každém tréninku.</li><li>Osobní rekordy a progres na jednom místě.</li><li>Chat s trenérem a push notifikace.</li></ul></div>
   </div>
 </section>
 
@@ -650,15 +663,15 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
 <section id="faq">
   <div class="wrap">
     <div class="shead"><p class="eyebrow">FAQ</p><h2 class="display"><span>Časté <span class="gold">otázky.</span></span></h2></div>
-    <div class="faq"><details><summary>Zvládne Basic úplný začátečník?</summary><p>Ano, je přesně pro něj. Váhy a objem si upravíš podle sebe. Cílem je trénink dokončit kvalitně, ne ho jen přežít.</p></details><details><summary>Jaké vybavení potřebuju?</summary><p>Ideálně fitko se SkiErgem, veslem, saněmi a wall ballem. Když ti něco chybí, napiš nám a poradíme náhradu.</p></details><details><summary>Můžu s Basicem jít na závod?</summary><p>Ano, na start tě připraví. Až budeš mít závod zhruba za 12 týdnů, víc tě vyladí příprava jako 12týdenní HYROX Advanced.</p></details><details><summary>Jak předplatné zruším?</summary><p>Basic je měsíční předplatné ve Strivee. Tam ho taky zrušíš.</p></details><details><summary>V jakém jazyce je program?</summary><p>Plány, videa i podpora jsou v angličtině. Potřebuješ překlad? Napiš nám a domluvíme se.</p></details><details><summary>Můžu si program vyzkoušet, než ho koupím?</summary><p>Ano. Na této stránce si stáhneš ukázkový týden zdarma v PDF. Je to skutečný týden programu: stejné tréninky, tempa a poznámky, jaké dostaneš v aplikaci.</p></details></div>
+    <div class="faq"><details><summary>Zvládne Basic úplný začátečník?</summary><p>Ano, je přesně pro něj. Váhy a objem si upravíš podle sebe. Cílem je trénink dokončit kvalitně, ne ho jen přežít.</p></details><details><summary>Jaké vybavení potřebuju?</summary><p>Ideálně fitko se SkiErgem, veslem, saněmi a wall ballem. Když ti něco chybí, napiš nám a poradíme náhradu.</p></details><details><summary>Můžu s Basicem jít na závod?</summary><p>Ano, na start tě připraví. Až budeš mít závod zhruba za 12 týdnů, víc tě vyladí příprava jako 12týdenní HYROX Advanced.</p></details><details><summary>Jak předplatné zruším?</summary><p>Basic je měsíční předplatné. Zrušíš ho kdykoliv v aplikaci Strong Coach (Programy → Spravovat platby a kartu). Skončí na konci zaplaceného období.</p></details><details><summary>V jakém jazyce je program?</summary><p>Plány, videa i podpora jsou v angličtině. Potřebuješ překlad? Napiš nám a domluvíme se.</p></details><details><summary>Můžu si program vyzkoušet, než ho koupím?</summary><p>Ano. Na této stránce si stáhneš ukázkový týden zdarma v PDF. Je to skutečný týden programu: stejné tréninky, tempa a poznámky, jaké dostaneš v aplikaci.</p></details></div>
   </div>
 </section>
 
 <section id="related">
   <div class="wrap">
     <div class="shead"><p class="eyebrow">Programy</p><h2 class="display"><span>Další <span class="gold">programy.</span></span></h2></div>
-    <div class="grid"><article class="card"><div class="kind">Příprava na závod · 12 týdnů · všechny úrovně</div><h4>12týdenní HYROX Advanced</h4><div class="price"><b>1 900 Kč</b><span>jednorázově</span></div><p class="for">První HYROX máš zhruba za 12 týdnů.</p><div class="actions"><a class="btn btn-ghost" href="/cs/programy/12tydenni-hyrox-advanced/">Detail programu</a><a class="btn btn-gold" href="https://train.strivee.app/payment/PAAjJouaTHNtDEpVeWq2" target="_blank" rel="noopener" data-program="12-Week HYROX Advanced" data-value="1900">Koupit</a></div></article><article class="card"><div class="kind">Specializovaný blok · 12 týdnů</div><h4>Running for HYROX 2.0</h4><div class="price"><b>1 000 Kč</b><span>jednorázově</span></div><p class="for">Místa ztrácíš na běhu, ne na stanicích.</p><div class="actions"><a class="btn btn-ghost" href="/cs/programy/beh-pro-hyrox/">Detail programu</a><a class="btn btn-gold" href="https://train.strivee.app/payment/l4LKqbJX8ezlAEDBm6Dg" target="_blank" rel="noopener" data-program="Running for HYROX 2.0" data-value="1000">Koupit</a></div></article><article class="card"><div class="kind">Měsíční program · Výkon</div><h4>HYROX Competitor</h4><div class="price"><b>960 Kč</b><span>/ měsíc</span></div><p class="for">HYROX už máš za sebou a víš, kde ztrácíš čas.</p><div class="actions"><a class="btn btn-ghost" href="/cs/programy/hyrox-competitor/">Detail programu</a><a class="btn btn-gold" href="https://train.strivee.app/payment/O1mbnAnKs03B8RGEtMxv" target="_blank" rel="noopener" data-program="HYROX Competitor" data-value="960">Začít</a></div></article></div>
-    <p class="lp-note">Platba proběhne bezpečně přes Strivee. <a href="/cs/programy/#compare">Porovnat všechny programy →</a></p>
+    <div class="grid"><article class="card"><div class="kind">Příprava na závod · 12 týdnů · všechny úrovně</div><h4>12týdenní HYROX Advanced</h4><div class="price"><b>1 900 Kč</b><span>jednorázově</span></div><p class="for">První HYROX máš zhruba za 12 týdnů.</p><div class="actions"><a class="btn btn-ghost" href="/cs/programy/12tydenni-hyrox-advanced/">Detail programu</a><a class="btn btn-gold" href="/storefront/?program=bf5b8a49-3c35-4fb5-ba06-837f9f40a650" data-program="12-Week HYROX Advanced" data-value="1900">Koupit</a></div></article><article class="card"><div class="kind">Specializovaný blok · 12 týdnů</div><h4>Running for HYROX 2.0</h4><div class="price"><b>1 000 Kč</b><span>jednorázově</span></div><p class="for">Místa ztrácíš na běhu, ne na stanicích.</p><div class="actions"><a class="btn btn-ghost" href="/cs/programy/beh-pro-hyrox/">Detail programu</a><a class="btn btn-gold" href="/storefront/?program=74b976b7-5861-4567-8771-516438a6f406" data-program="Running for HYROX 2.0" data-value="1000">Koupit</a></div></article><article class="card"><div class="kind">Měsíční program · Výkon</div><h4>HYROX Competitor</h4><div class="price"><b>960 Kč</b><span>/ měsíc</span></div><p class="for">HYROX už máš za sebou a víš, kde ztrácíš čas.</p><div class="actions"><a class="btn btn-ghost" href="/cs/programy/hyrox-competitor/">Detail programu</a><a class="btn btn-gold" href="/storefront/?program=4bb39d07-5f72-4c58-b074-b6c2f3d25730" data-program="HYROX Competitor" data-value="960">Začít</a></div></article></div>
+    <p class="lp-note">Platíš bezpečně kartou přímo na str2g.com. <a href="/cs/programy/#compare">Porovnat všechny programy →</a></p>
   </div>
 </section>
 
@@ -666,9 +679,9 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
   <img class="bgimg" src="/img/ria-coaching-group.webp" alt="" loading="lazy">
   <div class="wrap">
     <h2 class="display">Závod<br><span class="gold">nepočká.</span></h2>
-    <p class="lead">Kup plán, stáhni Strivee a zítra ráno přesně víš, co tě čeká.</p>
+    <p class="lead">Kup plán, otevři Strong Coach v mobilu a zítra ráno přesně víš, co tě čeká.</p>
     <div class="cta-row">
-      <a class="btn btn-gold" href="https://train.strivee.app/payment/0i7RPLukkMgXOLeInwKe" target="_blank" rel="noopener" data-program="HYROX Basic" data-value="750">Začít</a>
+      <a class="btn btn-gold" href="/storefront/?program=c18b7800-f596-441d-841e-1e81d444d00c" data-program="HYROX Basic" data-value="750">Začít</a>
       <button type="button" class="btn btn-ghost" data-fw-cta="basic">Ukázkový týden zdarma</button>
       <a class="btn btn-ghost" href="/cs/programy/#compare">Porovnat všechny programy</a>
     </div>
@@ -680,12 +693,13 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
     <nav class="prog-nav guides" aria-label="Programy"><a href="/cs/programy/hyrox-basic/" aria-current="page">HYROX Basic</a><a href="/cs/programy/hyrox-competitor/">HYROX Competitor</a><a href="/cs/programy/hyrox-pro-athlete/">HYROX Pro Athlete</a><a href="/cs/programy/12tydenni-hyrox-race-prep/">12týdenní HYROX Race Prep</a><a href="/cs/programy/12tydenni-hyrox-advanced/">12týdenní HYROX Advanced</a><a href="/cs/programy/8tydenni-hyrox-singles/">8týdenní HYROX Singles</a><a href="/cs/programy/8tydenni-hyrox-doubles/">8týdenní HYROX Doubles</a><a href="/cs/programy/beh-pro-hyrox/">Running for HYROX 2.0</a><a href="/cs/programy/hyrox-taper/">2týdenní HYROX Taper 2.0</a></nav>
     <nav class="guides" aria-label="Guides"><a href="/cs/hyrox-treninkovy-plan/">HYROX tréninkový plán</a><a href="/cs/online-hyrox-trener/">Online HYROX trenér</a><a href="/cs/programy/">Programy</a></nav>
     <nav class="net" aria-label="STR2G"><p class="net-h">STR2G</p><ul><li><a href="https://hyrox-prague.eu/cs/" target="_blank" rel="noopener"><b>HYROX Prague</b></a></li><li><a href="https://hyroxtrainingclub.cz/" target="_blank" rel="noopener"><b>HYROX Training Club</b></a></li><li><a href="https://formfactorygames.cz/" target="_blank" rel="noopener"><b>Form Factory Games</b></a></li><li><a href="https://www.ladislavsuchanek.cz/" target="_blank" rel="noopener"><b>Ladislav Suchánek</b></a></li><li><a href="https://riahrusovska.cz/" target="_blank" rel="noopener"><b>Ria Suchánek Hrušovská</b></a></li><li><a href="https://strongertogether.cz/" target="_blank" rel="noopener"><b>Stronger Together</b></a></li><li><a href="https://xenomczech.cz/" target="_blank" rel="noopener"><b>STR2G TEN</b></a></li></ul></nav>
-    <div style="display:flex;align-items:center;gap:12px"><img loading="lazy" src="/favicon.svg?v=2" alt="" width="26" height="26" style="border:1px solid var(--line);border-radius:6px"><span>© 2026 STR2G · Stronger Together · Strivee</span></div>
+    <div style="display:flex;align-items:center;gap:12px"><img loading="lazy" src="/favicon.svg?v=2" alt="" width="26" height="26" style="border:1px solid var(--line);border-radius:6px"><span>© 2026 STR2G · Stronger Together · Strong Coach</span></div>
     <div class="links">
       <a href="https://instagram.com/22segge_coach" target="_blank" rel="noopener">@22segge_coach</a>
       <a href="https://instagram.com/riahrusovskaofficial" target="_blank" rel="noopener">@riahrusovskaofficial</a>
       <a href="/cs/ochrana-osobnich-udaju/">Ochrana osobních údajů</a>
       <a href="/cs/vraceni-penez/">Vrácení peněz</a>
+      <a href="/cs/obchodni-podminky/">Obchodní podmínky</a>
       <a href="#" onclick="str2gConsentReset();return false;">Cookies</a>
     </div>
   </div>
@@ -884,7 +898,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
     if (h > 0 && scrollY / h >= CFG.SCROLL_RATIO) open();
   }
   function buyVisible() {
-    var as = document.querySelectorAll('a[href*="train.strivee.app/payment"]');
+    var as = document.querySelectorAll('a[href*="train.strivee.app/payment"], a[href*="/storefront/?program="]');
     for (var i = 0; i < as.length; i++) {
       var r = as[i].getBoundingClientRect();
       if (r.width && r.bottom > 0 && r.top < innerHeight) return true;

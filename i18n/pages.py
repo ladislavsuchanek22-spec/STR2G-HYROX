@@ -11,6 +11,7 @@ from pathlib import Path
 
 import aeo_eu
 from pages_content import T, SLUGS, HOME, LOCALE, COUNTRY, PROGRAMS, PLAN_PICKS, PICK_LANGS_ADVANCED, price
+from app_store import buy_url
 
 
 def prog_url(lang, pid):
@@ -105,10 +106,10 @@ def card(lang, pid, kind, details=None):
     name = T[lang]["names"].get(pid, pname)
     details = details or prog_url(lang, pid)
     return (f'<article class="card" data-fw-id="{pid}"><div class="kind">{escape(kind)}</div><h4>{escape(name)}</h4>{price_html(lang, pid)}'
-            f'<div class="actions"><a class="btn btn-gold" href="https://train.strivee.app/payment/{sid}" target="_blank" rel="noopener" '
+            f'<div class="actions"><a class="btn btn-gold" href="{buy_url(pid)}" '
             f'data-program="{escape(pname)}" data-value="{czk}">{btn}</a>'
             + (f'<a class="btn btn-ghost" href="{details}">{u["details"]}</a></div></article>' if details else
-               f'<a class="btn btn-ghost" href="https://train.strivee.app/program/{sid}" target="_blank" rel="noopener">{u["details"]}</a></div></article>'))
+               f'<a class="btn btn-ghost" href="{buy_url(pid)}">{u["details"]}</a></div></article>'))
 
 
 def faq_html(lang, faq):
@@ -143,7 +144,7 @@ def schema(lang, kind, url, d):
         stype = u["plan_link"]
     else:
         offers = {"@type": "Offer", "price": "3500", "priceCurrency": "CZK", "availability": "https://schema.org/InStock",
-                  "url": "https://train.strivee.app/program/" + PROGRAMS["coaching"][0],
+                  "url": BASE + buy_url("coaching"),
                   "priceSpecification": {"@type": "UnitPriceSpecification", "price": "3500", "priceCurrency": "CZK", "billingDuration": "P1M"}}
         stype = u["coach_link"]
     graph = [
@@ -331,7 +332,7 @@ def page(lang, kind, parts):
   <div class="wrap">
     {progs}<nav class="guides" aria-label="Guides"><a href="{SLUGS["plan"][lang]}"{" aria-current=\"page\"" if kind == "plan" else ""}>{escape(u["plan_link"])}</a><a href="{SLUGS["coach"][lang]}"{" aria-current=\"page\"" if kind == "coach" else ""}>{escape(u["coach_link"])}</a><a href="{__import__("hub").HUB.get(lang, home + "#programs")}">{u["programs"]}</a>{__import__("guides").nav(lang)}</nav>
     <nav class="net" aria-label="STR2G"><p class="net-h">STR2G</p><ul>{net}</ul></nav>
-    <div style="display:flex;align-items:center;gap:12px"><img loading="lazy" src="/favicon.svg?v=2" alt="" width="26" height="26" style="border:1px solid var(--line);border-radius:6px"><span>© 2026 STR2G · Stronger Together · Strivee</span></div>
+    <div style="display:flex;align-items:center;gap:12px"><img loading="lazy" src="/favicon.svg?v=2" alt="" width="26" height="26" style="border:1px solid var(--line);border-radius:6px"><span>© 2026 STR2G · Stronger Together · Strong Coach</span></div>
     <div class="links">
       <a href="https://instagram.com/22segge_coach" target="_blank" rel="noopener">@22segge_coach</a>
       <a href="https://instagram.com/riahrusovskaofficial" target="_blank" rel="noopener">@riahrusovskaofficial</a>

@@ -7,7 +7,7 @@
   Co to dělá:
   1) Cookie lišta (souhlas / odmítnutí) – bez souhlasu se Meta Pixel vůbec nenačte.
   2) Google tag (GA4 + Google Ads) v režimu Consent Mode v2 – před souhlasem nic neukládá.
-  3) Každý klik na platební odkaz do Strivee = InitiateCheckout (Meta) + begin_checkout (GA4) + konverze (Google Ads), včetně názvu programu a ceny.
+  3) Každý klik na platební odkaz do Strivee (u odkazů na vlastní /storefront/ jen select_item, checkout hlásí storefront) = InitiateCheckout (Meta) + begin_checkout (GA4) + konverze (Google Ads), včetně názvu programu a ceny.
   4) Funkce window.str2gLead('kviz') pro budoucí kvíz / formulář = Lead (Meta) + generate_lead (GA4) + konverze (Ads).
   5) window.str2gConsentReset() znovu otevře cookie lištu.
   6) Tanganica pixel (Google Tag Manager GTM-TRS5RSN) je na konci tohoto souboru doslova podle Tanganica, aby ho
@@ -92,9 +92,22 @@
   }
 
   document.addEventListener('click', function (e) {
-    var a = e.target && e.target.closest ? e.target.closest('a[href*="train.strivee.app/payment"]') : null;
+    var a = e.target && e.target.closest ? e.target.closest('a[href*="train.strivee.app/payment"], a[href*="/storefront/?program="]') : null;
     if (!a) return;
     var p = programInfo(a);
+    // Odkaz na vlastní storefront: výběr programu. Samotný begin_checkout / InitiateCheckout pošle
+    // storefront až při kliku na Koupit, aby se nepočítal dvakrát.
+    var toStore = a.href.indexOf('/storefront/') !== -1;
+    if (toStore) {
+      window.dataLayer.push({ ecommerce: null });
+      window.dataLayer.push({ event: 'select_item', ecommerce: { currency: 'CZK', value: p.value, items: [{ item_name: p.name, price: p.value, quantity: 1 }] } });
+      gtag('event', 'select_item', { items: [{ item_name: p.name, price: p.value }] });
+      if (granted() && window.fbq) window.fbq('track', 'ViewContent', { content_name: p.name, value: p.value, currency: 'CZK' });
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
+      e.preventDefault();
+      setTimeout(function () { window.location.href = a.href; }, 250);
+      return;
+    }
 
     // Pro Tag Manager (Tanganica): standardní e-commerce událost v dataLayer
     window.dataLayer.push({ ecommerce: null });
@@ -576,8 +589,8 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
 <section id="pick">
   <div class="wrap">
     <div class="shead"><p class="eyebrow">Programmes</p><h2 class="display"><span>Programs that train this</span></h2></div>
-    <div class="grid"><article class="card" data-fw-id="running"><div class="kind">You lose time on the runs</div><h4>Running for HYROX 2.0</h4><div class="price"><b>CZK 1,000</b><span>one-time</span><em class="fx">≈ £35 · €41</em></div><div class="actions"><a class="btn btn-gold" href="https://train.strivee.app/payment/l4LKqbJX8ezlAEDBm6Dg" target="_blank" rel="noopener" data-program="Running for HYROX 2.0" data-value="1000">Buy</a><a class="btn btn-ghost" href="/programs/running-for-hyrox/">Details</a></div></article><article class="card" data-fw-id="basic"><div class="kind">New to HYROX or no race date yet</div><h4>HYROX Basic</h4><div class="price"><b>CZK 750</b><span>/ month</span><em class="fx">≈ £27 · €31</em></div><div class="actions"><a class="btn btn-gold" href="https://train.strivee.app/payment/0i7RPLukkMgXOLeInwKe" target="_blank" rel="noopener" data-program="HYROX Basic" data-value="750">Start</a><a class="btn btn-ghost" href="/programs/hyrox-basic/">Details</a></div></article><article class="card" data-fw-id="singles"><div class="kind">Your race is 8 weeks away</div><h4>8-Week HYROX Singles</h4><div class="price"><b>CZK 1,500</b><span>one-time</span><em class="fx">≈ £53 · €62</em></div><div class="actions"><a class="btn btn-gold" href="https://train.strivee.app/payment/tsC3Khz8zSQMLLIs9Fnp" target="_blank" rel="noopener" data-program="8-Week HYROX Singles" data-value="1500">Buy</a><a class="btn btn-ghost" href="/programs/8-week-hyrox-singles/">Details</a></div></article></div>
-    <p class="lp-note">Payment runs securely through Strivee in Czech koruna (CZK). Your bank converts it, so the £ / € amounts are approximate. <a href="/#programs">All 10 programmes →</a></p>
+    <div class="grid"><article class="card" data-fw-id="running"><div class="kind">You lose time on the runs</div><h4>Running for HYROX 2.0</h4><div class="price"><b>CZK 1,000</b><span>one-time</span><em class="fx">≈ £35 · €41</em></div><div class="actions"><a class="btn btn-gold" href="/storefront/?program=74b976b7-5861-4567-8771-516438a6f406" data-program="Running for HYROX 2.0" data-value="1000">Buy</a><a class="btn btn-ghost" href="/programs/running-for-hyrox/">Details</a></div></article><article class="card" data-fw-id="basic"><div class="kind">New to HYROX or no race date yet</div><h4>HYROX Basic</h4><div class="price"><b>CZK 750</b><span>/ month</span><em class="fx">≈ £27 · €31</em></div><div class="actions"><a class="btn btn-gold" href="/storefront/?program=c18b7800-f596-441d-841e-1e81d444d00c" data-program="HYROX Basic" data-value="750">Start</a><a class="btn btn-ghost" href="/programs/hyrox-basic/">Details</a></div></article><article class="card" data-fw-id="singles"><div class="kind">Your race is 8 weeks away</div><h4>8-Week HYROX Singles</h4><div class="price"><b>CZK 1,500</b><span>one-time</span><em class="fx">≈ £53 · €62</em></div><div class="actions"><a class="btn btn-gold" href="/storefront/?program=1f4f0945-7a22-4b7e-a5aa-558536973d6b" data-program="8-Week HYROX Singles" data-value="1500">Buy</a><a class="btn btn-ghost" href="/programs/8-week-hyrox-singles/">Details</a></div></article></div>
+    <p class="lp-note">You pay securely by card on str2g.com in Czech koruna (CZK). Your bank converts it, so the £ / € amounts are approximate. <a href="/#programs">All 10 programmes →</a></p>
   </div>
 </section>
 

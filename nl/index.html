@@ -7,7 +7,7 @@
   Co to dělá:
   1) Cookie lišta (souhlas / odmítnutí) – bez souhlasu se Meta Pixel vůbec nenačte.
   2) Google tag (GA4 + Google Ads) v režimu Consent Mode v2 – před souhlasem nic neukládá.
-  3) Každý klik na platební odkaz do Strivee = InitiateCheckout (Meta) + begin_checkout (GA4) + konverze (Google Ads), včetně názvu programu a ceny.
+  3) Každý klik na platební odkaz do Strivee (u odkazů na vlastní /storefront/ jen select_item, checkout hlásí storefront) = InitiateCheckout (Meta) + begin_checkout (GA4) + konverze (Google Ads), včetně názvu programu a ceny.
   4) Funkce window.str2gLead('kviz') pro budoucí kvíz / formulář = Lead (Meta) + generate_lead (GA4) + konverze (Ads).
   5) window.str2gConsentReset() znovu otevře cookie lištu.
   6) Tanganica pixel (Google Tag Manager GTM-TRS5RSN) je na konci tohoto souboru doslova podle Tanganica, aby ho
@@ -92,9 +92,22 @@
   }
 
   document.addEventListener('click', function (e) {
-    var a = e.target && e.target.closest ? e.target.closest('a[href*="train.strivee.app/payment"]') : null;
+    var a = e.target && e.target.closest ? e.target.closest('a[href*="train.strivee.app/payment"], a[href*="/storefront/?program="]') : null;
     if (!a) return;
     var p = programInfo(a);
+    // Odkaz na vlastní storefront: výběr programu. Samotný begin_checkout / InitiateCheckout pošle
+    // storefront až při kliku na Koupit, aby se nepočítal dvakrát.
+    var toStore = a.href.indexOf('/storefront/') !== -1;
+    if (toStore) {
+      window.dataLayer.push({ ecommerce: null });
+      window.dataLayer.push({ event: 'select_item', ecommerce: { currency: 'CZK', value: p.value, items: [{ item_name: p.name, price: p.value, quantity: 1 }] } });
+      gtag('event', 'select_item', { items: [{ item_name: p.name, price: p.value }] });
+      if (granted() && window.fbq) window.fbq('track', 'ViewContent', { content_name: p.name, value: p.value, currency: 'CZK' });
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
+      e.preventDefault();
+      setTimeout(function () { window.location.href = a.href; }, 250);
+      return;
+    }
 
     // Pro Tag Manager (Tanganica): standardní e-commerce událost v dataLayer
     window.dataLayer.push({ ecommerce: null });
@@ -195,7 +208,7 @@
 <!-- Tanganica pixel --><script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0], j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-TRS5RSN');</script><!-- End Tanganica pixel -->
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>HYROX online coaching & trainingsschema's | STR2G</title>
-<meta name="description" content="HYROX online coach en trainingsschema's van Láďa en Ria Suchánek. Voor elk niveau, van maandschema tot 12 weken wedstrijdvoorbereiding. In de Strivee-app.">
+<meta name="description" content="HYROX online coach en trainingsschema's van Láďa en Ria Suchánek. Voor elk niveau, van maandschema tot 12 weken wedstrijdvoorbereiding. In de Strong Coach-app.">
 <meta property="og:title" content="HYROX online coaching & trainingsschema's | STR2G">
 <meta property="og:description" content="Gestructureerde HYROX-programma's van Láďa & Ria Suchánek. Hardlopen, kracht, stations en tempo. Op je telefoon.">
 <meta property="og:image" content="https://str2g.com/img/lada-ria-finish-line.jpg">
@@ -209,7 +222,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="robots" content="index,follow,max-image-preview:large">
 <link rel="canonical" href="https://str2g.com/nl/">
-<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "@id": "https://str2g.com/#org", "name": "STR2G HYROX", "alternateName": "STR2G · Stronger Together", "parentOrganization": {"@type": "Organization", "@id": "https://strongertogether.cz/#org", "name": "Stronger Together", "url": "https://strongertogether.cz/"}, "url": "https://str2g.com/", "logo": "https://str2g.com/favicon.svg", "description": "Online HYROX training programs by Ladislav Suchánek and Ria Suchánek Hrušovská.", "founder": [{"@id": "https://www.ladislavsuchanek.cz/#person"}, {"@id": "https://riahrusovska.cz/#ria"}], "sameAs": ["https://hyrox-prague.eu/", "https://www.instagram.com/hyroxprague/", "https://train.strivee.app/p/str2g-hyrox"], "hasOfferCatalog": {"@type": "OfferCatalog", "name": "STR2G HYROX online programs", "itemListElement": [{"@type": "Offer", "price": "750", "priceCurrency": "CZK", "availability": "https://schema.org/InStock", "url": "https://train.strivee.app/p/str2g-hyrox", "itemOffered": {"@type": "Service", "name": "HYROX Basic", "description": "Monthly online HYROX training plan", "serviceType": "Online HYROX coaching", "provider": {"@id": "https://str2g.com/#org"}}, "priceSpecification": {"@type": "UnitPriceSpecification", "price": "750", "priceCurrency": "CZK", "billingDuration": "P1M"}}, {"@type": "Offer", "price": "960", "priceCurrency": "CZK", "availability": "https://schema.org/InStock", "url": "https://train.strivee.app/p/str2g-hyrox", "itemOffered": {"@type": "Service", "name": "HYROX Competitor", "description": "Monthly online HYROX program for regular racers", "serviceType": "Online HYROX coaching", "provider": {"@id": "https://str2g.com/#org"}}, "priceSpecification": {"@type": "UnitPriceSpecification", "price": "960", "priceCurrency": "CZK", "billingDuration": "P1M"}}, {"@type": "Offer", "price": "1350", "priceCurrency": "CZK", "availability": "https://schema.org/InStock", "url": "https://train.strivee.app/p/str2g-hyrox", "itemOffered": {"@type": "Service", "name": "HYROX Pro Athlete", "description": "Monthly online HYROX program for advanced athletes", "serviceType": "Online HYROX coaching", "provider": {"@id": "https://str2g.com/#org"}}, "priceSpecification": {"@type": "UnitPriceSpecification", "price": "1350", "priceCurrency": "CZK", "billingDuration": "P1M"}}, {"@type": "Offer", "price": "2100", "priceCurrency": "CZK", "availability": "https://schema.org/InStock", "url": "https://train.strivee.app/p/str2g-hyrox", "itemOffered": {"@type": "Service", "name": "12-Week HYROX Race Prep", "description": "12-week HYROX race preparation", "serviceType": "Online HYROX coaching", "provider": {"@id": "https://str2g.com/#org"}}}, {"@type": "Offer", "price": "1500", "priceCurrency": "CZK", "availability": "https://schema.org/InStock", "url": "https://train.strivee.app/p/str2g-hyrox", "itemOffered": {"@type": "Service", "name": "8-Week HYROX Singles", "description": "8-week build for a HYROX Singles race", "serviceType": "Online HYROX coaching", "provider": {"@id": "https://str2g.com/#org"}}}, {"@type": "Offer", "price": "1700", "priceCurrency": "CZK", "availability": "https://schema.org/InStock", "url": "https://train.strivee.app/p/str2g-hyrox", "itemOffered": {"@type": "Service", "name": "8-Week HYROX Doubles", "description": "8-week build for a HYROX Doubles race", "serviceType": "Online HYROX coaching", "provider": {"@id": "https://str2g.com/#org"}}}, {"@type": "Offer", "price": "1000", "priceCurrency": "CZK", "availability": "https://schema.org/InStock", "url": "https://train.strivee.app/p/str2g-hyrox", "itemOffered": {"@type": "Service", "name": "Running for HYROX 2.0", "description": "12-week running block for HYROX", "serviceType": "Online HYROX coaching", "provider": {"@id": "https://str2g.com/#org"}}}, {"@type": "Offer", "price": "550", "priceCurrency": "CZK", "availability": "https://schema.org/InStock", "url": "https://train.strivee.app/p/str2g-hyrox", "itemOffered": {"@type": "Service", "name": "2-Week HYROX Taper 2.0", "description": "2-week taper before a HYROX race", "serviceType": "Online HYROX coaching", "provider": {"@id": "https://str2g.com/#org"}}}, {"@type": "Offer", "price": "3500", "priceCurrency": "CZK", "availability": "https://schema.org/InStock", "url": "https://train.strivee.app/p/str2g-hyrox", "itemOffered": {"@type": "Service", "name": "HYROX Individual Program 1:1", "description": "1:1 online HYROX coaching with an individual program", "serviceType": "Online HYROX coaching", "provider": {"@id": "https://str2g.com/#org"}}, "priceSpecification": {"@type": "UnitPriceSpecification", "price": "3500", "priceCurrency": "CZK", "billingDuration": "P1M"}}]}, "areaServed": "Worldwide", "knowsAbout": ["HYROX", "HYROX training", "HYROX programming", "Online coaching", "Functional fitness"]}, {"@type": "Person", "@id": "https://www.ladislavsuchanek.cz/#person", "name": "Ladislav Suchánek", "jobTitle": "HYROX Performance Coach", "url": "https://hyrox-prague.eu/", "sameAs": ["https://www.ladislavsuchanek.cz/", "https://www.instagram.com/22segge_coach/"]}, {"@type": "Person", "@id": "https://riahrusovska.cz/#ria", "name": "Ria Suchánek Hrušovská", "jobTitle": "HYROX Performance Coach & Mental Coach", "url": "https://riahrusovska.cz/", "sameAs": ["https://riahrusovska.cz/", "https://www.instagram.com/riahrusovskaofficial/"]}, {"@type": "WebSite", "@id": "https://str2g.com/#web", "url": "https://str2g.com/", "name": "STR2G HYROX", "publisher": {"@id": "https://str2g.com/#org"}, "inLanguage": ["en", "cs", "sk", "de", "pl", "fr", "es", "it", "nl"]}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "@id": "https://str2g.com/#org", "name": "STR2G HYROX", "alternateName": "STR2G · Stronger Together", "parentOrganization": {"@type": "Organization", "@id": "https://strongertogether.cz/#org", "name": "Stronger Together", "url": "https://strongertogether.cz/"}, "url": "https://str2g.com/", "logo": "https://str2g.com/favicon.svg", "description": "Online HYROX training programs by Ladislav Suchánek and Ria Suchánek Hrušovská.", "founder": [{"@id": "https://www.ladislavsuchanek.cz/#person"}, {"@id": "https://riahrusovska.cz/#ria"}], "sameAs": ["https://hyrox-prague.eu/", "https://www.instagram.com/hyroxprague/", "https://train.strivee.app/p/str2g-hyrox"], "hasOfferCatalog": {"@type": "OfferCatalog", "name": "STR2G HYROX online programs", "itemListElement": [{"@type": "Offer", "price": "750", "priceCurrency": "CZK", "availability": "https://schema.org/InStock", "url": "https://str2g.com/storefront/", "itemOffered": {"@type": "Service", "name": "HYROX Basic", "description": "Monthly online HYROX training plan", "serviceType": "Online HYROX coaching", "provider": {"@id": "https://str2g.com/#org"}}, "priceSpecification": {"@type": "UnitPriceSpecification", "price": "750", "priceCurrency": "CZK", "billingDuration": "P1M"}}, {"@type": "Offer", "price": "960", "priceCurrency": "CZK", "availability": "https://schema.org/InStock", "url": "https://str2g.com/storefront/", "itemOffered": {"@type": "Service", "name": "HYROX Competitor", "description": "Monthly online HYROX program for regular racers", "serviceType": "Online HYROX coaching", "provider": {"@id": "https://str2g.com/#org"}}, "priceSpecification": {"@type": "UnitPriceSpecification", "price": "960", "priceCurrency": "CZK", "billingDuration": "P1M"}}, {"@type": "Offer", "price": "1350", "priceCurrency": "CZK", "availability": "https://schema.org/InStock", "url": "https://str2g.com/storefront/", "itemOffered": {"@type": "Service", "name": "HYROX Pro Athlete", "description": "Monthly online HYROX program for advanced athletes", "serviceType": "Online HYROX coaching", "provider": {"@id": "https://str2g.com/#org"}}, "priceSpecification": {"@type": "UnitPriceSpecification", "price": "1350", "priceCurrency": "CZK", "billingDuration": "P1M"}}, {"@type": "Offer", "price": "2100", "priceCurrency": "CZK", "availability": "https://schema.org/InStock", "url": "https://str2g.com/storefront/", "itemOffered": {"@type": "Service", "name": "12-Week HYROX Race Prep", "description": "12-week HYROX race preparation", "serviceType": "Online HYROX coaching", "provider": {"@id": "https://str2g.com/#org"}}}, {"@type": "Offer", "price": "1500", "priceCurrency": "CZK", "availability": "https://schema.org/InStock", "url": "https://str2g.com/storefront/", "itemOffered": {"@type": "Service", "name": "8-Week HYROX Singles", "description": "8-week build for a HYROX Singles race", "serviceType": "Online HYROX coaching", "provider": {"@id": "https://str2g.com/#org"}}}, {"@type": "Offer", "price": "1700", "priceCurrency": "CZK", "availability": "https://schema.org/InStock", "url": "https://str2g.com/storefront/", "itemOffered": {"@type": "Service", "name": "8-Week HYROX Doubles", "description": "8-week build for a HYROX Doubles race", "serviceType": "Online HYROX coaching", "provider": {"@id": "https://str2g.com/#org"}}}, {"@type": "Offer", "price": "1000", "priceCurrency": "CZK", "availability": "https://schema.org/InStock", "url": "https://str2g.com/storefront/", "itemOffered": {"@type": "Service", "name": "Running for HYROX 2.0", "description": "12-week running block for HYROX", "serviceType": "Online HYROX coaching", "provider": {"@id": "https://str2g.com/#org"}}}, {"@type": "Offer", "price": "550", "priceCurrency": "CZK", "availability": "https://schema.org/InStock", "url": "https://str2g.com/storefront/", "itemOffered": {"@type": "Service", "name": "2-Week HYROX Taper 2.0", "description": "2-week taper before a HYROX race", "serviceType": "Online HYROX coaching", "provider": {"@id": "https://str2g.com/#org"}}}, {"@type": "Offer", "price": "3500", "priceCurrency": "CZK", "availability": "https://schema.org/InStock", "url": "https://str2g.com/storefront/", "itemOffered": {"@type": "Service", "name": "HYROX Individual Program 1:1", "description": "1:1 online HYROX coaching with an individual program", "serviceType": "Online HYROX coaching", "provider": {"@id": "https://str2g.com/#org"}}, "priceSpecification": {"@type": "UnitPriceSpecification", "price": "3500", "priceCurrency": "CZK", "billingDuration": "P1M"}}]}, "areaServed": "Worldwide", "knowsAbout": ["HYROX", "HYROX training", "HYROX programming", "Online coaching", "Functional fitness"]}, {"@type": "Person", "@id": "https://www.ladislavsuchanek.cz/#person", "name": "Ladislav Suchánek", "jobTitle": "HYROX Performance Coach", "url": "https://hyrox-prague.eu/", "sameAs": ["https://www.ladislavsuchanek.cz/", "https://www.instagram.com/22segge_coach/"]}, {"@type": "Person", "@id": "https://riahrusovska.cz/#ria", "name": "Ria Suchánek Hrušovská", "jobTitle": "HYROX Performance Coach & Mental Coach", "url": "https://riahrusovska.cz/", "sameAs": ["https://riahrusovska.cz/", "https://www.instagram.com/riahrusovskaofficial/"]}, {"@type": "WebSite", "@id": "https://str2g.com/#web", "url": "https://str2g.com/", "name": "STR2G HYROX", "publisher": {"@id": "https://str2g.com/#org"}, "inLanguage": ["en", "cs", "sk", "de", "pl", "fr", "es", "it", "nl"]}]}</script>
 <link rel="alternate" hreflang="en" href="https://str2g.com/">
 <link rel="alternate" hreflang="cs" href="https://str2g.com/cs/">
 <link rel="alternate" hreflang="de" href="https://str2g.com/de/">
@@ -517,7 +530,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
 .guides a{color:var(--fg);text-decoration:none;font-weight:500}
 .guides a:hover{color:var(--accent)}
 </style>
-<!--faq-ld--><script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "inLanguage": "nl", "mainEntity": [{"@type": "Question", "name": "Heb ik HYROX-ervaring nodig?", "acceptedAnswer": {"@type": "Answer", "text": "Nee. Begin je net, kies dan HYROX Basic. Het bouwt je basis op en leert je de stations. Competitor, Pro Athlete en de racevoorbereidingen zijn voor wie al regelmatig traint."}}, {"@type": "Question", "name": "Kunnen beginners de programma's volgen?", "acceptedAnswer": {"@type": "Answer", "text": "Ja. Je past gewichten en volume aan je niveau aan. Het doel is elke training met kwaliteit af te maken, niet alleen te overleven."}}, {"@type": "Question", "name": "Hebben jullie een programma voor Doubles?", "acceptedAnswer": {"@type": "Answer", "text": "Ja, de voorbereiding 8-Week HYROX Doubles. Die behandelt werkverdeling, stationsstrategie en gezamenlijk tempo. De andere programma's werken ook voor Doubles, want jullie moeten allebei goed lopen onder vermoeidheid."}}, {"@type": "Question", "name": "Programma of 1:1 coaching?", "acceptedAnswer": {"@type": "Answer", "text": "Een programma is één schema voor iedereen die het volgt, met opties om op te schalen of af te schalen. 1:1 coaching wordt alleen voor jou geschreven op basis van je prestatie, herstel en agenda, en onderweg bijgestuurd."}}, {"@type": "Question", "name": "12 of 8 weken voorbereiding?", "acceptedAnswer": {"@type": "Answer", "text": "Heb je de tijd, kies dan 12 weken. Je bouwt een stevige basis voordat de intensiteit komt. Acht weken is voor wie al regelmatig traint en zich wil aanscherpen voor een race."}}, {"@type": "Question", "name": "Welke uitrusting heb ik nodig?", "acceptedAnswer": {"@type": "Answer", "text": "Idealiter een gym met ergometers en HYROX-materiaal. Mis je iets? Stuur ons een bericht op Instagram en we stellen een alternatief voor."}}, {"@type": "Question", "name": "In welke taal zijn de programma's?", "acceptedAnswer": {"@type": "Answer", "text": "Schema's, video's en support zijn in het Engels. Vertaling nodig? Stuur ons een bericht, dan spreken we het af."}}, {"@type": "Question", "name": "Hoe zeg ik een maandabonnement op?", "acceptedAnswer": {"@type": "Answer", "text": "Je beheert je abonnement direct in Strivee. Racevoorbereidingen en gerichte blokken betaal je eenmalig."}}]}</script><!--/faq-ld-->
+<!--faq-ld--><script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "inLanguage": "nl", "mainEntity": [{"@type": "Question", "name": "Heb ik HYROX-ervaring nodig?", "acceptedAnswer": {"@type": "Answer", "text": "Nee. Begin je net, kies dan HYROX Basic. Het bouwt je basis op en leert je de stations. Competitor, Pro Athlete en de racevoorbereidingen zijn voor wie al regelmatig traint."}}, {"@type": "Question", "name": "Kunnen beginners de programma's volgen?", "acceptedAnswer": {"@type": "Answer", "text": "Ja. Je past gewichten en volume aan je niveau aan. Het doel is elke training met kwaliteit af te maken, niet alleen te overleven."}}, {"@type": "Question", "name": "Hebben jullie een programma voor Doubles?", "acceptedAnswer": {"@type": "Answer", "text": "Ja, de voorbereiding 8-Week HYROX Doubles. Die behandelt werkverdeling, stationsstrategie en gezamenlijk tempo. De andere programma's werken ook voor Doubles, want jullie moeten allebei goed lopen onder vermoeidheid."}}, {"@type": "Question", "name": "Programma of 1:1 coaching?", "acceptedAnswer": {"@type": "Answer", "text": "Een programma is één schema voor iedereen die het volgt, met opties om op te schalen of af te schalen. 1:1 coaching wordt alleen voor jou geschreven op basis van je prestatie, herstel en agenda, en onderweg bijgestuurd."}}, {"@type": "Question", "name": "12 of 8 weken voorbereiding?", "acceptedAnswer": {"@type": "Answer", "text": "Heb je de tijd, kies dan 12 weken. Je bouwt een stevige basis voordat de intensiteit komt. Acht weken is voor wie al regelmatig traint en zich wil aanscherpen voor een race."}}, {"@type": "Question", "name": "Welke uitrusting heb ik nodig?", "acceptedAnswer": {"@type": "Answer", "text": "Idealiter een gym met ergometers en HYROX-materiaal. Mis je iets? Stuur ons een bericht op Instagram en we stellen een alternatief voor."}}, {"@type": "Question", "name": "In welke taal zijn de programma's?", "acceptedAnswer": {"@type": "Answer", "text": "Schema's, video's en support zijn in het Engels. Vertaling nodig? Stuur ons een bericht, dan spreken we het af."}}, {"@type": "Question", "name": "Hoe zeg ik een maandabonnement op?", "acceptedAnswer": {"@type": "Answer", "text": "Je zegt op elk moment op in de Strong Coach-app (Programs → Manage payments and card). Het stopt aan het einde van de betaalde periode. Racevoorbereidingen en gerichte blokken betaal je eenmalig."}}]}</script><!--/faq-ld-->
 </head>
 <body>
 
@@ -681,7 +694,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
     </div>
     <form name="program-finder" data-netlify="true" netlify-honeypot="bot-field" hidden><input type="text" name="name"><input type="email" name="email"><input type="text" name="result"><input type="text" name="answers"><input type="text" name="lang"><input type="text" name="bot-field"></form>
 
-    <div class="group-label"><h3>Maandprogramma's</h3><p>Abonnement · beheer je in Strivee</p></div>
+    <div class="group-label"><h3>Maandprogramma's</h3><p>Abonnement · beheer je in Strong Coach</p></div>
     <div class="grid">
       <article class="card" id="basic">
         <div class="kind">Basis</div>
@@ -690,7 +703,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
         <div class="meta"><div><strong>5</strong>dagen / week</div><div><strong>60</strong>min / dag</div><div><strong>1</strong>sessie / dag</div></div>
         <p class="for">Voor wie serieus met HYROX-training wil beginnen.</p>
         <p>Hardlopen, kracht en HYROX-bewegingen in één schema. Je bouwt je basis, verbetert je techniek en maakt een routine die je volhoudt.</p>
-        <div class="actions"><a class="btn btn-gold" href="https://train.strivee.app/payment/0i7RPLukkMgXOLeInwKe" target="_blank" rel="noopener" data-program="HYROX Basic" data-value="750">Start</a><a class="btn btn-ghost" href="/nl/programmas/hyrox-basic/">Details</a></div>
+        <div class="actions"><a class="btn btn-gold" href="/storefront/?program=c18b7800-f596-441d-841e-1e81d444d00c" data-program="HYROX Basic" data-value="750">Start</a><a class="btn btn-ghost" href="/nl/programmas/hyrox-basic/">Details</a></div>
       </article>
       <article class="card" id="competitor">
         <div class="kind">Prestatie</div>
@@ -699,7 +712,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
         <div class="meta"><div><strong>6</strong>dagen / week</div><div><strong>120</strong>min / dag</div><div><strong>2</strong>sessies / dag</div></div>
         <p class="for">Voor ervaren racers die een snellere tijd willen.</p>
         <p>Meer hardlopen, meer werkcapaciteit, kracht, racetempo en snelle overgangen. Voor wie consequent traint en een duidelijk doel heeft.</p>
-        <div class="actions"><a class="btn btn-gold" href="https://train.strivee.app/payment/O1mbnAnKs03B8RGEtMxv" target="_blank" rel="noopener" data-program="HYROX Competitor" data-value="960">Start</a><a class="btn btn-ghost" href="/nl/programmas/hyrox-competitor/">Details</a></div>
+        <div class="actions"><a class="btn btn-gold" href="/storefront/?program=4bb39d07-5f72-4c58-b074-b6c2f3d25730" data-program="HYROX Competitor" data-value="960">Start</a><a class="btn btn-ghost" href="/nl/programmas/hyrox-competitor/">Details</a></div>
       </article>
       <article class="card" id="pro">
         <div class="kind">Topniveau</div>
@@ -708,7 +721,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
         <div class="meta"><div><strong>6</strong>dagen / week</div><div><strong>75</strong>min / dag</div><div><strong>1</strong>sessie / dag</div></div>
         <p class="for">Voor wie HYROX serieus neemt en het beste wil wat we doen.</p>
         <p>Hardlopen en functioneel werk in een duidelijke structuur, techniekvideo's en begeleiding bij tempo, herstel en rust. Je prestatie stijgt zonder overtraining.</p>
-        <div class="actions"><a class="btn btn-gold" href="https://train.strivee.app/payment/D6kVnKDHN2Y3sKO0sPGI" target="_blank" rel="noopener" data-program="HYROX Pro Athlete" data-value="1350">Start</a><a class="btn btn-ghost" href="/nl/programmas/hyrox-pro-athlete/">Details</a></div>
+        <div class="actions"><a class="btn btn-gold" href="/storefront/?program=cb99bf54-d8b4-433e-a08b-d0fe2a138ee5" data-program="HYROX Pro Athlete" data-value="1350">Start</a><a class="btn btn-ghost" href="/nl/programmas/hyrox-pro-athlete/">Details</a></div>
       </article>
     </div>
 
@@ -721,7 +734,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
         <div class="meta"><div><strong>6</strong>dagen / week</div><div><strong>75</strong>min / dag</div><div><strong>12</strong>weken</div></div>
         <p class="for">Voor je eerste race, op elk niveau.</p>
         <p>Een racevoorbereiding rond een vaste datum. Kracht, drempellopen, engine-werk, HYROX-temposessies en volledige simulaties. Racedag is de zaterdag van week 12.</p>
-        <div class="actions"><a class="btn btn-gold" href="https://train.strivee.app/payment/PAAjJouaTHNtDEpVeWq2" target="_blank" rel="noopener" data-program="12-Week HYROX Advanced" data-value="1900">Kopen</a><a class="btn btn-ghost" href="/nl/programmas/12-weken-hyrox-advanced/">Details</a></div>
+        <div class="actions"><a class="btn btn-gold" href="/storefront/?program=bf5b8a49-3c35-4fb5-ba06-837f9f40a650" data-program="12-Week HYROX Advanced" data-value="1900">Kopen</a><a class="btn btn-ghost" href="/nl/programmas/12-weken-hyrox-advanced/">Details</a></div>
       </article><!--/ADV-->
       <article class="card" id="raceprep">
         <div class="kind">12 weken tot de race</div>
@@ -730,7 +743,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
         <div class="meta"><div><strong>6</strong>dagen / week</div><div><strong>90</strong>min / dag</div><div><strong>12</strong>weken</div></div>
         <p class="for">Voor wie op racedag wil presteren, niet alleen finishen.</p>
         <p>De complete voorbereiding. Eerst de basis, dan intensiteit en racespecifiek werk, daarna de laatste fine-tuning. Tempo, stations, overgangen en prestatie onder vermoeidheid.</p>
-        <div class="actions"><a class="btn btn-gold" href="https://train.strivee.app/payment/0dvaQ3aahjzyCoWmPgMz" target="_blank" rel="noopener" data-program="12-Week HYROX Race Prep" data-value="2100">Kopen</a><a class="btn btn-ghost" href="/nl/programmas/12-weken-hyrox-race-prep/">Details</a></div>
+        <div class="actions"><a class="btn btn-gold" href="/storefront/?program=9cb1e2aa-9a7e-4f05-93b8-4b948b461891" data-program="12-Week HYROX Race Prep" data-value="2100">Kopen</a><a class="btn btn-ghost" href="/nl/programmas/12-weken-hyrox-race-prep/">Details</a></div>
       </article>
       <article class="card" id="singles">
         <div class="kind">8 weken · Singles</div>
@@ -739,7 +752,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
         <div class="meta"><div><strong>6</strong>dagen / week</div><div><strong>60</strong>min / dag</div><div><strong>8</strong>weken</div></div>
         <p class="for">Voor wie een trainingsbasis heeft en een race op de kalender.</p>
         <p>Een complete voorbereiding van acht weken. Hardlopen, kracht, HYROX-sessies en lopen na stations. Hoe dichter bij de race, hoe specifieker.</p>
-        <div class="actions"><a class="btn btn-gold" href="https://train.strivee.app/payment/tsC3Khz8zSQMLLIs9Fnp" target="_blank" rel="noopener" data-program="8-Week HYROX Singles" data-value="1500">Kopen</a><a class="btn btn-ghost" href="/nl/programmas/8-weken-hyrox-singles/">Details</a></div>
+        <div class="actions"><a class="btn btn-gold" href="/storefront/?program=1f4f0945-7a22-4b7e-a5aa-558536973d6b" data-program="8-Week HYROX Singles" data-value="1500">Kopen</a><a class="btn btn-ghost" href="/nl/programmas/8-weken-hyrox-singles/">Details</a></div>
       </article>
       <article class="card" id="doubles">
         <div class="kind">8 weken · Doubles</div>
@@ -748,7 +761,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
         <div class="meta"><div><strong>6</strong>dagen / week</div><div><strong>75</strong>min / dag</div><div><strong>8</strong>weken</div></div>
         <p class="for">Voor duo's die slim willen racen, niet alleen samen.</p>
         <p>Individuele conditie plus het teamaspect: strategie op de stations, werk verdelen, gezamenlijk tempo en raceverloop. Gebruik ieders sterke punten.</p>
-        <div class="actions"><a class="btn btn-gold" href="https://train.strivee.app/payment/QFgjJOqEU6Y1x58k0SBH" target="_blank" rel="noopener" data-program="8-Week HYROX Doubles" data-value="1700">Kopen</a><a class="btn btn-ghost" href="/nl/programmas/8-weken-hyrox-doubles/">Details</a></div>
+        <div class="actions"><a class="btn btn-gold" href="/storefront/?program=b63f4bcc-0007-4bee-b040-7a0349f59f04" data-program="8-Week HYROX Doubles" data-value="1700">Kopen</a><a class="btn btn-ghost" href="/nl/programmas/8-weken-hyrox-doubles/">Details</a></div>
       </article>
     </div>
 
@@ -761,7 +774,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
         <div class="meta"><div><strong>6</strong>dagen / week</div><div><strong>75</strong>min / dag</div><div><strong>12</strong>weken</div></div>
         <p class="for">Voor iedereen die tijd verliest op het lopen.</p>
         <p>Loopeconomie, tempo, aerobe capaciteit en kwalitatief lopen onder vermoeidheid. Rustige duurlopen, tempo, intervallen en racetempo. Los of naast je krachttraining.</p>
-        <div class="actions"><a class="btn btn-gold" href="https://train.strivee.app/payment/l4LKqbJX8ezlAEDBm6Dg" target="_blank" rel="noopener" data-program="Running for HYROX 2.0" data-value="1000">Kopen</a><a class="btn btn-ghost" href="/nl/programmas/hardlopen-voor-hyrox/">Details</a></div>
+        <div class="actions"><a class="btn btn-gold" href="/storefront/?program=74b976b7-5861-4567-8771-516438a6f406" data-program="Running for HYROX 2.0" data-value="1000">Kopen</a><a class="btn btn-ghost" href="/nl/programmas/hardlopen-voor-hyrox/">Details</a></div>
       </article>
       <article class="card" id="taper">
         <div class="kind">Laatste 2 weken</div>
@@ -770,7 +783,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
         <div class="meta"><div><strong>6</strong>dagen / week</div><div><strong>90</strong>min / dag</div><div><strong>2</strong>weken</div></div>
         <p class="for">Voor iedereen met een race om de hoek. Open, Doubles of Pro.</p>
         <p>Het werk is gedaan. Verspil het nu niet. We schroeven het volume terug, houden je scherp op racetempo en je staat aan de start met frisse benen en een duidelijk plan.</p>
-        <div class="actions"><a class="btn btn-gold" href="https://train.strivee.app/payment/JBwt4zlJKA0vCQn9cfih" target="_blank" rel="noopener" data-program="2-Week HYROX Taper 2.0" data-value="550">Kopen</a><a class="btn btn-ghost" href="/nl/programmas/hyrox-taper/">Details</a></div>
+        <div class="actions"><a class="btn btn-gold" href="/storefront/?program=f82e4048-8685-4e56-ae09-1ed40367a1b8" data-program="2-Week HYROX Taper 2.0" data-value="550">Kopen</a><a class="btn btn-ghost" href="/nl/programmas/hyrox-taper/">Details</a></div>
       </article>
     </div>
 
@@ -790,7 +803,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
           <li>Direct contact met je coach</li>
         </ul>
         <div class="actions">
-          <a class="btn btn-gold" href="https://train.strivee.app/payment/Ckjr2cZAiemzMVVr8F1D" target="_blank" rel="noopener" data-program="HYROX Individual Program 1:1" data-value="3500">Start 1:1</a>
+          <a class="btn btn-gold" href="/storefront/?program=f855a4e1-d333-40e2-b35f-fe3c7387f271" data-program="HYROX Individual Program 1:1" data-value="3500">Start 1:1</a>
           <a class="btn btn-ghost" href="/nl/hyrox-online-coach/">Details</a>
         </div>
       </div>
@@ -803,15 +816,15 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
     <div class="shead">
       <p class="eyebrow">Zo werkt het</p>
       <h2 class="display"><span class="num">03</span><span>Geen pdf's. <span class="gold">Gewoon trainen.</span></span></h2>
-      <p>Je schema staat in de Strivee-app. Je opent hem, ziet de training van vandaag, doet het werk en logt je resultaat.</p>
+      <p>Je schema staat in de Strong Coach-app. Je opent hem, ziet de training van vandaag, doet het werk en logt je resultaat.</p>
     </div>
     <div class="steps">
-      <div class="step"><div class="num">STAP 1</div><h3>Kies een programma</h3><p>Klik op Start of Kopen. De betaling loopt veilig via Strivee.</p></div>
-      <div class="step"><div class="num">STAP 2</div><h3>Download Strivee</h3><p>iOS en Android. Log in en je programma staat klaar.</p></div>
+      <div class="step"><div class="num">STAP 1</div><h3>Kies een programma</h3><p>Klik op Start of Kopen en betaal met je kaart. Vooraf heb je geen account nodig.</p></div>
+      <div class="step"><div class="num">STAP 2</div><h3>Open Strong Coach</h3><p>Je krijgt een e-mail met een link. Je stelt je wachtwoord in en je programma staat klaar. Werkt in de browser van je telefoon, je kunt hem aan je beginscherm toevoegen.</p></div>
       <div class="step"><div class="num">STAP 3</div><h3>Train en log</h3><p>Elke dag weet je wat er op het programma staat. Log je resultaat en zie jezelf beter worden.</p></div>
     </div>
     <div class="app-list">
-      <span>Dagelijkse trainingen op je telefoon</span><span>Leaderboard bij elke training</span><span>Maxima, percentages, benchmarks</span><span>Community en reacties</span><span>Log je eigen extra trainingen</span>
+      <span>Dagelijkse trainingen op je telefoon</span><span>Log elk resultaat</span><span>Persoonlijke records en voortgang</span><span>Chat met je coach</span><span>Pushmeldingen</span>
     </div>
   </div>
 </section>
@@ -908,7 +921,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
       <details><summary>12 of 8 weken voorbereiding?</summary><p>Heb je de tijd, kies dan 12 weken. Je bouwt een stevige basis voordat de intensiteit komt. Acht weken is voor wie al regelmatig traint en zich wil aanscherpen voor een race.</p></details>
       <details><summary>Welke uitrusting heb ik nodig?</summary><p>Idealiter een gym met ergometers en HYROX-materiaal. Mis je iets? Stuur ons een bericht op Instagram en we stellen een alternatief voor.</p></details>
       <details><summary>In welke taal zijn de programma's?</summary><p>Schema's, video's en support zijn in het Engels. Vertaling nodig? Stuur ons een bericht, dan spreken we het af.</p></details>
-      <details><summary>Hoe zeg ik een maandabonnement op?</summary><p>Je beheert je abonnement direct in Strivee. Racevoorbereidingen en gerichte blokken betaal je eenmalig.</p></details>
+      <details><summary>Hoe zeg ik een maandabonnement op?</summary><p>Je zegt op elk moment op in de Strong Coach-app (Programs → Manage payments and card). Het stopt aan het einde van de betaalde periode. Racevoorbereidingen en gerichte blokken betaal je eenmalig.</p></details>
     </div>
   </div>
 </section>
@@ -917,10 +930,10 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
   <img class="bgimg" src="../img/lada-ria-finish-line.webp" alt="" loading="lazy">
   <div class="wrap">
     <h2 class="display">Racedag<br>wacht niet.<br><span class="gold">Begin nu.</span></h2>
-    <p class="lead">Kies een programma, download Strivee en morgenochtend weet je precies wat er op het programma staat.</p>
+    <p class="lead">Kies een programma, open Strong Coach en morgenochtend weet je precies wat er op het programma staat.</p>
     <div class="cta-row">
       <a class="btn btn-gold" href="#programs">Kies een programma</a>
-      <a class="btn btn-ghost" href="https://train.strivee.app/p/str2g-hyrox" target="_blank" rel="noopener">Alle programma's op Strivee</a>
+      <a class="btn btn-ghost" href="/storefront/">Alle programma's</a>
     </div>
   </div>
 </section>
@@ -929,11 +942,12 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
   <div class="wrap">
     <nav class="guides" aria-label="Guides"><a href="/nl/hyrox-trainingsschema/">HYROX trainingsschema</a><a href="/nl/hyrox-online-coach/">HYROX online coach</a><!--STR2G_GUIDES--><a href="/guides/hyrox-taper/">HYROX taper</a><a href="/guides/hyrox-compromised-running/">Compromised running</a><a href="/guides/hyrox-sled-pull-technique/">Sled pull technique</a><a href="/guides/hyrox-doubles-training/">HYROX Doubles</a><a href="/guides/how-to-run-faster-in-hyrox/">Run faster in HYROX</a><!--/STR2G_GUIDES--></nav>
     <nav class="net" aria-label="STR2G-websites"><p class="net-h">STR2G-websites</p><ul><li><a href="https://hyrox-prague.eu/" target="_blank" rel="noopener"><b>HYROX Prague</b><span>HYROX-training en racevoorbereiding</span><i>hyrox-prague.eu</i></a></li><li><a href="https://hyroxtrainingclub.cz/en/" target="_blank" rel="noopener"><b>HYROX Training Club</b><span>HYROX-lessen in Praag, Brno en Ostrava</span><i>hyroxtrainingclub.cz</i></a></li><li><a href="https://formfactorygames.cz/en/" target="_blank" rel="noopener"><b>Form Factory Games</b><span>Race · 5 dec 2026</span><i>formfactorygames.cz</i></a></li><li><a href="https://www.ladislavsuchanek.cz/en/" target="_blank" rel="noopener"><b>Ladislav Suchánek</b><span>Personal training, voeding &amp; massage</span><i>ladislavsuchanek.cz</i></a></li><li><a href="https://riahrusovska.cz/en/" target="_blank" rel="noopener"><b>Ria Suchánek Hrušovská</b><span>Mentale coaching voor sporters</span><i>riahrusovska.cz</i></a></li><li><a href="https://strongertogether.cz/en/" target="_blank" rel="noopener"><b>Stronger Together</b><span>Láďa &amp; Ria – al onze projecten</span><i>strongertogether.cz</i></a></li><li><a href="https://xenomczech.cz/en/" target="_blank" rel="noopener"><b>STR2G TEN</b><span>XENOM-voorbereiding · 10 onderdelen</span><i>xenomczech.cz</i></a></li></ul></nav>
-    <div style="display:flex;align-items:center;gap:12px"><img loading="lazy" decoding="async" src="/favicon.svg?v=2" alt="" width="26" height="26" style="border:1px solid var(--line);border-radius:6px"><span>© 2026 STR2G · Stronger Together · Programma's draaien in de Strivee-app</span></div>
+    <div style="display:flex;align-items:center;gap:12px"><img loading="lazy" decoding="async" src="/favicon.svg?v=2" alt="" width="26" height="26" style="border:1px solid var(--line);border-radius:6px"><span>© 2026 STR2G · Stronger Together · Programma's draaien in de Strong Coach-app</span></div>
     <div class="links">
       <a href="https://instagram.com/22segge_coach" target="_blank" rel="noopener">@22segge_coach</a>
       <a href="https://instagram.com/riahrusovskaofficial" target="_blank" rel="noopener">@riahrusovskaofficial</a>
       <a href="/privacy/">Privacybeleid</a>
+      <a href="/terms/">Algemene voorwaarden</a>
       <a href="#" onclick="str2gConsentReset();return false;">Cookie-instellingen</a>
     </div>
   </div>
@@ -1246,7 +1260,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
     if (h > 0 && scrollY / h >= CFG.SCROLL_RATIO) open();
   }
   function buyVisible() {
-    var as = document.querySelectorAll('a[href*="train.strivee.app/payment"]');
+    var as = document.querySelectorAll('a[href*="train.strivee.app/payment"], a[href*="/storefront/?program="]');
     for (var i = 0; i < as.length; i++) {
       var r = as[i].getBoundingClientRect();
       if (r.width && r.bottom > 0 && r.top < innerHeight) return true;

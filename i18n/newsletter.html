@@ -192,7 +192,7 @@
     if (h > 0 && scrollY / h >= CFG.SCROLL_RATIO) open();
   }
   function buyVisible() {
-    var as = document.querySelectorAll('a[href*="train.strivee.app/payment"]');
+    var as = document.querySelectorAll('a[href*="train.strivee.app/payment"], a[href*="/storefront/?program="]');
     for (var i = 0; i < as.length; i++) {
       var r = as[i].getBoundingClientRect();
       if (r.width && r.bottom > 0 && r.top < innerHeight) return true;

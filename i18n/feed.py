@@ -18,8 +18,8 @@ TYPE = {
            "doubles": "Race build", "running": "Specialist block", "taper": "Specialist block"},
 }
 META = {
-    "cs": ("STR2G HYROX – online tréninkové programy", "Online HYROX tréninkové programy od Láďi a Rii. Platba a trénink v aplikaci Strivee."),
-    "en": ("STR2G HYROX – online training programs", "Online HYROX training programs by Láďa and Ria. Payment and training in the Strivee app."),
+    "cs": ("STR2G HYROX – online tréninkové programy", "Online HYROX tréninkové programy od Láďi a Rii. Platba kartou na str2g.com, trénink v aplikaci Strong Coach."),
+    "en": ("STR2G HYROX – online training programs", "Online HYROX training programs by Láďa and Ria. Card payment on str2g.com, training in the Strong Coach app."),
 }
 
 
@@ -57,7 +57,7 @@ def build(root):
       <g:custom_label_0>{_x(TYPE[lang][pid])}</g:custom_label_0>
       <g:shipping>
         <g:country>CZ</g:country>
-        <g:service>Online (Strivee)</g:service>
+        <g:service>Online (Strong Coach)</g:service>
         <g:price>0.00 CZK</g:price>
       </g:shipping>
     </item>""")
