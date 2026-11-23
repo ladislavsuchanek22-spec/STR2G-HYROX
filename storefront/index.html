@@ -256,8 +256,9 @@ a{color:inherit}
 .logo small{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
 .navlinks{display:flex;align-items:center;gap:18px}
 .lang{display:flex;border:1px solid var(--line)}
-.lang button{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--muted);padding:7px 8px;line-height:1;background:none;border:0;cursor:pointer}
-.lang button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
+.lang select{font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--fg);padding:7px 26px 7px 10px;line-height:1;background:transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23999' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 9px center;border:0;cursor:pointer;-webkit-appearance:none;appearance:none}
+.lang select option{background:#0d0d0d;color:#f2f2f2}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 .top{padding-block:clamp(56px,8vw,104px) clamp(32px,4vw,48px);border-bottom:1px solid var(--line)}
 .top h1{font-size:clamp(54px,9vw,120px)}
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin:44px 0 0;padding:0;border-top:1px solid rgba(255,255,255,.18)}
@@ -293,7 +294,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:14px 32px;justify-content:space-bet
 footer a{text-decoration:none;color:var(--fg)}
 footer a:hover{color:var(--accent)}
 footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
-@media (max-width:420px){.lang button{padding:7px 6px}.logo b{display:none}}
+@media (max-width:420px){.logo b{display:none}}
 @media (max-width:900px){.logo small{display:none}}
 </style>
 </head>
@@ -303,7 +304,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
   <div class="wrap">
     <a class="logo" href="/" aria-label="STR2G HYROX"><img class="mark" src="/favicon.svg?v=2" alt="" width="34" height="34"><b>STR<span class="gold">2</span>G</b><small>Storefront</small></a>
     <div class="navlinks">
-      <div class="lang" role="group" aria-label="Language"><button type="button" data-lang="cs">CZ</button><button type="button" data-lang="en">EN</button></div>
+      <label class="lang"><span class="sr">Language</span><select id="sf-lang" aria-label="Language"><option value="en">EN</option><option value="cs">CZ</option><option value="de">DE</option><option value="pl">PL</option><option value="sk">SK</option><option value="fr">FR</option><option value="es">ES</option><option value="it">IT</option><option value="nl">NL</option></select></label>
     </div>
   </div>
 </nav>
@@ -330,28 +331,43 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
 
 <script>
 (function () {
-  // Jazyk: CZ / EN přepínač webu. Vložený storefront z appky čte jazyk z klíče 'str2g-lang',
-  // proto se nastaví ještě před jeho načtením a po přepnutí se stránka načte znovu.
+  // Jazyk: stejných 9 jazyků jako web. Pořadí: ?lang= v adrese → jazyková verze webu, ze které člověk přišel
+  // (/de/…, /pl/… v referreru) → dřív zvolený jazyk storefrontu → jazyk webu (str2g-lang) → prohlížeč → angličtina.
+  // Vložený storefront z appky čte jazyk z 'str2g-sf-lang' / 'str2g-lang', proto se nastaví ještě před jeho načtením.
+  var LANGS = ['en', 'cs', 'de', 'pl', 'sk', 'fr', 'es', 'it', 'nl'];
   var T = {
+    en: { loading: 'Loading programs…', home: 'Home', privacy: 'Privacy policy', refund: 'Refund policy', terms: 'Terms' },
     cs: { loading: 'Načítám programy…', home: 'Hlavní stránka', privacy: 'Ochrana osobních údajů', refund: 'Vrácení peněz', terms: 'Obchodní podmínky' },
-    en: { loading: 'Loading programs…', home: 'Home', privacy: 'Privacy policy', refund: 'Refund policy', terms: 'Terms' }
+    de: { loading: 'Programme werden geladen…', home: 'Startseite', privacy: 'Datenschutz', refund: 'Rückerstattung', terms: 'AGB' },
+    pl: { loading: 'Ładowanie programów…', home: 'Strona główna', privacy: 'Polityka prywatności', refund: 'Zwroty', terms: 'Regulamin' },
+    sk: { loading: 'Načítavam programy…', home: 'Hlavná stránka', privacy: 'Ochrana osobných údajov', refund: 'Vrátenie peňazí', terms: 'Obchodné podmienky' },
+    fr: { loading: 'Chargement des programmes…', home: 'Accueil', privacy: 'Confidentialité', refund: 'Remboursement', terms: 'Conditions' },
+    es: { loading: 'Cargando programas…', home: 'Inicio', privacy: 'Privacidad', refund: 'Reembolsos', terms: 'Condiciones' },
+    it: { loading: 'Caricamento programmi…', home: 'Home', privacy: 'Privacy', refund: 'Rimborsi', terms: 'Termini' },
+    nl: { loading: 'Programma’s laden…', home: 'Home', privacy: 'Privacybeleid', refund: 'Terugbetaling', terms: 'Voorwaarden' }
   };
+  function pick(v) { v = String(v || '').toLowerCase().slice(0, 2); if (v === 'cz') v = 'cs'; return LANGS.indexOf(v) !== -1 ? v : null; }
+  function get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   var qs = new URLSearchParams(location.search);
-  var saved = null; try { saved = localStorage.getItem('str2g-sf-lang'); } catch (e) {}
-  var nav = (navigator.language || '').toLowerCase();
-  var lang = qs.get('lang') === 'en' || qs.get('lang') === 'cs' ? qs.get('lang') : saved || (/^(cs|sk)/.test(nav) ? 'cs' : 'en');
-  try { localStorage.setItem('str2g-lang', lang); } catch (e) {}
+  var ref = null;
+  try { var r = new URL(document.referrer); if (r.host === location.host) { var m = r.pathname.match(/^\/([a-z]{2})\//); ref = m ? pick(m[1]) : (r.pathname.indexOf('/storefront') === 0 ? null : 'en'); } } catch (e) {}
+  var lang = pick(qs.get('lang')) || ref || pick(get('str2g-sf-lang')) || pick(get('str2g-lang')) || pick(navigator.language) || 'en';
+  try { localStorage.setItem('str2g-sf-lang', lang); localStorage.setItem('str2g-lang', lang); } catch (e) {}
   document.documentElement.lang = lang;
-  var tl = document.getElementById('sf-terms'); if (tl && lang === 'en') tl.href = '/terms/';
+  var home = lang === 'en' ? '/' : '/' + lang + '/';
+  var links = { home: home, privacy: lang === 'cs' ? '/cs/ochrana-osobnich-udaju/' : '/privacy/', refund: lang === 'cs' ? '/cs/vraceni-penez/' : '/refund-policy/', terms: lang === 'cs' ? '/cs/obchodni-podminky/' : '/terms/' };
+  document.querySelectorAll('footer [data-t]').forEach(function (n) { var h = links[n.getAttribute('data-t')]; if (h) n.setAttribute('href', h); });
+  var logo = document.querySelector('.nav .logo'); if (logo) logo.setAttribute('href', home);
   document.querySelectorAll('[data-t]').forEach(function (n) { var v = T[lang][n.getAttribute('data-t')]; if (v) n.textContent = v; });
-  document.querySelectorAll('.lang button').forEach(function (b) {
-    b.setAttribute('aria-pressed', String(b.getAttribute('data-lang') === lang));
-    b.addEventListener('click', function () {
-      var l = b.getAttribute('data-lang'); if (l === lang) return;
+  var sel = document.getElementById('sf-lang');
+  if (sel) {
+    sel.value = lang;
+    sel.addEventListener('change', function () {
+      var l = pick(sel.value); if (!l || l === lang) return;
       try { localStorage.setItem('str2g-sf-lang', l); localStorage.setItem('str2g-lang', l); } catch (e) {}
-      var u = new URL(location.href); u.searchParams.delete('lang'); location.href = u.toString();
+      var u = new URL(location.href); u.searchParams.set('lang', l); location.href = u.toString();
     });
-  });
+  }
 
   // Nákup dokončen: Stripe vrátí zákazníka sem s ?platba=ok. Program a cenu si pamatujeme z kliku na Koupit.
   try {
