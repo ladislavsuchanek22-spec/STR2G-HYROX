@@ -1,7 +1,7 @@
 """Napojení webu na appku Strong Coach (jediné místo pravdy pro programy a ceny).
 
 - APP_IDS: program na webu -> id programu v appce (storefront prostoru str2g-hyrox).
-- sync(): stáhne z veřejného API appky aktuální programy a uloží je do i18n/app_programs.json.
+- sync(): stáhne z veřejného API appky profil storefrontu a programy (texty, obrázky, ceny) a uloží je do i18n/app_programs.json.
   Když API není dostupné (třeba lokálně bez sítě), použije se poslední uložený stav.
 - apply(PROGRAMS): přepíše ceny a měsíční/jednorázové podle appky.
 - buy_url(pid): odkaz na nákup na vlastním storefrontu (str2g.com/storefront/?program=…).
@@ -38,21 +38,37 @@ def _get(path):
         return json.loads(r.read().decode("utf-8"))
 
 
+FIELDS = ("name", "kind", "description", "image_url", "price_cents", "currency", "billing_period",
+          "sf_level", "sf_days", "sf_minutes", "sf_sessions", "sf_sort")
+SPACE_FIELDS = ("name", "about", "banner_url", "logo_url", "website", "instagram")
+
+
 def sync():
-    """Stáhne programy z appky. Vrací (data, zdroj)."""
+    """Stáhne z appky profil storefrontu a všechny jeho programy (texty, obrázky, ceny, parametry).
+    Vrací (programy, zdroj). Profil storefrontu vrací load_space()."""
     try:
-        space = _get(f"/storefront_spaces?slug=eq.{SPACE_SLUG}&select=id")[0]["id"]
-        rows = _get(f"/storefront_programs?space_id=eq.{space}&select=id,name,kind,price_cents,currency,billing_period")
-        data = {r["id"]: {k: r[k] for k in ("name", "kind", "price_cents", "currency", "billing_period")} for r in rows}
-        SNAP.write_text(json.dumps(data, ensure_ascii=False, indent=1, sort_keys=True) + "\n", encoding="utf-8")
-        return data, "app"
+        sp = _get(f"/storefront_spaces?slug=eq.{SPACE_SLUG}&select=id," + ",".join(SPACE_FIELDS))[0]
+        rows = _get(f"/storefront_programs?space_id=eq.{sp['id']}&select=id," + ",".join(FIELDS))
+        snap = {"space": {k: sp.get(k) for k in SPACE_FIELDS},
+                "programs": {r["id"]: {k: r.get(k) for k in FIELDS} for r in rows}}
+        SNAP.write_text(json.dumps(snap, ensure_ascii=False, indent=1, sort_keys=True) + "\n", encoding="utf-8")
+        return snap["programs"], "app"
     except Exception as e:  # bez sítě: poslední uložený stav
         print(f"app_store: API appky nedostupné ({type(e).__name__}), používám uložený stav")
         return load(), "snapshot"
 
 
+def _snap():
+    d = json.loads(SNAP.read_text(encoding="utf-8")) if SNAP.exists() else {}
+    return d if "programs" in d else {"space": {}, "programs": d}  # starý formát = jen programy
+
+
 def load():
-    return json.loads(SNAP.read_text(encoding="utf-8")) if SNAP.exists() else {}
+    return _snap()["programs"]
+
+
+def load_space():
+    return _snap()["space"]
 
 
 def apply(programs, data=None):

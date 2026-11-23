@@ -267,6 +267,13 @@ a{color:inherit}
 @media (max-width:760px){.steps{grid-template-columns:1fr}.steps li + li{padding-left:0;border-left:0;border-top:1px solid rgba(255,255,255,.18)}}
 main.sf{background:#FAFAFA;min-height:60vh}
 main.sf .state{color:#6b675e;padding:40px var(--gut-l)}
+.sf-static{max-width:980px;margin:0 auto;padding:28px var(--gut-l) 48px;display:grid;gap:28px;color:#15140F}
+.sf-static h1{font:italic 900 40px/1 "Barlow Condensed",sans-serif;text-transform:uppercase;margin:0}
+.sf-static-card{border:1px solid #E4E0D4;padding:18px;display:grid;gap:10px}
+.sf-static-card img{width:100%;height:auto;aspect-ratio:16/9;object-fit:cover}
+.sf-static-card h2{font:italic 900 24px/1 "Barlow Condensed",sans-serif;text-transform:uppercase;margin:0}
+.sf-static-card p,.sf-static-card ul{margin:0}
+.sf-static-card a{color:#7A6420;font-weight:600}
 str2g-storefront{display:block}
 .notice{border:1px solid var(--line);border-left:3px solid var(--accent);background:var(--panel);padding:18px 20px;margin-bottom:32px}
 .notice.ok{border-left-color:var(--ok)}
@@ -311,7 +318,85 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
 <main class="sf">
   <!-- Celý storefront se načítá z appky Strong Coach (app.str2g.com/s/str2g-hyrox): stejný vzhled, programy,
        koučové i sekce. Co kouč změní v appce v nastavení Storefrontu, je tady hned taky. -->
-  <str2g-storefront slug="str2g-hyrox"><p class="state" data-t="loading">Načítám programy…</p></str2g-storefront>
+  <str2g-storefront slug="str2g-hyrox">
+<!--SF_STATIC-->
+<div class="sf-static">
+<h1>Programy STR2G HYROX</h1>
+
+<article class="sf-static-card">
+
+<h2>STR2G 12 WEEK HYROX RACE PREP</h2>
+<p class="sf-static-price"><b>2 100 Kč</b> · Jednorázový program</p>
+
+<p><a href="/storefront/?program=9cb1e2aa-9a7e-4f05-93b8-4b948b461891">Koupit: STR2G 12 WEEK HYROX RACE PREP</a></p>
+</article>
+<article class="sf-static-card">
+
+<h2>STR2G 12-WEEK HYROX ADVANCED PROGRAM</h2>
+<p class="sf-static-price"><b>1 900 Kč</b> · Jednorázový program</p>
+
+<p><a href="/storefront/?program=bf5b8a49-3c35-4fb5-ba06-837f9f40a650">Koupit: STR2G 12-WEEK HYROX ADVANCED PROGRAM</a></p>
+</article>
+<article class="sf-static-card">
+
+<h2>STR2G 2-WEEK HYROX TAPER 2.0</h2>
+<p class="sf-static-price"><b>550 Kč</b> · Jednorázový program</p>
+
+<p><a href="/storefront/?program=f82e4048-8685-4e56-ae09-1ed40367a1b8">Koupit: STR2G 2-WEEK HYROX TAPER 2.0</a></p>
+</article>
+<article class="sf-static-card">
+
+<h2>STR2G 8-WEEK HYROX DOUBLES</h2>
+<p class="sf-static-price"><b>1 700 Kč</b> · Jednorázový program</p>
+
+<p><a href="/storefront/?program=b63f4bcc-0007-4bee-b040-7a0349f59f04">Koupit: STR2G 8-WEEK HYROX DOUBLES</a></p>
+</article>
+<article class="sf-static-card">
+
+<h2>STR2G 8-WEEK HYROX SINGLES</h2>
+<p class="sf-static-price"><b>1 500 Kč</b> · Jednorázový program</p>
+
+<p><a href="/storefront/?program=1f4f0945-7a22-4b7e-a5aa-558536973d6b">Koupit: STR2G 8-WEEK HYROX SINGLES</a></p>
+</article>
+<article class="sf-static-card">
+
+<h2>STR2G HYROX ADVANCED PROGRAM 1:1</h2>
+<p class="sf-static-price"><b>3 500 Kč / měsíc</b> · Individuální koučink 1:1</p>
+
+<p><a href="/storefront/?program=f855a4e1-d333-40e2-b35f-fe3c7387f271">Předplatit: STR2G HYROX ADVANCED PROGRAM 1:1</a></p>
+</article>
+<article class="sf-static-card">
+
+<h2>STR2G HYROX BASIC PROGRAM</h2>
+<p class="sf-static-price"><b>750 Kč / měsíc</b> · Měsíční program</p>
+
+<p><a href="/storefront/?program=c18b7800-f596-441d-841e-1e81d444d00c">Předplatit: STR2G HYROX BASIC PROGRAM</a></p>
+</article>
+<article class="sf-static-card">
+
+<h2>STR2G HYROX COMPETITOR PROGRAM</h2>
+<p class="sf-static-price"><b>960 Kč / měsíc</b> · Měsíční program</p>
+
+<p><a href="/storefront/?program=4bb39d07-5f72-4c58-b074-b6c2f3d25730">Předplatit: STR2G HYROX COMPETITOR PROGRAM</a></p>
+</article>
+<article class="sf-static-card">
+
+<h2>STR2G HYROX PRO ATHLETE</h2>
+<p class="sf-static-price"><b>1 350 Kč / měsíc</b> · Měsíční program</p>
+
+<p><a href="/storefront/?program=cb99bf54-d8b4-433e-a08b-d0fe2a138ee5">Předplatit: STR2G HYROX PRO ATHLETE</a></p>
+</article>
+<article class="sf-static-card">
+
+<h2>STR2G RUNNING FOR HYROX 2.0 (12 WEEKS)</h2>
+<p class="sf-static-price"><b>1 000 Kč</b> · Jednorázový program</p>
+
+<p><a href="/storefront/?program=74b976b7-5861-4567-8771-516438a6f406">Koupit: STR2G RUNNING FOR HYROX 2.0 (12 WEEKS)</a></p>
+</article>
+</div>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "ItemList", "name": "Programy STR2G HYROX", "url": "https://str2g.com/storefront/", "numberOfItems": 10, "itemListElement": [{"@type": "ListItem", "position": 1, "item": {"@type": "Product", "name": "STR2G 12 WEEK HYROX RACE PREP", "brand": {"@type": "Brand", "name": "STR2G"}, "description": "", "offers": {"@type": "Offer", "price": "2100", "priceCurrency": "CZK", "availability": "https://schema.org/InStock", "url": "https://str2g.com/storefront/?program=9cb1e2aa-9a7e-4f05-93b8-4b948b461891"}}}, {"@type": "ListItem", "position": 2, "item": {"@type": "Product", "name": "STR2G 12-WEEK HYROX ADVANCED PROGRAM", "brand": {"@type": "Brand", "name": "STR2G"}, "description": "", "offers": {"@type": "Offer", "price": "1900", "priceCurrency": "CZK", "availability": "https://schema.org/InStock", "url": "https://str2g.com/storefront/?program=bf5b8a49-3c35-4fb5-ba06-837f9f40a650"}}}, {"@type": "ListItem", "position": 3, "item": {"@type": "Product", "name": "STR2G 2-WEEK HYROX TAPER 2.0", "brand": {"@type": "Brand", "name": "STR2G"}, "description": "", "offers": {"@type": "Offer", "price": "550", "priceCurrency": "CZK", "availability": "https://schema.org/InStock", "url": "https://str2g.com/storefront/?program=f82e4048-8685-4e56-ae09-1ed40367a1b8"}}}, {"@type": "ListItem", "position": 4, "item": {"@type": "Product", "name": "STR2G 8-WEEK HYROX DOUBLES", "brand": {"@type": "Brand", "name": "STR2G"}, "description": "", "offers": {"@type": "Offer", "price": "1700", "priceCurrency": "CZK", "availability": "https://schema.org/InStock", "url": "https://str2g.com/storefront/?program=b63f4bcc-0007-4bee-b040-7a0349f59f04"}}}, {"@type": "ListItem", "position": 5, "item": {"@type": "Product", "name": "STR2G 8-WEEK HYROX SINGLES", "brand": {"@type": "Brand", "name": "STR2G"}, "description": "", "offers": {"@type": "Offer", "price": "1500", "priceCurrency": "CZK", "availability": "https://schema.org/InStock", "url": "https://str2g.com/storefront/?program=1f4f0945-7a22-4b7e-a5aa-558536973d6b"}}}, {"@type": "ListItem", "position": 6, "item": {"@type": "Product", "name": "STR2G HYROX ADVANCED PROGRAM 1:1", "brand": {"@type": "Brand", "name": "STR2G"}, "description": "", "offers": {"@type": "Offer", "price": "3500", "priceCurrency": "CZK", "availability": "https://schema.org/InStock", "url": "https://str2g.com/storefront/?program=f855a4e1-d333-40e2-b35f-fe3c7387f271", "priceSpecification": {"@type": "UnitPriceSpecification", "price": "3500", "priceCurrency": "CZK", "billingDuration": "P1M"}}}}, {"@type": "ListItem", "position": 7, "item": {"@type": "Product", "name": "STR2G HYROX BASIC PROGRAM", "brand": {"@type": "Brand", "name": "STR2G"}, "description": "", "offers": {"@type": "Offer", "price": "750", "priceCurrency": "CZK", "availability": "https://schema.org/InStock", "url": "https://str2g.com/storefront/?program=c18b7800-f596-441d-841e-1e81d444d00c", "priceSpecification": {"@type": "UnitPriceSpecification", "price": "750", "priceCurrency": "CZK", "billingDuration": "P1M"}}}}, {"@type": "ListItem", "position": 8, "item": {"@type": "Product", "name": "STR2G HYROX COMPETITOR PROGRAM", "brand": {"@type": "Brand", "name": "STR2G"}, "description": "", "offers": {"@type": "Offer", "price": "960", "priceCurrency": "CZK", "availability": "https://schema.org/InStock", "url": "https://str2g.com/storefront/?program=4bb39d07-5f72-4c58-b074-b6c2f3d25730", "priceSpecification": {"@type": "UnitPriceSpecification", "price": "960", "priceCurrency": "CZK", "billingDuration": "P1M"}}}}, {"@type": "ListItem", "position": 9, "item": {"@type": "Product", "name": "STR2G HYROX PRO ATHLETE", "brand": {"@type": "Brand", "name": "STR2G"}, "description": "", "offers": {"@type": "Offer", "price": "1350", "priceCurrency": "CZK", "availability": "https://schema.org/InStock", "url": "https://str2g.com/storefront/?program=cb99bf54-d8b4-433e-a08b-d0fe2a138ee5", "priceSpecification": {"@type": "UnitPriceSpecification", "price": "1350", "priceCurrency": "CZK", "billingDuration": "P1M"}}}}, {"@type": "ListItem", "position": 10, "item": {"@type": "Product", "name": "STR2G RUNNING FOR HYROX 2.0 (12 WEEKS)", "brand": {"@type": "Brand", "name": "STR2G"}, "description": "", "offers": {"@type": "Offer", "price": "1000", "priceCurrency": "CZK", "availability": "https://schema.org/InStock", "url": "https://str2g.com/storefront/?program=74b976b7-5861-4567-8771-516438a6f406"}}}]}</script>
+<!--/SF_STATIC-->
+</str2g-storefront>
 </main>
 
 <footer>
