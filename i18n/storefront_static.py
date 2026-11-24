@@ -9,6 +9,7 @@ Volá i18n/build.py po app_store.sync().
 """
 import html, json, re
 import app_store
+from merchant_ld import add_merchant_fields
 
 BASE = "https://str2g.com"
 KIND = {"group": "Měsíční program", "one_to_one": "Individuální koučink 1:1", "fixed": "Jednorázový program"}
@@ -82,6 +83,7 @@ def build(root):
         if r.get("billing_period"):
             offer["priceSpecification"] = {"@type": "UnitPriceSpecification", "price": str(czk),
                                            "priceCurrency": "CZK", "billingDuration": "P1M"}
+        add_merchant_fields(offer)
         prod = {"@type": "Product", "name": name, "brand": {"@type": "Brand", "name": "STR2G"},
                 "description": _plain(desc), "offers": offer}
         if img:

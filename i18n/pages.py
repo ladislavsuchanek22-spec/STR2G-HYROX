@@ -12,6 +12,7 @@ from pathlib import Path
 import aeo_eu
 from pages_content import T, SLUGS, HOME, LOCALE, COUNTRY, PROGRAMS, PLAN_PICKS, PICK_LANGS_ADVANCED, price
 from app_store import buy_url
+from merchant_ld import add_merchant_fields
 
 
 def prog_url(lang, pid):
@@ -146,6 +147,7 @@ def schema(lang, kind, url, d):
         offers = {"@type": "Offer", "price": "3500", "priceCurrency": "CZK", "availability": "https://schema.org/InStock",
                   "url": BASE + buy_url("coaching"),
                   "priceSpecification": {"@type": "UnitPriceSpecification", "price": "3500", "priceCurrency": "CZK", "billingDuration": "P1M"}}
+        add_merchant_fields(offers)
         stype = u["coach_link"]
     graph = [
         {"@type": "WebPage", "@id": url, "url": url, "name": d["title"], "description": d["desc"], "inLanguage": lang,
