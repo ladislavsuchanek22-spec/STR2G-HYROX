@@ -94,18 +94,7 @@ def link_to(lang, pid):
     return f'<a href="{url_of(pid, lang)}">{escape(PT[lang]["programs"][pid]["name"])} →</a>'
 
 
-# Digitální program (aplikace Strivee): doručení zdarma a ihned, do celého světa – kvůli Google „Záznamy obchodníka“
-_DAY0 = {"@type": "QuantitativeValue", "minValue": 0, "maxValue": 0, "unitCode": "DAY"}
-SHIPPING = {"@type": "OfferShippingDetails",
-            "shippingRate": {"@type": "MonetaryAmount", "value": "0", "currency": "CZK"},
-            "shippingDestination": [{"@type": "DefinedRegion", "addressCountry": c} for c in
-                                    ("CZ", "SK", "DE", "AT", "PL", "FR", "ES", "IT", "NL", "BE", "GB", "IE", "US")],
-            "deliveryTime": {"@type": "ShippingDeliveryTime", "handlingTime": _DAY0, "transitTime": _DAY0}}
-
-RETURNS = {"@type": "MerchantReturnPolicy",
-           "applicableCountry": ["CZ", "SK", "DE", "AT", "PL", "FR", "ES", "IT", "NL", "BE", "GB", "IE", "US"],
-           "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted",
-           "merchantReturnLink": BASE + "/refund-policy/"}
+from merchant_ld import SHIPPING, RETURNS  # noqa: E402
 
 
 def schema(lang, pid, url, p, faq):
