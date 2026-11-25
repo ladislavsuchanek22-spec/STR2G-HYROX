@@ -8,6 +8,282 @@ from html import escape
 from pages import BASE, T, card, faq_html, shead, ul, NET, extract  # noqa: F401
 import programs
 
+RULEBOOK = '<a href="https://hyrox.com/rulebook/" target="_blank" rel="noopener">HYROX rulebook</a>'
+
+NEW = {
+    "skierg": dict(
+        draft=False, station=True,
+        slug="/guides/hyrox-skierg/",
+        date="2026-11-25",
+        title="HYROX SkiErg: Technique, Pacing & Workouts for the First 1000 m | STR2G",
+        desc="HYROX SkiErg guide: rules, damper setting, technique from the hips, common mistakes, how to pace 1000 m and workouts to train it with running.",
+        eyebrow="HYROX station 1",
+        h1=("SkiErg", "You won't win the race here. You can lose it."),
+        lead="The SkiErg is station one. You arrive after the first kilometre, fresh and full of adrenaline. That is exactly why most people go out too hard and pay for it with a heart rate that never comes back down.",
+        sections=[
+            ("Rules", f"""<table class="lp-table"><thead><tr><th>Distance</th><th>Machine</th><th>Damper</th></tr></thead><tbody>
+<tr><td>1000 m, every division</td><td>Concept2 SkiErg</td><td>Preset to 6, you may adjust it</td></tr>
+</tbody></table>
+<p class="lp-p">A judge resets the monitor before you start. Both feet stay on the base the whole time. You may lift your heels, but not step off. Rules change between seasons, so check the current {RULEBOOK} before race day.</p>"""),
+            ("Technique: drop your body into it", """<ul class="lp-list">
+<li><b>Start tall.</b> Hands up at forehead height, elbows slightly bent, trunk braced, shoulders down.</li>
+<li><b>Catch with trunk and lats.</b> Brace your abs, press the handles down and let your body weight fall into them. The elbow angle barely changes.</li>
+<li><b>Finish with a hip hinge, not a squat.</b> Hips travel back, knees bend only slightly, hands finish beside your thighs.</li>
+<li><b>Recover slowly.</b> Stand back up along the same path. This is where you breathe in and rest.</li>
+<li><b>Damper 5–7, 35–45 strokes per minute.</b> A higher damper is not faster, just heavier on the arms.</li>
+</ul>"""),
+            ("Common mistakes", """<ul class="lp-list">
+<li><b>Arms-only pulling.</b> Your triceps and shoulders do all the work and fade by 400 m. Start every stroke by sending your hips back.</li>
+<li><b>Squatting instead of hinging.</b> You burn the legs you need for the sleds.</li>
+<li><b>Short, choppy strokes.</b> High stroke rate, no metres. Finish at your thighs and slow the recovery.</li>
+<li><b>Going out too hot.</b> The first 200 m ten seconds too fast, then a heart rate that won't settle.</li>
+<li><b>Damper on max</b> and <b>holding your breath.</b> Exhale loudly on every pull.</li>
+</ul>"""),
+            ("How to pace 1000 m", """<p class="lp-p">Ski 1000 m all out after a warm-up and note your average per 500 m. Add 5–8 seconds per 500 m: that is your race pace. A 4:00 test (2:00 / 500 m) gives a race pace of about 2:05–2:08 / 500 m.</p>
+<ul class="lp-list">
+<li><b>0–200 m:</b> settle in at target pace. Adrenaline will push you faster. Don't let it.</li>
+<li><b>200–800 m:</b> same pace, same stroke rate, long strokes.</li>
+<li><b>800–1000 m:</b> no sprint finish. Get your breathing under control and think about running.</li>
+</ul>"""),
+            ("Workouts", """<ol class="lp-steps">
+<li><b>Race pace:</b> 6 × 500 m at race pace, 1 min rest. Every rep the same.</li>
+<li><b>Speed reserve:</b> 10 × 200 m at 5 s / 500 m faster than race pace, 45 s rest.</li>
+<li><b>Race start:</b> 1 km run + 1000 m SkiErg + 1 km run. The second kilometre should be as fast as the first.</li>
+<li><b>Quick transitions:</b> 6 rounds of 250 m SkiErg + 400 m run, no rest.</li>
+</ol>"""),
+        ],
+        picks=["basic", "competitor", "singles"],
+        faq=[
+            ("How long is the SkiErg in HYROX?", "1000 m in every division. It is the first station, straight after the first 1 km run."),
+            ("What damper setting should I use on the HYROX SkiErg?", "The damper is preset to 6 and you are allowed to change it. Most athletes do best between 5 and 7. A higher setting makes the stroke heavier, not faster."),
+            ("How fast should I ski in HYROX?", "Add 5–8 seconds per 500 m to your all-out 1000 m test. You should be able to run the next kilometre at your planned pace without walking."),
+        ],
+    ),
+    "sled-push": dict(
+        draft=False, station=True,
+        slug="/guides/hyrox-sled-push/",
+        date="2026-11-25",
+        title="HYROX Sled Push: Weights, Technique & How to Pace 4 × 12.5 m | STR2G",
+        desc="HYROX sled push guide: weights for every division, body position, short steps, where to rest, common mistakes and workouts to push faster and still run.",
+        eyebrow="HYROX station 2",
+        h1=("Sled push", "Low, braced and short steps."),
+        lead="The sled push is the first real strength station. Four lengths of 12.5 m look short on paper. On carpet, with a heavy sled and two kilometres in your legs, this is where the second half of many races falls apart.",
+        sections=[
+            ("Weights and rules", f"""<table class="lp-table"><thead><tr><th>Division</th><th>Weight incl. sled</th><th>Distance</th></tr></thead><tbody>
+<tr><td>Women Open</td><td>102 kg</td><td>4 × 12.5 m</td></tr>
+<tr><td>Men Open / Women Pro</td><td>152 kg</td><td>4 × 12.5 m</td></tr>
+<tr><td>Men Pro</td><td>202 kg</td><td>4 × 12.5 m</td></tr>
+</tbody></table>
+<p class="lp-p">The whole sled must cross the line before you turn. You can rest whenever you like, but the clock keeps running. Carpet differs between events, so the same weight can glide one day and stick the next. Check the current {RULEBOOK} before race day.</p>"""),
+            ("Technique", """<ul class="lp-list">
+<li><b>Arms are a rigid link.</b> Straight or bent, it doesn't matter, as long as the elbow angle doesn't change.</li>
+<li><b>One line from head to heels.</b> Lean in, hips below shoulders, flat back, abs braced.</li>
+<li><b>Short, quick steps</b> off the balls of your feet. Long strides lift you out of position and stall the sled.</li>
+<li><b>Never stop mid-length.</b> Restarting a dead sled is the hardest part. Rest at the turns, where you stop anyway.</li>
+<li><b>Grippy shoes.</b> Test your race shoes on carpet. A slipping foot costs power.</li>
+</ul>"""),
+            ("Common mistakes", """<ul class="lp-list">
+<li><b>Hips too high:</b> you push with arms and shoulders and leg power never reaches the sled.</li>
+<li><b>Flying the first length:</b> by length three you are standing still. All four lengths should take about the same time.</li>
+<li><b>Rounded back:</b> leg power leaks away. If you can't keep a flat back, raise your grip.</li>
+<li><b>Holding your breath:</b> exhale every second step.</li>
+</ul>"""),
+            ("Pacing: plan your rest", """<p class="lp-p">The sled is not about never stopping. It is about stopping briefly, in the right place, with a plan. Ten seconds at the turn beats thirty in the middle of a length. Example plan: length, three breaths at the turn, length, three breaths, length, five breaths, final length.</p>
+<p class="lp-p">The first few hundred metres after the sled are the hardest running of the race. Shorten your stride, lift your cadence and don't panic. It settles within 300 m.</p>"""),
+            ("Workouts", """<ol class="lp-steps">
+<li><b>Light technique:</b> 8 × 12.5 m at 70% of race weight, 60 s rest.</li>
+<li><b>Heavy lengths:</b> 6 × 12.5 m at race weight +20–30 kg, 2 min rest.</li>
+<li><b>Station two:</b> 1 km run + 50 m sled push + 1 km run. The second kilometre no more than 10–15 s slower.</li>
+<li><b>Heavy legs:</b> 3 rounds of 25 m push + 20 walking lunges + 600 m run.</li>
+</ol>"""),
+        ],
+        picks=["basic", "competitor", "singles"],
+        faq=[
+            ("How heavy is the HYROX sled push?", "Including the sled: 102 kg for Women Open, 152 kg for Men Open and Women Pro, 202 kg for Men Pro. Four lengths of 12.5 m, 50 m in total."),
+            ("How do I push the sled faster in HYROX?", "Get low with a flat back, use short quick steps, keep the sled moving through each length and take planned rests only at the turns."),
+            ("Can I rest during the sled push?", "Yes, but plan it. Short rests at the turns are much cheaper than stopping mid-length and restarting a dead sled."),
+        ],
+    ),
+    "burpee-broad-jumps": dict(
+        draft=False, station=True,
+        slug="/guides/hyrox-burpee-broad-jumps/",
+        date="2026-11-25",
+        title="HYROX Burpee Broad Jumps: Rules, Technique & Pacing for 80 m | STR2G",
+        desc="HYROX burpee broad jumps: the movement standard, an economical rep, jump length, breathing, common no-reps and workouts to hold one rhythm for 80 m.",
+        eyebrow="HYROX station 4",
+        h1=("Burpee broad jumps", "Strength doesn't win here. Rhythm does."),
+        lead="Station four and, for many people, the worst one. No equipment, just you, the floor and 80 metres after both sleds. Fly through the first twenty metres and you will be lying on the floor at halfway.",
+        sections=[
+            ("Rules", f"""<ul class="lp-list">
+<li>80 m in every division, bodyweight only.</li>
+<li>Your chest touches the floor on every burpee.</li>
+<li>Your hands go down no more than one foot length in front of your toes.</li>
+<li>Take-off and landing are two-footed, feet side by side. No steps forward between landing and the next burpee.</li>
+</ul>
+<p class="lp-p">Check the current {RULEBOOK} before race day.</p>"""),
+            ("Technique: the same rep every time", """<ul class="lp-list">
+<li><b>Down:</b> hands just in front of your toes, feet back, chest on the floor. Don't crash, don't brake with your arms.</li>
+<li><b>Up:</b> stepping up is slower but saves heart rate. Jumping up is faster and costs more. Test both after 40 m.</li>
+<li><b>Jump forward, not up,</b> at about 70–80% of your max. Land softly on your whole foot.</li>
+<li><b>Breathe:</b> out on the way down, in on the way up. If you must rest, rest standing.</li>
+</ul>"""),
+            ("Common mistakes", """<ul class="lp-list">
+<li><b>Max-effort jumps:</b> every jump is a show, after 30 m you have nothing left.</li>
+<li><b>Hands too far forward</b> or a <b>one-foot take-off:</b> risk of no-reps.</li>
+<li><b>Lying on the floor</b> between reps. The seconds pile up.</li>
+<li><b>Sprinting the start:</b> the second half takes twice as long.</li>
+</ul>"""),
+            ("Pacing: count jumps, not metres", """<p class="lp-p">Do 80 m fresh at a pace you can hold and count your jumps. 44 jumps means 11 for every 20 m. On race day you count to eleven, four times, and ignore how far is left.</p>
+<p class="lp-p">After the burpees your heart rate is the highest of the race. Run the first 200 m a little slower. The good news: the next station is the row, where you sit down.</p>"""),
+            ("Workouts", """<ol class="lp-steps">
+<li><b>Race rhythm:</b> 4 × 40 m at race rhythm, 90 s rest. Same jump count every rep.</li>
+<li><b>10-min EMOM:</b> 6–8 burpee broad jumps every minute.</li>
+<li><b>Station four:</b> 1 km run + 80 m burpee broad jumps + 1 km run, no walking.</li>
+<li><b>After the sled:</b> 3 rounds of 25 m sled pull + 400 m run + 30 m burpee broad jumps + 400 m run.</li>
+</ol>"""),
+        ],
+        picks=["basic", "competitor", "singles"],
+        faq=[
+            ("How far are the burpee broad jumps in HYROX?", "80 m in every division. It is station four, after the sled push and sled pull."),
+            ("What are the rules for HYROX burpee broad jumps?", "Chest to the floor on every rep, hands no further than one foot length in front of your toes, and a two-footed take-off and landing with no steps forward between reps."),
+            ("Should I step or jump up in the burpees?", "Test both in training. Stepping up is slower per rep but keeps your heart rate lower, and many athletes are faster overall with it."),
+        ],
+    ),
+    "rowing": dict(
+        draft=False, station=True,
+        slug="/guides/hyrox-rowing/",
+        date="2026-11-25",
+        title="HYROX Rowing: Technique, Damper & How to Pace the 1000 m Row | STR2G",
+        desc="HYROX row guide: legs-body-arms technique, damper and stroke rate, common mistakes, how to pace 1000 m at halfway and workouts with running.",
+        eyebrow="HYROX station 5",
+        h1=("Rowing", "Halfway. Reset your breathing."),
+        lead="The row is station five and exactly halfway. It is the only place in the race where you sit down. Use it to settle your breathing and set up the second half, or wreck yourself completely.",
+        sections=[
+            ("Rules", f"""<p class="lp-p">1000 m on a Concept2 rower in every division. A judge resets the monitor, you get up only after the full distance. The damper is preset and you may adjust it. Set your foot straps as soon as you sit down. Check the current {RULEBOOK} before race day.</p>"""),
+            ("Technique: legs, body, arms", """<ul class="lp-list">
+<li><b>Catch:</b> shins roughly vertical, arms straight, slight forward lean from the hips, flat back.</li>
+<li><b>Drive:</b> push with the legs first. Only when they are almost straight swing the torso back, then pull the handle.</li>
+<li><b>Finish:</b> handle at your lower ribs, torso just past vertical.</li>
+<li><b>Recovery:</b> arms, body, then knees. Twice as long as the drive. This is where you rest.</li>
+<li><b>Damper 4–6, 24–30 strokes per minute.</b> Breathe out on the drive.</li>
+</ul>"""),
+            ("Common mistakes", """<ul class="lp-list">
+<li><b>Arms before legs:</b> your strongest muscles barely work.</li>
+<li><b>Knees before hands</b> on the recovery: the handle loops over your knees.</li>
+<li><b>Short, fast strokes:</b> high rate, no power.</li>
+<li><b>Leaning back too far</b> or a <b>rounded back.</b></li>
+</ul>"""),
+            ("How to pace 1000 m", """<p class="lp-p">Row 1000 m all out after a warm-up. Add 6–10 seconds per 500 m to your average: that is your race pace. A 3:40 test (1:50 / 500 m) gives about 1:56–2:00 / 500 m.</p>
+<ul class="lp-list">
+<li><b>0–200 m:</b> three or four short strokes to spin the flywheel, then long strokes at target pace.</li>
+<li><b>200–800 m:</b> hold it. This is where your body recovers most.</li>
+<li><b>800–1000 m:</b> no sprint. Loosen the straps in the last metres so you can get straight off.</li>
+</ul>"""),
+            ("Workouts", """<ol class="lp-steps">
+<li><b>Race pace:</b> 6 × 500 m at race pace, 1 min rest.</li>
+<li><b>Rate ladder:</b> 4 × 4 min, 1 min each at 22–24–26–28 strokes per minute.</li>
+<li><b>Station five:</b> 1 km run + 1000 m row + 1 km run.</li>
+<li><b>Row and farmers:</b> 4 rounds of 500 m row + 100 m farmers carry + 400 m easy run.</li>
+</ol>"""),
+        ],
+        picks=["basic", "competitor", "raceprep"],
+        faq=[
+            ("How long is the row in HYROX?", "1000 m on a Concept2 rower in every division. It is station five, exactly halfway through the race."),
+            ("What damper should I use for the HYROX row?", "Most athletes do best between 4 and 6. Train on the setting you will race on. A higher damper makes each stroke heavier, not faster."),
+            ("How fast should I row in HYROX?", "Add 6–10 seconds per 500 m to your all-out 1000 m test. Leave the rower ready to run, not wrecked."),
+        ],
+    ),
+    "farmers-carry": dict(
+        draft=False, station=True,
+        slug="/guides/hyrox-farmers-carry/",
+        date="2026-11-25",
+        title="HYROX Farmers Carry: Weights, Grip & How to Carry 200 m Unbroken | STR2G",
+        desc="HYROX farmers carry guide: kettlebell weights, pick-up, posture, grip, walk or shuffle, where to put them down and workouts for grip under fatigue.",
+        eyebrow="HYROX station 6",
+        h1=("Farmers carry", "The fastest station. If your hands hold out."),
+        lead="Two kettlebells, 200 metres. Done well, it takes around two minutes. The catch is what comes before it: your grip has already worked on the sled pull and the rower.",
+        sections=[
+            ("Weights and rules", f"""<table class="lp-table"><thead><tr><th>Division</th><th>Kettlebells</th><th>Distance</th></tr></thead><tbody>
+<tr><td>Women Open</td><td>2 × 16 kg</td><td>200 m</td></tr>
+<tr><td>Men Open / Women Pro</td><td>2 × 24 kg</td><td>200 m</td></tr>
+<tr><td>Men Pro</td><td>2 × 32 kg</td><td>200 m</td></tr>
+</tbody></table>
+<p class="lp-p">You can put the kettlebells down at any time and continue from there. Walking and running are both allowed. Check the current {RULEBOOK} before race day.</p>"""),
+            ("Technique: chest up, load quiet", """<ul class="lp-list">
+<li><b>Pick up like a deadlift:</b> bend at hips and knees, flat back, brace.</li>
+<li><b>Posture:</b> chest up, shoulders down and slightly back, arms hanging long, eyes forward.</li>
+<li><b>Short, quick steps.</b> A fast walk or light shuffle, whichever keeps the bells from swinging.</li>
+<li><b>Grip:</b> handle deep in the palm, thumb locked over the fingers. Firm, not maximal.</li>
+<li><b>Dry hands:</b> wipe your palms before the station.</li>
+</ul>"""),
+            ("Common mistakes", """<ul class="lp-list">
+<li><b>Shrugged shoulders:</b> traps and neck tire in a few dozen metres.</li>
+<li><b>Long strides:</b> the bells swing and hit your thighs.</li>
+<li><b>Death grip</b> from the first metre: your forearms go at halfway.</li>
+<li><b>Dropping only at failure:</b> put them down a few metres earlier than you have to, three breaths, go.</li>
+</ul>"""),
+            ("Pacing: unbroken, or a plan", """<p class="lp-p">There is little to gain here and a lot to lose. The ideal is 200 m without putting down, at a fast, quiet walk. If your grip can't do that, decide your breaks in advance: 100 + 100 or 80 + 60 + 60. One planned break beats three forced ones. Never put down in the last 50 m.</p>"""),
+            ("Workouts", """<ol class="lp-steps">
+<li><b>200 m test:</b> race weight, unbroken. Note your time and where you put down.</li>
+<li><b>Grip:</b> 4 rounds of 30 s dead hang + 40 m carry at race weight.</li>
+<li><b>Station six:</b> 1 km run + 200 m farmers carry + 1 km run.</li>
+<li><b>Grip under fatigue:</b> 3 rounds of 12.5 m sled pull + 100 m carry + 400 m run.</li>
+</ol>"""),
+        ],
+        picks=["basic", "competitor", "singles"],
+        faq=[
+            ("How heavy is the HYROX farmers carry?", "Two kettlebells of 16 kg for Women Open, 24 kg for Men Open and Women Pro, 32 kg for Men Pro. The distance is 200 m."),
+            ("Can I put the kettlebells down during the farmers carry?", "Yes, as often as you need, and you continue from where you put them down. Plan short breaks rather than waiting until your grip fails."),
+            ("Should I run or walk the farmers carry?", "Whichever keeps the kettlebells quiet. A fast walk with short steps works for most athletes. A shuffle is quicker but swings the load and raises your heart rate."),
+        ],
+    ),
+    "sandbag-lunges": dict(
+        draft=False, station=True,
+        slug="/guides/hyrox-sandbag-lunges/",
+        date="2026-11-25",
+        title="HYROX Sandbag Lunges: Weights, Standard & How to Pace 100 m | STR2G",
+        desc="HYROX sandbag lunges: bag weights, the knee-touch standard, stride length, breathing, how to split 100 m and workouts to survive station seven.",
+        eyebrow="HYROX station 7",
+        h1=("Sandbag lunges", "This is where the race really starts."),
+        lead="Seven kilometres and six stations in your legs, then a sandbag on your shoulders and 100 metres of lunges. Every step is a rep and none of them is free.",
+        sections=[
+            ("Weights and rules", f"""<table class="lp-table"><thead><tr><th>Division</th><th>Sandbag</th><th>Distance</th></tr></thead><tbody>
+<tr><td>Women Open</td><td>10 kg</td><td>100 m</td></tr>
+<tr><td>Men Open / Women Pro</td><td>20 kg</td><td>100 m</td></tr>
+<tr><td>Men Pro</td><td>30 kg</td><td>100 m</td></tr>
+</tbody></table>
+<p class="lp-p">The bag stays on your shoulders the whole time. The back knee touches the floor on every lunge and you stand up fully each time. Alternate legs with no extra steps. You can rest standing with the bag on. Check the current {RULEBOOK} before race day.</p>"""),
+            ("Technique: upright and smooth", """<ul class="lp-list">
+<li><b>Bag high on your shoulders,</b> elbows forward. Your hands steady it, they don't carry it.</li>
+<li><b>Medium step:</b> front shin roughly vertical, back knee lowers under control and touches lightly.</li>
+<li><b>Stand tall</b> through the whole front foot, lock out briefly, straight into the next step.</li>
+<li><b>One lunge, one breath:</b> in on the way down, out on the way up.</li>
+</ul>"""),
+            ("Common mistakes", """<ul class="lp-list">
+<li><b>Tiny steps:</b> dozens of extra reps for the same distance.</li>
+<li><b>Leaning forward:</b> the bag presses on your neck and your back takes over.</li>
+<li><b>Not standing tall:</b> you risk no-reps.</li>
+<li><b>Going out too hot</b> and then <b>long standing breaks.</b> A break is three breaths, no more.</li>
+</ul>"""),
+            ("Pacing: a rhythm you can hold", """<p class="lp-p">On the lunges, the athlete who doesn't stop wins. A slower continuous rhythm almost always beats fast bursts with long breaks. Example plan: 25 m, three breaths, 25 m, three breaths, 25 m, three breaths, final 25 m without stopping.</p>
+<p class="lp-p">Afterwards your legs feel like rubber. Run off with a short stride and forget pace for 200 m. You need those legs for 100 wall balls.</p>"""),
+            ("Workouts", """<ol class="lp-steps">
+<li><b>Race sections:</b> 4 × 50 m at race weight, unbroken, 90 s rest.</li>
+<li><b>Leg strength:</b> 4 rounds of 8 Bulgarian split squats per leg + 10 goblet squats + 30 s plank.</li>
+<li><b>Station seven:</b> 1 km run + 100 m lunges + 1 km run.</li>
+<li><b>Lunges and wall balls:</b> 3 rounds of 50 m lunges + 400 m run + 25 wall balls.</li>
+</ol>"""),
+        ],
+        picks=["basic", "competitor", "raceprep"],
+        faq=[
+            ("How heavy is the HYROX sandbag?", "10 kg for Women Open, 20 kg for Men Open and Women Pro, 30 kg for Men Pro. The distance is 100 m."),
+            ("Does the knee have to touch the floor in HYROX lunges?", "Yes. The back knee touches the floor on every lunge and you stand up fully between reps."),
+            ("How do I get faster at HYROX sandbag lunges?", "Use a medium stride you can repeat, stay upright, and hold one continuous rhythm with short planned breaks instead of fast bursts and long stops."),
+        ],
+    ),
+}
+
+
 GUIDES = {
     "hyrox-taper": dict(
         draft=False,
@@ -83,7 +359,7 @@ GUIDES = {
         ],
     ),
     "sled-pull": dict(
-        draft=False,
+        draft=False, station=True,
         slug="/guides/hyrox-sled-pull-technique/",
         date="2026-10-26",
         title="HYROX Sled Pull Technique: How to Pull Faster and Save Your Legs | STR2G",
@@ -197,7 +473,7 @@ GUIDES = {
         ],
     ),
     "wall-balls": dict(
-        draft=True,
+        draft=True, station=True,
         slug="/guides/hyrox-wall-balls/",
         title="HYROX Wall Balls: Standards, Technique & How to Pace 100 Reps | STR2G",
         desc="HYROX wall balls: ball weights and target heights for every division, the movement standard, technique that saves your legs and how to split 100 reps.",
@@ -241,7 +517,42 @@ GUIDES = {
 }
 
 
-def page(g, parts):
+GUIDES.update(NEW)
+
+# Pořadí stanic jako v závodě (pro odkazy „další stanice“ a landing page průvodce)
+STATION_ORDER = ["skierg", "sled-push", "sled-pull", "burpee-broad-jumps", "rowing", "farmers-carry", "sandbag-lunges", "wall-balls"]
+
+SG_LANDING = {"en": "/station-guide/", "cs": "/cs/pruvodce-stanicemi/"}
+
+
+def sg_cta():
+    """Blok s nabídkou celého průvodce (PDF) na stránkách stanic."""
+    return '''
+<section class="sg-cta">
+  <div class="wrap">
+    <div class="sg-box">
+      <p class="eyebrow">Free PDF · 64 pages</p>
+      <h2 class="display">All 8 stations.<br><span class="gold">One guide.</span></h2>
+      <p class="lead">Technique, common mistakes, race pacing and 12 workouts for every station, from SkiErg to Wall Balls. Written by HYROX coaches who race themselves.</p>
+      <div class="cta-row"><button type="button" class="btn btn-gold" data-sg-cta>Get the free Station Guide</button><a class="btn btn-ghost" href="/station-guide/">What's inside</a></div>
+    </div>
+  </div>
+</section>'''
+
+
+def station_nav(key):
+    """Odkazy na ostatní stanice."""
+    links = []
+    for k in STATION_ORDER:
+        g = GUIDES.get(k)
+        if not g or g.get("draft"):
+            continue
+        label = NAV_LABELS.get(k, k)
+        links.append(f'<span aria-current="page">{escape(label)}</span>' if k == key else f'<a href="{g["slug"]}">{escape(label)}</a>')
+    return '<nav class="st-nav" aria-label="HYROX stations"><p class="eyebrow">All HYROX stations</p><div>' + "".join(links) + "</div></nav>"
+
+
+def page(g, parts, key=None):
     tracking, style, fonts, verify, icons = parts
     u = T["en"]["ui"]
     url = BASE + g["slug"]
@@ -294,6 +605,7 @@ def page(g, parts):
 <script type="application/ld+json">{json.dumps(ld, ensure_ascii=False)}</script>
 <style>{style}</style>
 <style>.lp-p a,.lp-list a{{color:var(--gold, #c9a961);text-decoration:underline}}</style>
+<style>.sg-box{{border:1px solid var(--line);padding:36px 32px;background:rgba(201,169,80,.06)}}.sg-box h2{{font-size:clamp(38px,5vw,64px);line-height:.95;margin:6px 0 16px}}.sg-box .lead{{max-width:640px}}.st-nav div{{display:flex;flex-wrap:wrap;gap:8px 20px}}.st-nav a{{color:var(--fg);text-decoration:none;font-weight:500}}.st-nav a:hover,.st-nav span{{color:var(--accent)}}</style>
 </head>
 <body>
 
@@ -319,6 +631,7 @@ def page(g, parts):
   </div>
 </header>
 {secs}
+{(sg_cta() + chr(10) + '<section class="st-links"><div class="wrap">' + station_nav(key) + '</div></section>') if g.get("station") else ""}
 
 <section id="pick">
   <div class="wrap">
@@ -345,17 +658,22 @@ def page(g, parts):
 </body>
 </html>
 '''
+    if g.get("station"):
+        from pathlib import Path as _P
+        sg = (_P(__file__).resolve().parent / "stationguide.html").read_text(encoding="utf-8").rstrip(chr(10))
+        html = html.replace("</body>", sg + chr(10) + "</body>", 1)
     return html
 
 
-NAV_LABELS = {"hyrox-taper": "HYROX taper", "compromised-running": "Compromised running", "sled-pull": "Sled pull technique", "doubles": "HYROX Doubles", "running": "Run faster in HYROX", "wall-balls": "Wall balls"}
+NAV_LABELS = {"hyrox-taper": "HYROX taper", "compromised-running": "Compromised running", "sled-pull": "Sled pull technique", "doubles": "HYROX Doubles", "running": "Run faster in HYROX", "wall-balls": "Wall balls", "skierg": "SkiErg", "sled-push": "Sled push", "burpee-broad-jumps": "Burpee broad jumps", "rowing": "Rowing", "farmers-carry": "Farmers carry", "sandbag-lunges": "Sandbag lunges"}
 
 
 def nav(lang="en"):
     """Odkazy na zveřejněné průvodce (jen EN) do patičky."""
     if lang != "en":
         return ""
-    return "".join(f'<a href="{g["slug"]}">{escape(NAV_LABELS.get(k, g["slug"]))}</a>' for k, g in GUIDES.items() if not g.get("draft"))
+    links = "".join(f'<a href="{g["slug"]}">{escape(NAV_LABELS.get(k, g["slug"]))}</a>' for k, g in GUIDES.items() if not g.get("draft") and not g.get("station"))
+    return links + '<a href="/station-guide/">HYROX station guides</a>'
 
 
 def build(root, parts):
@@ -365,7 +683,7 @@ def build(root, parts):
             continue
         out = root / g["slug"].strip("/") / "index.html"
         out.parent.mkdir(parents=True, exist_ok=True)
-        out.write_text(page(g, parts), encoding="utf-8")
+        out.write_text(page(g, parts, key), encoding="utf-8")
         urls.append(BASE + g["slug"])
     print(f"guides: {len(urls)} written")
     return urls
