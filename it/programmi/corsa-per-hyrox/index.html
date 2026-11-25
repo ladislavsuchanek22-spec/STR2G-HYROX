@@ -582,6 +582,9 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
 .buybox{display:flex;flex-wrap:wrap;align-items:flex-end;gap:18px 32px;margin-top:30px}
 .fw-week{display:flex;flex-wrap:wrap;align-items:center;gap:14px 22px;margin-top:22px;padding:18px 20px;border:1px dashed var(--line)}
 .fw-week p{margin:0;font-size:16px;line-height:1.45;color:var(--fg);flex:1 1 280px}
+.sg-hint{margin:18px 0 0;font-size:15px;line-height:1.5;color:var(--muted)}
+.sg-hint button{background:none;border:0;padding:0;font:inherit;color:var(--accent);font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.sg-hint button:hover{color:var(--fg)}
 .rev{max-width:820px}
 .rev .rev-tr{margin:14px 0 0;font-size:15px;line-height:1.55;color:var(--muted)}
 .rev .rev-tr span{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
@@ -620,6 +623,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
         <a class="btn btn-ghost" href="/it/programma-allenamento-hyrox/#pick">Confronta tutti i programmi</a>
       </div>
     </div>
+    <p class="sg-hint">Non sei ancora sicuro? <button type="button" data-sg-cta>Scarica gratis la guida STR2G a tutte le 8 stazioni HYROX →</button></p>
     <div class="facts" style="--cols:5"><div><strong>6</strong>giorni / settimana</div><div><strong>75</strong>min / giorno</div><div><strong>1</strong>sedute / giorno</div><div><strong>12</strong>settimane</div><div class="lvl"><strong>Livello intermedio</strong>Per chi</div></div>
   </div>
 </header>
@@ -692,6 +696,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
       <button type="button" class="btn btn-ghost" data-fw-cta="running">Settimana di prova gratis</button>
       <a class="btn btn-ghost" href="/it/programma-allenamento-hyrox/#pick">Confronta tutti i programmi</a>
     </div>
+    <p class="sg-hint">Non sei ancora sicuro? <button type="button" data-sg-cta>Scarica gratis la guida STR2G a tutte le 8 stazioni HYROX →</button></p>
   </div>
 </section>
 
@@ -1142,5 +1147,131 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
 })();
 </script>
 <!--/STR2G_FREEWEEK-->
+<!--STR2G_STATIONGUIDE-->
+<!--
+  STR2G – HYROX Station Guide zdarma (PDF, 8 stanic) na stránkách programů
+  - Tlačítka s data-sg-cta otevřou okno: jméno, e-mail, povinný souhlas = odběr newsletteru.
+  - Kontakty jdou do Netlify Forms (formulář "station-guide") a do MailerLite (stejně jako ukázkový týden).
+  - PDF: /station-guide/STR2G_HYROX_Station_Guide_CZ.pdf (cs, sk) a _EN.pdf (ostatní jazyky).
+  - Vzhled okna sdílí styly #fw z i18n/freeweek.html (vkládá se na stejné stránky).
+-->
+<form name="station-guide" data-netlify="true" netlify-honeypot="bot-field" hidden>
+  <input type="text" name="name"><input type="email" name="email"><input type="text" name="lang"><input type="text" name="page"><input type="text" name="consent"><input type="text" name="newsletter"><input type="text" name="consent_text"><input type="text" name="time"><input type="text" name="bot-field">
+</form>
+<script>
+(function () {
+  var MAILERLITE_URL = 'https://assets.mailerlite.com/jsonp/2721571/forms/201638923122771811/subscribe';
+  var lang = (document.documentElement.lang || 'en').slice(0, 2);
+  var PDF = (lang === 'cs' || lang === 'sk') ? '/station-guide/STR2G_HYROX_Station_Guide_CZ.pdf' : '/station-guide/STR2G_HYROX_Station_Guide_EN.pdf';
+  var PRIV = (lang === 'cs' || lang === 'sk') ? '/cs/ochrana-osobnich-udaju/' : '/privacy/';
+  var EN_NOTE = {
+    sk: 'Sprievodca je v češtine.',
+    de: 'Der Guide ist auf Englisch.', pl: 'Przewodnik jest po angielsku.', fr: 'Le guide est en anglais.',
+    es: 'La guía está en inglés.', it: 'La guida è in inglese.', nl: 'De gids is in het Engels.'
+  };
+  var TXT = {
+    en: { eb: 'Free HYROX Station Guide', h: 'All 8 HYROX stations in one guide', t: 'Technique, the most common mistakes, pacing and drills for every station, from SkiErg to Wall Balls. 64 pages from our coaching practice, as a PDF.', n: 'First name', e: 'Email', c1: 'I want the Station Guide and I subscribe to the STR2G newsletter (HYROX tips, new programs, offers). STR2G may process my name and email for this. Unsubscribe anytime with one click.', c2: 'The guide is free in exchange for subscribing to the STR2G newsletter.', p: 'Privacy policy', b: 'Get the guide', err: 'Something went wrong. Please try again.', errc: 'Please tick the box to get the PDF.', okh: 'Your guide is ready', okt: 'Download it below. Pick your weakest station and start there.', dl: 'Download PDF', x: 'Close' },
+    cs: { eb: 'HYROX Station Guide zdarma', h: 'Všech 8 HYROX stanic v jednom průvodci', t: 'Technika, nejčastější chyby, tempo a drily ke každé stanici, od SkiErgu po Wall Balls. 64 stran z naší trenérské praxe v PDF.', n: 'Křestní jméno', e: 'E-mail', c1: 'Chci průvodce stanicemi a přihlašuji se k odběru STR2G newsletteru (tipy na HYROX, nové programy, nabídky). Souhlasím, že STR2G k tomu zpracuje moje jméno a e-mail. Odhlásit se můžu kdykoli jedním klikem.', c2: 'Průvodce je zdarma výměnou za odběr STR2G newsletteru.', p: 'Ochrana osobních údajů', b: 'Chci průvodce', err: 'Něco se pokazilo. Zkus to prosím znovu.', errc: 'Pro stažení PDF zaškrtni políčko.', okh: 'Průvodce je připravený', okt: 'Stáhni si ho níže. Začni stanicí, která ti jde nejhůř.', dl: 'Stáhnout PDF', x: 'Zavřít' },
+    sk: { eb: 'HYROX Station Guide zdarma', h: 'Všetkých 8 HYROX staníc v jednom sprievodcovi', t: 'Technika, najčastejšie chyby, tempo a drily ku každej stanici, od SkiErgu po Wall Balls. 64 strán z našej trénerskej praxe v PDF.', n: 'Krstné meno', e: 'E-mail', c1: 'Chcem sprievodcu stanicami a prihlasujem sa na odber STR2G newslettera (tipy na HYROX, nové programy, ponuky). Súhlasím, že STR2G na to spracuje moje meno a e-mail. Odhlásiť sa môžem kedykoľvek jedným klikom.', c2: 'Sprievodca je zdarma výmenou za odber STR2G newslettera.', p: 'Ochrana osobných údajov', b: 'Chcem sprievodcu', err: 'Niečo sa pokazilo. Skús to prosím znova.', errc: 'Na stiahnutie PDF zaškrtni políčko.', okh: 'Sprievodca je pripravený', okt: 'Stiahni si ho nižšie. Začni stanicou, ktorá ti ide najhoršie.', dl: 'Stiahnuť PDF', x: 'Zavrieť' },
+    de: { eb: 'Gratis HYROX Station Guide', h: 'Alle 8 HYROX-Stationen in einem Guide', t: 'Technik, die häufigsten Fehler, Pacing und Drills für jede Station, vom SkiErg bis zu den Wall Balls. 64 Seiten aus unserer Coaching-Praxis als PDF.', n: 'Vorname', e: 'E-Mail', c1: 'Ich möchte den Station Guide und abonniere den STR2G-Newsletter (HYROX-Tipps, neue Programme, Angebote). STR2G darf dafür meinen Namen und meine E-Mail verarbeiten. Abmeldung jederzeit mit einem Klick.', c2: 'Der Guide ist gratis im Austausch für das Abo des STR2G-Newsletters.', p: 'Datenschutz', b: 'Guide holen', err: 'Etwas ist schiefgelaufen. Bitte versuch es noch einmal.', errc: 'Bitte setze das Häkchen, um das PDF zu erhalten.', okh: 'Dein Guide ist bereit', okt: 'Lade ihn unten herunter. Fang mit deiner schwächsten Station an.', dl: 'PDF herunterladen', x: 'Schließen' },
+    pl: { eb: 'Darmowy HYROX Station Guide', h: 'Wszystkie 8 stacji HYROX w jednym przewodniku', t: 'Technika, najczęstsze błędy, tempo i ćwiczenia do każdej stacji, od SkiErga po Wall Balls. 64 strony z naszej praktyki trenerskiej w PDF.', n: 'Imię', e: 'E-mail', c1: 'Chcę przewodnik po stacjach i zapisuję się do newslettera STR2G (porady HYROX, nowe programy, oferty). STR2G może w tym celu przetwarzać moje imię i e-mail. Mogę zrezygnować w każdej chwili jednym kliknięciem.', c2: 'Przewodnik jest darmowy w zamian za zapis do newslettera STR2G.', p: 'Polityka prywatności', b: 'Odbieram przewodnik', err: 'Coś poszło nie tak. Spróbuj ponownie.', errc: 'Zaznacz pole, aby pobrać PDF.', okh: 'Twój przewodnik jest gotowy', okt: 'Pobierz go poniżej. Zacznij od stacji, która idzie Ci najsłabiej.', dl: 'Pobierz PDF', x: 'Zamknij' },
+    fr: { eb: 'HYROX Station Guide gratuit', h: 'Les 8 stations HYROX dans un seul guide', t: 'Technique, erreurs fréquentes, allure et exercices pour chaque station, du SkiErg aux Wall Balls. 64 pages issues de notre coaching, en PDF.', n: 'Prénom', e: 'E-mail', c1: 'Je veux le Station Guide et je m’abonne à la newsletter STR2G (conseils HYROX, nouveaux programmes, offres). STR2G peut traiter mon prénom et mon e-mail pour cela. Désinscription à tout moment en un clic.', c2: 'Le guide est gratuit en échange de l’abonnement à la newsletter STR2G.', p: 'Politique de confidentialité', b: 'Recevoir le guide', err: 'Une erreur s’est produite. Réessaie, s’il te plaît.', errc: 'Coche la case pour obtenir le PDF.', okh: 'Ton guide est prêt', okt: 'Télécharge-le ci-dessous. Commence par ta station la plus faible.', dl: 'Télécharger le PDF', x: 'Fermer' },
+    es: { eb: 'HYROX Station Guide gratis', h: 'Las 8 estaciones de HYROX en una sola guía', t: 'Técnica, errores más comunes, ritmo y ejercicios para cada estación, del SkiErg a los Wall Balls. 64 páginas de nuestra experiencia como entrenadores, en PDF.', n: 'Nombre', e: 'Email', c1: 'Quiero la Station Guide y me suscribo a la newsletter de STR2G (consejos de HYROX, nuevos programas, ofertas). STR2G puede tratar mi nombre y email para ello. Puedo darme de baja cuando quiera con un clic.', c2: 'La guía es gratis a cambio de suscribirte a la newsletter de STR2G.', p: 'Política de privacidad', b: 'Quiero la guía', err: 'Algo ha fallado. Inténtalo de nuevo.', errc: 'Marca la casilla para obtener el PDF.', okh: 'Tu guía está lista', okt: 'Descárgala abajo. Empieza por tu estación más débil.', dl: 'Descargar PDF', x: 'Cerrar' },
+    it: { eb: 'HYROX Station Guide gratis', h: 'Tutte le 8 stazioni HYROX in un’unica guida', t: 'Tecnica, errori più comuni, ritmo ed esercizi per ogni stazione, dallo SkiErg ai Wall Balls. 64 pagine dalla nostra esperienza di coaching, in PDF.', n: 'Nome', e: 'Email', c1: 'Voglio la Station Guide e mi iscrivo alla newsletter STR2G (consigli HYROX, nuovi programmi, offerte). STR2G può trattare il mio nome e la mia email a questo scopo. Posso disiscrivermi quando voglio con un clic.', c2: 'La guida è gratis in cambio dell’iscrizione alla newsletter STR2G.', p: 'Privacy policy', b: 'Voglio la guida', err: 'Qualcosa è andato storto. Riprova.', errc: 'Spunta la casella per ricevere il PDF.', okh: 'La tua guida è pronta', okt: 'Scaricala qui sotto. Inizia dalla tua stazione più debole.', dl: 'Scarica il PDF', x: 'Chiudi' },
+    nl: { eb: 'Gratis HYROX Station Guide', h: 'Alle 8 HYROX-stations in één gids', t: 'Techniek, de meest gemaakte fouten, tempo en drills voor elk station, van SkiErg tot Wall Balls. 64 pagina’s uit onze coachingpraktijk, als PDF.', n: 'Voornaam', e: 'E-mail', c1: 'Ik wil de Station Guide en schrijf me in voor de STR2G-nieuwsbrief (HYROX-tips, nieuwe programma’s, aanbiedingen). STR2G mag daarvoor mijn naam en e-mail verwerken. Altijd af te melden met één klik.', c2: 'De gids is gratis in ruil voor een inschrijving op de STR2G-nieuwsbrief.', p: 'Privacybeleid', b: 'Ik wil de gids', err: 'Er ging iets mis. Probeer het opnieuw.', errc: 'Vink het vakje aan om de PDF te krijgen.', okh: 'Je gids staat klaar', okt: 'Download hem hieronder. Begin bij je zwakste station.', dl: 'PDF downloaden', x: 'Sluiten' }
+  };
+  var t = TXT[lang] || TXT.en;
+  var ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M4 19h16"/></svg>';
+  var root, lastFocus;
+
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function enc(o) { return Object.keys(o).map(function (k) { return encodeURIComponent(k) + '=' + encodeURIComponent(o[k]); }).join('&'); }
+
+  function open() {
+    lastFocus = document.activeElement;
+    if (root) root.remove();
+    var old = document.getElementById('fw'); if (old) old.remove();
+    root = document.createElement('div');
+    root.id = 'fw';
+    root.setAttribute('role', 'dialog');
+    root.setAttribute('aria-modal', 'true');
+    root.setAttribute('aria-labelledby', 'sg-h');
+    root.innerHTML =
+      '<div class="fw-box">' +
+        '<button type="button" class="fw-x" aria-label="' + esc(t.x) + '">&times;</button>' +
+        '<p class="fw-eb">' + esc(t.eb) + '</p>' +
+        '<h2 id="sg-h">' + esc(t.h) + '</h2>' +
+        '<p class="fw-t">' + esc(t.t) + '</p>' +
+        (EN_NOTE[lang] ? '<p class="fw-note" style="margin:-10px 0 18px">' + esc(EN_NOTE[lang]) + '</p>' : '') +
+        '<form novalidate>' +
+          '<label class="fw-l" for="sg-n">' + esc(t.n) + '</label><input id="sg-n" name="name" type="text" autocomplete="given-name" required>' +
+          '<label class="fw-l" for="sg-e">' + esc(t.e) + '</label><input id="sg-e" name="email" type="email" autocomplete="email" inputmode="email" required>' +
+          '<p class="fw-deal">' + esc(t.c2) + '</p>' +
+          '<label class="fw-ck" for="sg-c1"><input id="sg-c1" name="consent" type="checkbox" required><span>' + esc(t.c1) + ' <span class="req">*</span> <a href="' + PRIV + '" target="_blank" rel="noopener">' + esc(t.p) + '</a></span></label>' +
+          '<div class="fw-hp" aria-hidden="true"><input name="bot-field" tabindex="-1" autocomplete="off"></div>' +
+          '<button type="submit" class="fw-go">' + esc(t.b) + '</button>' +
+          '<p class="fw-err" role="alert"></p>' +
+        '</form>' +
+      '</div>';
+    document.body.appendChild(root);
+    root.querySelector('.fw-x').onclick = close;
+    root.addEventListener('click', function (e) { if (e.target === root) close(); });
+    root.querySelector('form').addEventListener('submit', submit);
+    document.addEventListener('keydown', onKey);
+    requestAnimationFrame(function () { root.classList.add('on'); });
+    setTimeout(function () { var n = root && root.querySelector('#sg-n'); if (n) n.focus(); }, 60);
+  }
+
+  function close() {
+    if (!root) return;
+    document.removeEventListener('keydown', onKey);
+    root.classList.remove('on');
+    var r = root; root = null;
+    setTimeout(function () { r.remove(); }, 250);
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  function onKey(e) { if (e.key === 'Escape') close(); }
+
+  function submit(e) {
+    e.preventDefault();
+    var f = e.target, btn = f.querySelector('.fw-go'), err = f.querySelector('.fw-err');
+    var name = f.name.value.trim(), email = f.email.value.trim();
+    err.textContent = '';
+    if (!name) { f.name.focus(); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { f.email.focus(); return; }
+    if (!f.consent.checked) { err.textContent = t.errc; f.consent.focus(); return; }
+    if (f['bot-field'].value) return;
+    btn.disabled = true;
+    var data = { 'form-name': 'station-guide', name: name, email: email, lang: lang, page: location.pathname,
+      consent: 'yes', newsletter: 'yes', consent_text: t.c2 + ' | ' + t.c1, time: new Date().toISOString() };
+    var jobs = [fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: enc(data) })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); })];
+    jobs.push(fetch(MAILERLITE_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: enc({ 'fields[email]': email, 'fields[name]': name, 'ml-submit': '1', 'anticsrf': 'true' }) }).catch(function () {}));
+    Promise.all(jobs).then(function () {
+      try { localStorage.setItem('str2g_nl_done', '1'); } catch (x) {}
+      if (window.str2gLead) window.str2gLead('station-guide');
+      var box = root.querySelector('.fw-box');
+      box.innerHTML = '<button type="button" class="fw-x" aria-label="' + esc(t.x) + '">&times;</button>' +
+        '<p class="fw-eb">' + esc(t.eb) + '</p><h2 id="sg-h">' + esc(t.okh) + '</h2><p class="fw-t">' + esc(t.okt) + '</p>' +
+        '<a class="fw-dl" href="' + PDF + '" download target="_blank" rel="noopener">' + ICON + '<span>' + esc(t.dl) + '</span></a>';
+      box.querySelector('.fw-x').onclick = close;
+      box.querySelector('.fw-dl').focus();
+    }).catch(function () {
+      btn.disabled = false;
+      err.textContent = t.err;
+    });
+  }
+
+  function bind() {
+    Array.prototype.forEach.call(document.querySelectorAll('[data-sg-cta]'), function (b) {
+      if (!b.sgBound) { b.sgBound = true; b.addEventListener('click', open); }
+    });
+  }
+  window.str2gStationGuide = open;
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind); else bind();
+})();
+</script>
+<!--/STR2G_STATIONGUIDE-->
 </body>
 </html>
