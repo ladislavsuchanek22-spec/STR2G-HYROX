@@ -36,7 +36,7 @@ PT_LANG = dict(
     week_h=("Jak wygląda", "tydzień."), week_note="Przykładowy tydzień. Pokazuje proporcje treningów, nie dokładne sesje w aplikacji.",
     week_cols=("Dzień", "Trening", "Cel"),
     coaches_h=("Twoi", "trenerzy."),
-    lada="<b>Láďa Suchánek</b> · HYROX Performance Coach L1, CrossFit L1, OPEX CCP, Precision Nutrition L1, trener biegania. Prowadzi kluby STR2G HYROX w Pradze, Brnie i Ostrawie. Berlin pobiegł w 1:11:12.",
+    lada="<b>Láďa Suchánek</b> · HYROX Performance Coach L1, CrossFit L1, OPEX CCP, Precision Nutrition L1, trener biegania. Berlin pobiegł w 1:11:12.",
     ria="<b>Ria Suchánek Hrušovská, MSc.</b> · HYROX Performance Coach, trenerka mentalna (Newton University), CrossFit L2. Pisze programy, trenuje i startuje razem z Láďą.",
     raced="Startowaliśmy w HYROX w Berlinie, Hamburgu, Barcelonie i Maastricht. Piszemy plany, według których sami byśmy trenowali.",
     related_h=("Inne", "programy."), see="Zobacz program",
