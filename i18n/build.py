@@ -187,6 +187,11 @@ for l in _hub:
 import guides
 for _u in guides.build(ROOT, _tr_parts):
     entries.append(_entry(_u, {"en": _u}))
+# ---- landing page lead magnetu HYROX Station Guide (/station-guide/, /cs/pruvodce-stanicemi/)
+import station_guide
+_sg = station_guide.build(ROOT, _tr_parts)
+for l in _sg:
+    entries.append(_entry(_sg[l], _sg))
 entries.append(f"  <url>\n    <loc>{BASE}/storefront/</loc>\n    <lastmod>{LASTMOD}</lastmod>\n  </url>")
 (ROOT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n' + "\n".join(entries) + "\n</urlset>\n", encoding="utf-8")
 print(f"sitemap.xml: {len(entries)} URLs")

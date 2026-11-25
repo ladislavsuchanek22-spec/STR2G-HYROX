@@ -696,7 +696,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
 <footer>
   <div class="wrap">
     <nav class="prog-nav guides" aria-label="Programs"><a href="/programs/hyrox-basic/" aria-current="page">HYROX Basic</a><a href="/programs/hyrox-competitor/">HYROX Competitor</a><a href="/programs/hyrox-pro-athlete/">HYROX Pro Athlete</a><a href="/programs/12-week-hyrox-race-prep/">12-Week HYROX Race Prep</a><a href="/programs/12-week-hyrox-advanced/">12-Week HYROX Advanced</a><a href="/programs/8-week-hyrox-singles/">8-Week HYROX Singles</a><a href="/programs/8-week-hyrox-doubles/">8-Week HYROX Doubles</a><a href="/programs/running-for-hyrox/">Running for HYROX 2.0</a><a href="/programs/hyrox-taper/">2-Week HYROX Taper 2.0</a></nav>
-    <nav class="guides" aria-label="Guides"><a href="/hyrox-training-plan/">HYROX training plan</a><a href="/online-hyrox-coach/">Online HYROX coach</a><a href="/programs/">Programs</a><a href="/guides/hyrox-taper/">HYROX taper</a><a href="/guides/hyrox-compromised-running/">Compromised running</a><a href="/guides/hyrox-sled-pull-technique/">Sled pull technique</a><a href="/guides/hyrox-doubles-training/">HYROX Doubles</a><a href="/guides/how-to-run-faster-in-hyrox/">Run faster in HYROX</a></nav>
+    <nav class="guides" aria-label="Guides"><a href="/hyrox-training-plan/">HYROX training plan</a><a href="/online-hyrox-coach/">Online HYROX coach</a><a href="/programs/">Programs</a><a href="/guides/hyrox-taper/">HYROX taper</a><a href="/guides/hyrox-compromised-running/">Compromised running</a><a href="/guides/hyrox-doubles-training/">HYROX Doubles</a><a href="/guides/how-to-run-faster-in-hyrox/">Run faster in HYROX</a><a href="/station-guide/">HYROX station guides</a></nav>
     <nav class="net" aria-label="STR2G"><p class="net-h">STR2G</p><ul><li><a href="https://hyrox-prague.eu/" target="_blank" rel="noopener"><b>HYROX Prague</b></a></li><li><a href="https://hyroxtrainingclub.cz/en/" target="_blank" rel="noopener"><b>HYROX Training Club</b></a></li><li><a href="https://formfactorygames.cz/en/" target="_blank" rel="noopener"><b>Form Factory Games</b></a></li><li><a href="https://www.ladislavsuchanek.cz/en/" target="_blank" rel="noopener"><b>Ladislav Suchánek</b></a></li><li><a href="https://riahrusovska.cz/en/" target="_blank" rel="noopener"><b>Ria Suchánek Hrušovská</b></a></li><li><a href="https://strongertogether.cz/en/" target="_blank" rel="noopener"><b>Stronger Together</b></a></li><li><a href="https://xenomczech.cz/en/" target="_blank" rel="noopener"><b>STR2G TEN</b></a></li></ul></nav>
     <div style="display:flex;align-items:center;gap:12px"><img loading="lazy" src="/favicon.svg?v=2" alt="" width="26" height="26" style="border:1px solid var(--line);border-radius:6px"><span>© 2026 STR2G · Stronger Together · Strong Coach</span></div>
     <div class="links">
@@ -1151,6 +1151,43 @@ footer .links{display:flex;flex-wrap:wrap;gap:8px 20px}
 <form name="station-guide" data-netlify="true" netlify-honeypot="bot-field" hidden>
   <input type="text" name="name"><input type="email" name="email"><input type="text" name="lang"><input type="text" name="page"><input type="text" name="consent"><input type="text" name="newsletter"><input type="text" name="consent_text"><input type="text" name="time"><input type="text" name="bot-field">
 </form>
+<!-- styly okna (kopie z freeweek.html, aby okno fungovalo i na stránkách bez ukázkového týdne) -->
+<style>
+.fw-open{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:2px;background:transparent;border:1px dashed #3a3833;color:#C9A950;font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;padding:11px 12px;cursor:pointer;transition:border-color .15s,color .15s,background .15s}
+.fw-open:hover{border-color:#C9A950;color:#fff;background:rgba(201,169,80,.08)}
+.fw-open svg{width:14px;height:14px;flex:none}
+#fw .fw-dl svg{width:18px;height:18px;flex:none}
+#fw{position:fixed;inset:0;z-index:99995;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.72);opacity:0;transition:opacity .25s}
+#fw.on{opacity:1}
+#fw .fw-box{position:relative;width:100%;max-width:480px;background:#0F0F0E;border:1px solid #262521;color:#fff;max-height:calc(100vh - 40px);overflow:auto;padding:34px 32px 28px;transform:translateY(16px);transition:transform .25s}
+#fw.on .fw-box{transform:none}
+#fw .fw-eb{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#C9A950;margin:0 0 12px}
+#fw h2{font-family:"Barlow Condensed","Arial Narrow",Impact,sans-serif;font-weight:900;font-style:italic;text-transform:uppercase;font-size:40px;line-height:.9;margin:0 0 12px;text-wrap:balance}
+#fw p.fw-t{color:#C9C6BE;font-size:15.5px;line-height:1.5;margin:0 0 20px}
+#fw label.fw-l{display:block;font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#9A978F;margin:0 0 6px}
+#fw input[type=text],#fw input[type=email]{display:block;width:100%;background:#050505;border:1px solid #3a3833;color:#fff;font:16px/1.3 "Archivo","Helvetica Neue",Arial,sans-serif;padding:13px 14px;margin:0 0 14px;border-radius:0;-webkit-appearance:none;appearance:none}
+#fw input:focus{outline:none;border-color:#C9A950}
+#fw .fw-ck{display:grid;grid-template-columns:20px 1fr;gap:10px;align-items:start;font-size:13.5px;line-height:1.45;color:#C9C6BE;margin:0 0 12px;cursor:pointer}
+#fw .fw-ck input{width:18px;height:18px;margin:1px 0 0;accent-color:#C9A950;cursor:pointer}
+#fw .fw-ck a{color:#C9A950}
+#fw .fw-ck .req{color:#C9A950}
+#fw .fw-deal{font-size:13.5px;line-height:1.45;color:#fff;border-left:2px solid #C9A950;padding:2px 0 2px 10px;margin:4px 0 14px}
+#fw .fw-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+#fw .fw-go,#fw .fw-dl{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;background:#C9A950;color:#050505;border:1.5px solid #C9A950;font-family:"Barlow Condensed","Arial Narrow",Impact,sans-serif;font-weight:800;font-style:italic;text-transform:uppercase;font-size:21px;letter-spacing:.02em;padding:13px 20px 12px;cursor:pointer;margin-top:6px;text-decoration:none}
+#fw .fw-go:hover,#fw .fw-dl:hover{background:#fff;border-color:#fff}
+#fw .fw-go[disabled]{opacity:.6;cursor:wait}
+#fw .fw-err{color:#ff8a7a;font-size:13.5px;margin:10px 0 0}
+#fw .fw-note{font-size:12px;line-height:1.45;color:#7d7a73;margin:14px 0 0}
+#fw .fw-x{position:absolute;top:8px;right:8px;width:40px;height:40px;background:transparent;border:0;color:#9A978F;font-size:26px;line-height:1;cursor:pointer}
+#fw .fw-x:hover{color:#fff}
+#fw button:focus-visible,#fw input:focus-visible,#fw a:focus-visible,.fw-open:focus-visible{outline:2px solid #C9A950;outline-offset:2px}
+@media (max-width:720px){
+  #fw{align-items:flex-end;padding:0}
+  #fw .fw-box{max-width:none;max-height:92vh;border-left:0;border-right:0;border-bottom:0;padding:30px 20px 24px;transform:translateY(100%)}
+  #fw h2{font-size:34px}
+}
+@media (prefers-reduced-motion:reduce){#fw,#fw .fw-box{transition:none}}
+</style>
 <script>
 (function () {
   var MAILERLITE_URL = 'https://assets.mailerlite.com/jsonp/2721571/forms/201638923122771811/subscribe';
