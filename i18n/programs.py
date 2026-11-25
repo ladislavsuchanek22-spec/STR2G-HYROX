@@ -36,6 +36,9 @@ PROG_CSS = """
 .buybox{display:flex;flex-wrap:wrap;align-items:flex-end;gap:18px 32px;margin-top:30px}
 .fw-week{display:flex;flex-wrap:wrap;align-items:center;gap:14px 22px;margin-top:22px;padding:18px 20px;border:1px dashed var(--line)}
 .fw-week p{margin:0;font-size:16px;line-height:1.45;color:var(--fg);flex:1 1 280px}
+.sg-hint{margin:18px 0 0;font-size:15px;line-height:1.5;color:var(--muted)}
+.sg-hint button{background:none;border:0;padding:0;font:inherit;color:var(--accent);font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.sg-hint button:hover{color:var(--fg)}
 .rev{max-width:820px}
 .rev .rev-tr{margin:14px 0 0;font-size:15px;line-height:1.55;color:var(--muted)}
 .rev .rev-tr span{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
@@ -62,6 +65,25 @@ def price_html(lang, pid):
     main, period, fx = price_parts(lang, pid)
     fx_html = f'<em class="fx">{fx}</em>' if fx else ""
     return f'<div class="price"><b>{main}</b><span>{escape(period)}</span>{fx_html}</div>'
+
+
+# Lead magnet: HYROX Station Guide (PDF) – okno v i18n/stationguide.html
+SG_HINT = {
+    "en": ("Not sure yet?", "Get the free STR2G guide to all 8 HYROX stations"),
+    "cs": ("Ještě nevíš?", "Stáhni si zdarma STR2G průvodce všemi 8 HYROX stanicemi"),
+    "sk": ("Ešte nevieš?", "Stiahni si zdarma STR2G sprievodcu všetkými 8 HYROX stanicami"),
+    "de": ("Noch unsicher?", "Hol dir gratis den STR2G Guide zu allen 8 HYROX-Stationen"),
+    "pl": ("Jeszcze nie wiesz?", "Pobierz za darmo przewodnik STR2G po wszystkich 8 stacjach HYROX"),
+    "fr": ("Pas encore décidé ?", "Télécharge gratuitement le guide STR2G des 8 stations HYROX"),
+    "es": ("¿Aún no lo tienes claro?", "Descarga gratis la guía STR2G de las 8 estaciones de HYROX"),
+    "it": ("Non sei ancora sicuro?", "Scarica gratis la guida STR2G a tutte le 8 stazioni HYROX"),
+    "nl": ("Twijfel je nog?", "Download gratis de STR2G-gids voor alle 8 HYROX-stations"),
+}
+
+
+def sg_hint(lang):
+    q, a = SG_HINT.get(lang, SG_HINT["en"])
+    return f'<p class="sg-hint">{escape(q)} <button type="button" data-sg-cta>{escape(a)} →</button></p>'
 
 
 def buy_btn(lang, pid, cls="btn btn-gold"):
@@ -216,6 +238,7 @@ def page(lang, pid, parts):
         <a class="btn btn-ghost" href="{(__import__("hub").HUB[lang] + "#compare") if lang in __import__("hub").HUB else u["plan_url"] + "#pick"}">{escape(u["compare"])}</a>
       </div>
     </div>
+    {sg_hint(lang)}
     {facts_html}
   </div>
 </header>
@@ -296,6 +319,7 @@ def page(lang, pid, parts):
       {aeo_eu.fw_button(lang, pid)}
       <a class="btn btn-ghost" href="{(__import__("hub").HUB[lang] + "#compare") if lang in __import__("hub").HUB else u["plan_url"] + "#pick"}">{escape(u["compare"])}</a>
     </div>
+    {sg_hint(lang)}
   </div>
 </section>
 
@@ -321,7 +345,8 @@ def page(lang, pid, parts):
     html = head + body + tail
     nl = (Path(__file__).resolve().parent / "newsletter.html").read_text(encoding="utf-8").rstrip("\n")
     fw = (Path(__file__).resolve().parent / "freeweek.html").read_text(encoding="utf-8").rstrip("\n")
-    return html.replace("</body>", nl + "\n" + fw + "\n</body>", 1)
+    sg = (Path(__file__).resolve().parent / "stationguide.html").read_text(encoding="utf-8").rstrip("\n")
+    return html.replace("</body>", nl + "\n" + fw + "\n" + sg + "\n</body>", 1)
 
 
 def build(root, parts):
